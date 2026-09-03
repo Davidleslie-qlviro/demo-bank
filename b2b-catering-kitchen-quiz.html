@@ -395,40 +395,40 @@
     <div class="result-panel" id="result-hospitality">
       <div class="result-eyebrow">YOUR PROFILE: HOSPITALITY & RESTAURANT KITCHEN</div>
       <h2>Built for volume, exposed on breakdown risk</h2>
+      <div class="proof-line"><strong>In good company:</strong> we already equip kitchens for names like Food Lover's Market, RocoMamas, Del Forno and Waterfall Country Lifestyle Estate.</div>
       <p>Your kitchen runs on service pace — every minute a fryer, combi oven or dishwasher is down costs you covers, not just repair fees. Based on your answers, your biggest exposure isn't equipment quality, it's response time when something fails mid-shift.</p>
       <h4>What we'd recommend</h4>
       <p>A stocked-item quote for the pieces closest to end-of-life, plus a maintenance arrangement so breakdowns get handled before they cost you a service — not after.</p>
-      <div class="proof-line"><strong>In good company:</strong> we already equip kitchens for names like Food Lover's Market, RocoMamas, Del Forno and Waterfall Country Lifestyle Estate.</div>
       <a class="btn full" id="cta-hospitality" href="#" target="_blank" rel="noopener">Book Your Free Kitchen Assessment</a>
     </div>
 
     <div class="result-panel" id="result-institutional">
       <div class="result-eyebrow">YOUR PROFILE: CORPORATE & INSTITUTIONAL KITCHEN</div>
       <h2>Planning a build that has to get sign-off first time</h2>
+      <div class="proof-line"><strong>In good company:</strong> our institutional work spans Mediclinic, Life Group Healthcare and The Success Academy, alongside corporate clients including Deloitte, EY and KPMG.</div>
       <p>Institutional kitchens — offices, healthcare, education — carry a different pressure: compliance, budget approval, and stakeholders who need it done right the first time, not iterated on. Based on your answers, the risk isn't the equipment itself, it's a project that stalls without the right partner managing the moving parts.</p>
       <h4>What we'd recommend</h4>
       <p>A Projects & Design consultation — full spec, layout and compliance planning before a single order gets placed, so the business case for sign-off writes itself.</p>
-      <div class="proof-line"><strong>In good company:</strong> our institutional work spans Mediclinic, Life Group Healthcare and The Success Academy, alongside corporate clients including Deloitte, EY and KPMG.</div>
       <a class="btn full" id="cta-institutional" href="#" target="_blank" rel="noopener">Book Your Free Kitchen Assessment</a>
     </div>
 
     <div class="result-panel" id="result-industrial">
       <div class="result-eyebrow">YOUR PROFILE: INDUSTRIAL & SITE-SCALE KITCHEN</div>
       <h2>Running at a scale most suppliers can't actually spec for</h2>
+      <div class="proof-line"><strong>In good company:</strong> we supply large-scale operations including Anglo American, AngloGold Ashanti, De Beers and Macsteel.</div>
       <p>At your volume, generic catering suppliers hit their ceiling fast — they can quote a restaurant, but they can't spec, source or support heavy-duty equipment for a facility that can't afford downtime. Based on your answers, that's exactly the gap you're running into.</p>
       <h4>What we'd recommend</h4>
       <p>A capacity and consultancy review — an honest read on what your current setup can and can't handle, before it becomes a production issue.</p>
-      <div class="proof-line"><strong>In good company:</strong> we supply large-scale operations including Anglo American, AngloGold Ashanti, De Beers and Macsteel.</div>
       <a class="btn full" id="cta-industrial" href="#" target="_blank" rel="noopener">Book Your Free Kitchen Assessment</a>
     </div>
 
     <div class="result-panel" id="result-multisite">
       <div class="result-eyebrow">YOUR PROFILE: MULTI-SITE / RETAIL OPERATION</div>
       <h2>Consistency is the real project, not any single site</h2>
+      <div class="proof-line"><strong>In good company:</strong> we already support multi-site operators including SPAR, Pick n Pay and Takealot.</div>
       <p>With more than one location, the hard part usually isn't any single kitchen — it's keeping equipment, quality and service consistent across all of them, without five different vendors and five different standards. Based on your answers, that's the gap costing you the most time right now.</p>
       <h4>What we'd recommend</h4>
       <p>A single-point-of-contact supply and maintenance arrangement across all your sites, so every location runs on the same standard without you chasing it.</p>
-      <div class="proof-line"><strong>In good company:</strong> we already support multi-site operators including SPAR, Pick n Pay and Takealot.</div>
       <a class="btn full" id="cta-multisite" href="#" target="_blank" rel="noopener">Book Your Free Kitchen Assessment</a>
     </div>
 
@@ -673,32 +673,3 @@
 
     var panelIdMap = {
       hospitality: "result-hospitality",
-      institutional: "result-institutional",
-      industrial: "result-industrial",
-      multisite: "result-multisite"
-    };
-
-    document.querySelectorAll(".result-panel").forEach(function(p){ p.classList.remove("active"); });
-    document.getElementById(panelIdMap[winner]).classList.add("active");
-
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
-  document.getElementById("restart-btn").addEventListener("click", function(){
-    Object.keys(scores).forEach(function(k){ scores[k] = 0; });
-    document.getElementById("screen-results").classList.remove("active");
-    document.querySelectorAll(".result-panel").forEach(function(p){ p.classList.remove("active"); });
-    document.getElementById("screen-intro").style.display = "block";
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  });
-
-  var CALENDAR_LINK = "https://b2bcateringsuppliers.co.za/contact-us/"; // DEMO ONLY — swap for the real booking calendar URL before this goes live
-  ["cta-hospitality", "cta-institutional", "cta-industrial", "cta-multisite"].forEach(function(id){
-    document.getElementById(id).setAttribute("href", CALENDAR_LINK);
-  });
-
-})();
-</script>
-
-</body>
-</html>
