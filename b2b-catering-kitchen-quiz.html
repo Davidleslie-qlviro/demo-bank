@@ -32,6 +32,7 @@
 
   a{ color:inherit; }
 
+  /* ---------- Header ---------- */
   .site-header{
     padding:22px 20px;
     border-bottom:3px solid var(--maroon);
@@ -53,12 +54,14 @@
   }
   .brand-mark span{ color:var(--orange); }
 
+  /* ---------- Shell ---------- */
   .shell{
     max-width:640px;
     margin:0 auto;
     padding:40px 20px 80px;
   }
 
+  /* ---------- Intro ---------- */
   .intro{
     text-align:left;
   }
@@ -96,6 +99,7 @@
     color:var(--grey);
   }
 
+  /* ---------- Buttons ---------- */
   .btn{
     display:inline-block;
     background:var(--maroon);
@@ -121,6 +125,7 @@
   }
   .btn-secondary:hover{ background:#f6ecec; }
 
+  /* ---------- Quiz card ---------- */
   .quiz-card{
     display:none;
     background:var(--card);
@@ -204,6 +209,7 @@
   }
   .back-link:disabled{ visibility:hidden; }
 
+  /* ---------- Interstitial ---------- */
   .interstitial{
     display:none;
     text-align:center;
@@ -224,6 +230,7 @@
     margin:0 0 26px;
   }
 
+  /* ---------- Modal ---------- */
   .modal-overlay{
     display:none;
     position:fixed;
@@ -292,6 +299,7 @@
   }
   .field.error .err-msg{ display:block; }
 
+  /* ---------- Results ---------- */
   .results{
     display:none;
   }
@@ -368,6 +376,7 @@
 
 <div class="shell">
 
+  <!-- ================= INTRO ================= -->
   <section class="intro" id="screen-intro">
     <h1>Is your kitchen actually set up to handle what's coming?</h1>
     <p>Most equipment problems don't show up until service is already underway. Take the 60-second Kitchen Readiness Check to see where your setup stands — and what to fix first.</p>
@@ -381,15 +390,19 @@
     <button class="btn" id="start-btn" type="button">Start My Kitchen Readiness Check</button>
   </section>
 
+  <!-- ================= QUIZ ================= -->
   <div id="quiz-wrapper">
+    <!-- Question cards are injected here by JS -->
   </div>
 
+  <!-- ================= INTERSTITIAL ================= -->
   <section class="interstitial" id="screen-interstitial">
     <h2>Your Kitchen Readiness profile is ready.</h2>
     <p>We've matched your answers to the setup, risks, and next step that fit your operation.</p>
     <button class="btn" id="reveal-btn" type="button">Reveal My Results</button>
   </section>
 
+  <!-- ================= RESULTS ================= -->
   <section class="results" id="screen-results">
 
     <div class="result-panel" id="result-hospitality">
@@ -437,6 +450,7 @@
 
 </div>
 
+<!-- ================= LEAD CAPTURE MODAL ================= -->
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal">
     <button class="modal-close" id="modal-close" type="button" aria-label="Close">&times;</button>
@@ -444,11 +458,17 @@
     <p class="sub">Enter your details to get your personalized results.</p>
 
     <!--
+      ============================================================
       GHL EMBED FORM GOES HERE.
       Replace everything inside #lead-form-wrapper below with the
-      GoHighLevel embed code once it's provided.
+      GoHighLevel embed code once it's provided. Keep the wrapper
+      div's id (#lead-form-wrapper) if you want quizResults.js-style
+      logic to keep working, or wire GHL's own redirect-on-submit
+      setting to point at this page with #results appended.
+
       The form below is a fully working standalone fallback so the
       quiz functions end-to-end right now.
+      ============================================================
     -->
     <div id="lead-form-wrapper">
       <form id="lead-form" novalidate>
@@ -476,6 +496,12 @@
 <script>
 (function(){
 
+  // ---------------------------------------------------------
+  // QUESTION DATA
+  // Options are listed in a fixed order across every question:
+  // [0] Hospitality  [1] Institutional  [2] Industrial  [3] Multi-site
+  // Each click adds one point to that segment's score.
+  // ---------------------------------------------------------
   var questions = [
     {
       text: "What kind of operation are you running?",
@@ -537,6 +563,9 @@
   var scores = { hospitality: 0, institutional: 0, industrial: 0, multisite: 0 };
   var currentQ = 0;
 
+  // ---------------------------------------------------------
+  // BUILD QUESTION CARDS
+  // ---------------------------------------------------------
   var wrapper = document.getElementById("quiz-wrapper");
 
   questions.forEach(function(q, qIndex){
@@ -598,6 +627,9 @@
     goToQuestion(0);
   });
 
+  // ---------------------------------------------------------
+  // INTERSTITIAL -> LEAD CAPTURE MODAL
+  // ---------------------------------------------------------
   var modalOverlay = document.getElementById("modal-overlay");
 
   document.getElementById("reveal-btn").addEventListener("click", function(){
@@ -610,6 +642,11 @@
     if (e.target === modalOverlay){ modalOverlay.classList.remove("active"); }
   });
 
+  // ---------------------------------------------------------
+  // LEAD FORM VALIDATION + SUBMIT
+  // (Standalone fallback — replace with GHL embed logic per the
+  // comment above the form markup.)
+  // ---------------------------------------------------------
   var leadForm = document.getElementById("lead-form");
   leadForm.addEventListener("submit", function(e){
     e.preventDefault();
@@ -644,6 +681,7 @@
 
     if (!valid) return;
 
+    // Optional: persist lead locally as a fallback record.
     try{
       localStorage.setItem("b2b_quiz_lead", JSON.stringify({
         first_name: name.value.trim(),
@@ -652,12 +690,15 @@
         scores: scores,
         timestamp: new Date().toISOString()
       }));
-    }catch(err){ }
+    }catch(err){ /* localStorage unavailable — non-blocking */ }
 
     modalOverlay.classList.remove("active");
     showResults();
   });
 
+  // ---------------------------------------------------------
+  // RESULTS
+  // ---------------------------------------------------------
   function showResults(){
     document.getElementById("screen-interstitial").classList.remove("active");
     document.getElementById("screen-results").classList.add("active");
@@ -673,3 +714,39 @@
 
     var panelIdMap = {
       hospitality: "result-hospitality",
+      institutional: "result-institutional",
+      industrial: "result-industrial",
+      multisite: "result-multisite"
+    };
+
+    document.querySelectorAll(".result-panel").forEach(function(p){ p.classList.remove("active"); });
+    document.getElementById(panelIdMap[winner]).classList.add("active");
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  document.getElementById("restart-btn").addEventListener("click", function(){
+    Object.keys(scores).forEach(function(k){ scores[k] = 0; });
+    document.getElementById("screen-results").classList.remove("active");
+    document.querySelectorAll(".result-panel").forEach(function(p){ p.classList.remove("active"); });
+    document.getElementById("screen-intro").style.display = "block";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  // ---------------------------------------------------------
+  // BOOKING CALENDAR LINK
+  // Replace "#" below with the real GHL calendar / booking URL
+  // for each CTA. All four are wired to the same link by default —
+  // point them at different calendars if segments should book
+  // different call types (e.g. Consultancy vs Maintenance).
+  // ---------------------------------------------------------
+  var CALENDAR_LINK = "https://b2bcateringsuppliers.co.za/contact-us/"; // DEMO ONLY — swap for the real booking calendar URL before this goes live
+  ["cta-hospitality", "cta-institutional", "cta-industrial", "cta-multisite"].forEach(function(id){
+    document.getElementById(id).setAttribute("href", CALENDAR_LINK);
+  });
+
+})();
+</script>
+
+</body>
+</html>
