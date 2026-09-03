@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kitchen Readiness Check | B2B Catering Equipment Suppliers</title>
+<style>
+  :root{
+    --maroon:#7A1E2E;
+    --maroon-dark:#511420;
+    --orange:#E8622C;
+    --orange-dark:#C24F22;
+    --ivory:#FAF8F5;
+    --card:#FFFFFF;
+    --charcoal:#241C1A;
+    --grey:#6B615C;
+    --border:#E4DDD5;
+    --font-head: Georgia, 'Iowan Old Style', 'Palatino Linotype', 'Times New Roman', serif;
+    --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  *{ box-sizing:border-box; }
+
+  body{
+    margin:0;
+    background:var(--ivory);
+    color:var(--charcoal);
+    font-family:var(--font-body);
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+  }
+
+  a{ color:inherit; }
+
+  .site-header{
+    padding:22px 20px;
+    border-bottom:3px solid var(--maroon);
+    background:var(--card);
+  }
+  .brand{
+    max-width:720px;
+    margin:0 auto;
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .brand-mark{
+    font-family:var(--font-head);
+    font-weight:700;
+    font-size:1.05rem;
+    color:var(--maroon);
+    letter-spacing:0.2px;
+  }
+  .brand-mark span{ color:var(--orange); }
+
+  .shell{
+    max-width:640px;
+    margin:0 auto;
+    padding:40px 20px 80px;
+  }
+
+  .intro{
+    text-align:left;
+  }
+  .intro h1{
+    font-family:var(--font-head);
+    font-size:2rem;
+    line-height:1.2;
+    margin:0 0 16px;
+    color:var(--charcoal);
+  }
+  .intro p{
+    font-size:1.05rem;
+    color:var(--grey);
+    margin:0 0 28px;
+    max-width:52ch;
+  }
+  .proof-strip{
+    display:flex;
+    gap:28px;
+    flex-wrap:wrap;
+    padding:18px 0;
+    margin-bottom:30px;
+    border-top:1px solid var(--border);
+    border-bottom:1px solid var(--border);
+  }
+  .proof-strip div{ min-width:110px; }
+  .proof-strip .num{
+    font-family:var(--font-head);
+    font-size:1.6rem;
+    color:var(--maroon);
+    display:block;
+  }
+  .proof-strip .label{
+    font-size:0.82rem;
+    color:var(--grey);
+  }
+
+  .btn{
+    display:inline-block;
+    background:var(--maroon);
+    color:#fff;
+    border:none;
+    padding:16px 30px;
+    font-size:1rem;
+    font-family:var(--font-body);
+    font-weight:600;
+    border-radius:4px;
+    cursor:pointer;
+    text-decoration:none;
+    text-align:center;
+    transition:background 0.15s ease;
+  }
+  .btn:hover{ background:var(--maroon-dark); }
+  .btn:focus-visible{ outline:3px solid var(--orange); outline-offset:2px; }
+  .btn.full{ width:100%; }
+  .btn-secondary{
+    background:transparent;
+    color:var(--maroon);
+    border:1.5px solid var(--maroon);
+  }
+  .btn-secondary:hover{ background:#f6ecec; }
+
+  .quiz-card{
+    display:none;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-left:4px solid var(--maroon);
+    border-radius:4px;
+    padding:32px 28px;
+  }
+  .quiz-card.active{ display:block; }
+
+  .progress-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+    font-size:0.82rem;
+    color:var(--grey);
+  }
+  .progress-track{
+    width:100%;
+    height:5px;
+    background:var(--border);
+    border-radius:3px;
+    overflow:hidden;
+    margin-bottom:26px;
+  }
+  .progress-fill{
+    height:100%;
+    background:var(--orange);
+    width:0%;
+    transition:width 0.35s ease;
+  }
+
+  .question-text{
+    font-family:var(--font-head);
+    font-size:1.35rem;
+    margin:0 0 22px;
+    color:var(--charcoal);
+  }
+
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .option{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:14px 16px;
+    border:1.5px solid var(--border);
+    border-radius:4px;
+    background:#fff;
+    cursor:pointer;
+    text-align:left;
+    font-size:0.98rem;
+    color:var(--charcoal);
+    font-family:var(--font-body);
+    transition:border-color 0.15s ease, background 0.15s ease;
+  }
+  .option:hover{ border-color:var(--orange); background:#FFF7F3; }
+  .option:focus-visible{ outline:3px solid var(--orange); outline-offset:1px; }
+  .option .marker{
+    flex:0 0 auto;
+    width:20px; height:20px;
+    border-radius:50%;
+    border:1.5px solid var(--grey);
+    display:inline-block;
+  }
+
+  .back-link{
+    display:inline-block;
+    margin-top:22px;
+    font-size:0.85rem;
+    color:var(--grey);
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:0;
+    text-decoration:underline;
+  }
+  .back-link:disabled{ visibility:hidden; }
+
+  .interstitial{
+    display:none;
+    text-align:center;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-left:4px solid var(--orange);
+    border-radius:4px;
+    padding:40px 28px;
+  }
+  .interstitial.active{ display:block; }
+  .interstitial h2{
+    font-family:var(--font-head);
+    font-size:1.5rem;
+    margin:0 0 12px;
+  }
+  .interstitial p{
+    color:var(--grey);
+    margin:0 0 26px;
+  }
+
+  .modal-overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(36,28,26,0.6);
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:50;
+  }
+  .modal-overlay.active{ display:flex; }
+  .modal{
+    background:#fff;
+    max-width:420px;
+    width:100%;
+    border-radius:6px;
+    padding:30px 26px;
+    position:relative;
+  }
+  .modal h3{
+    font-family:var(--font-head);
+    font-size:1.3rem;
+    margin:0 0 8px;
+  }
+  .modal p.sub{
+    color:var(--grey);
+    font-size:0.92rem;
+    margin:0 0 22px;
+  }
+  .modal-close{
+    position:absolute;
+    top:14px; right:14px;
+    background:none; border:none;
+    font-size:1.2rem;
+    color:var(--grey);
+    cursor:pointer;
+    line-height:1;
+  }
+  .field{ margin-bottom:16px; }
+  .field label{
+    display:block;
+    font-size:0.85rem;
+    color:var(--charcoal);
+    margin-bottom:6px;
+    font-weight:600;
+  }
+  .field input{
+    width:100%;
+    padding:12px 14px;
+    border:1.5px solid var(--border);
+    border-radius:4px;
+    font-size:0.98rem;
+    font-family:var(--font-body);
+    color:var(--charcoal);
+  }
+  .field input:focus{
+    outline:none;
+    border-color:var(--orange);
+  }
+  .field.error input{ border-color:#B3261E; }
+  .field .err-msg{
+    display:none;
+    color:#B3261E;
+    font-size:0.78rem;
+    margin-top:5px;
+  }
+  .field.error .err-msg{ display:block; }
+
+  .results{
+    display:none;
+  }
+  .results.active{ display:block; }
+  .result-panel{
+    display:none;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-left:4px solid var(--maroon);
+    border-radius:4px;
+    padding:34px 28px;
+  }
+  .result-panel.active{ display:block; }
+  .result-eyebrow{
+    font-size:0.85rem;
+    color:var(--orange-dark);
+    font-weight:600;
+    margin-bottom:8px;
+  }
+  .result-panel h2{
+    font-family:var(--font-head);
+    font-size:1.7rem;
+    margin:0 0 16px;
+    color:var(--charcoal);
+  }
+  .result-panel p{
+    color:var(--grey);
+    margin:0 0 16px;
+    font-size:1rem;
+  }
+  .result-panel h4{
+    font-family:var(--font-body);
+    font-size:0.95rem;
+    margin:22px 0 8px;
+    color:var(--charcoal);
+  }
+  .proof-line{
+    background:#FBF3ED;
+    border:1px solid #F0DDD0;
+    border-radius:4px;
+    padding:14px 16px;
+    font-size:0.92rem;
+    color:var(--charcoal);
+    margin:18px 0 26px;
+  }
+  .proof-line strong{ color:var(--maroon); }
+
+  .restart{
+    display:block;
+    text-align:center;
+    margin-top:22px;
+    font-size:0.82rem;
+    color:var(--grey);
+    text-decoration:underline;
+    background:none;
+    border:none;
+    cursor:pointer;
+  }
+
+  @media (max-width:480px){
+    .intro h1{ font-size:1.6rem; }
+    .quiz-card, .interstitial, .result-panel{ padding:24px 18px; }
+    .proof-strip{ gap:18px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="brand">
+    <span class="brand-mark">B2B CATERING <span>EQUIPMENT SUPPLIERS</span></span>
+  </div>
+</header>
+
+<div class="shell">
+
+  <section class="intro" id="screen-intro">
+    <h1>Is your kitchen actually set up to handle what's coming?</h1>
+    <p>Most equipment problems don't show up until service is already underway. Take the 60-second Kitchen Readiness Check to see where your setup stands — and what to fix first.</p>
+
+    <div class="proof-strip">
+      <div><span class="num">19+</span><span class="label">Years supplying SA kitchens</span></div>
+      <div><span class="num">1,000+</span><span class="label">Businesses equipped</span></div>
+      <div><span class="num">569+</span><span class="label">Projects completed</span></div>
+    </div>
+
+    <button class="btn" id="start-btn" type="button">Start My Kitchen Readiness Check</button>
+  </section>
+
+  <div id="quiz-wrapper">
+  </div>
+
+  <section class="interstitial" id="screen-interstitial">
+    <h2>Your Kitchen Readiness profile is ready.</h2>
+    <p>We've matched your answers to the setup, risks, and next step that fit your operation.</p>
+    <button class="btn" id="reveal-btn" type="button">Reveal My Results</button>
+  </section>
+
+  <section class="results" id="screen-results">
+
+    <div class="result-panel" id="result-hospitality">
+      <div class="result-eyebrow">YOUR PROFILE: HOSPITALITY & RESTAURANT KITCHEN</div>
+      <h2>Built for volume, exposed on breakdown risk</h2>
+      <p>Your kitchen runs on service pace — every minute a fryer, combi oven or dishwasher is down costs you covers, not just repair fees. Based on your answers, your biggest exposure isn't equipment quality, it's response time when something fails mid-shift.</p>
+      <h4>What we'd recommend</h4>
+      <p>A stocked-item quote for the pieces closest to end-of-life, plus a maintenance arrangement so breakdowns get handled before they cost you a service — not after.</p>
+      <div class="proof-line"><strong>In good company:</strong> we already equip kitchens for names like Food Lover's Market, RocoMamas, Del Forno and Waterfall Country Lifestyle Estate.</div>
+      <a class="btn full" id="cta-hospitality" href="#" target="_blank" rel="noopener">Book Your Free Kitchen Assessment</a>
+    </div>
+
+    <div class="result-panel" id="result-institutional">
+      <div class="result-eyebrow">YOUR PROFILE: CORPORATE & INSTITUTIONAL KITCHEN</div>
+      <h2>Planning a build that has to get sign-off first time</h2>
+      <p>Institutional kitchens — offices, healthcare, education — carry a different pressure: compliance, budget approval, and stakeholders who need it done right the first time, not iterated on. Based on your answers, the risk isn't the equipment itself, it's a project that stalls without the right partner managing the moving parts.</p>
+      <h4>What we'd recommend</h4>
+      <p>A Projects & Design consultation — full spec, layout and compliance planning before a single order gets placed, so the business case for sign-off writes itself.</p>
+      <div class="proof-line"><strong>In good company:</strong> our institutional work spans Mediclinic, Life Group Healthcare and The Success Academy, alongside corporate clients including Deloitte, EY and KPMG.</div>
+      <a class="btn full" id="cta-institutional" href="#" target="_blank" rel="noopener">Book Your Free Kitchen Assessment</a>
+    </div>
+
+    <div class="result-panel" id="result-industrial">
+      <div class="result-eyebrow">YOUR PROFILE: INDUSTRIAL & SITE-SCALE KITCHEN</div>
+      <h2>Running at a scale most suppliers can't actually spec for</h2>
+      <p>At your volume, generic catering suppliers hit their ceiling fast — they can quote a restaurant, but they can't spec, source or support heavy-duty equipment for a facility that can't afford downtime. Based on your answers, that's exactly the gap you're running into.</p>
+      <h4>What we'd recommend</h4>
+      <p>A capacity and consultancy review — an honest read on what your current setup can and can't handle, before it becomes a production issue.</p>
+      <div class="proof-line"><strong>In good company:</strong> we supply large-scale operations including Anglo American, AngloGold Ashanti, De Beers and Macsteel.</div>
+      <a class="btn full" id="cta-industrial" href="#" target="_blank" rel="noopener">Book Your Free Kitchen Assessment</a>
+    </div>
+
+    <div class="result-panel" id="result-multisite">
+      <div class="result-eyebrow">YOUR PROFILE: MULTI-SITE / RETAIL OPERATION</div>
+      <h2>Consistency is the real project, not any single site</h2>
+      <p>With more than one location, the hard part usually isn't any single kitchen — it's keeping equipment, quality and service consistent across all of them, without five different vendors and five different standards. Based on your answers, that's the gap costing you the most time right now.</p>
+      <h4>What we'd recommend</h4>
+      <p>A single-point-of-contact supply and maintenance arrangement across all your sites, so every location runs on the same standard without you chasing it.</p>
+      <div class="proof-line"><strong>In good company:</strong> we already support multi-site operators including SPAR, Pick n Pay and Takealot.</div>
+      <a class="btn full" id="cta-multisite" href="#" target="_blank" rel="noopener">Book Your Free Kitchen Assessment</a>
+    </div>
+
+    <button class="restart" id="restart-btn" type="button">Retake the quiz</button>
+  </section>
+
+</div>
+
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <button class="modal-close" id="modal-close" type="button" aria-label="Close">&times;</button>
+    <h3>Almost there</h3>
+    <p class="sub">Enter your details to get your personalized results.</p>
+
+    <!--
+      GHL EMBED FORM GOES HERE.
+      Replace everything inside #lead-form-wrapper below with the
+      GoHighLevel embed code once it's provided.
+      The form below is a fully working standalone fallback so the
+      quiz functions end-to-end right now.
+    -->
+    <div id="lead-form-wrapper">
+      <form id="lead-form" novalidate>
+        <div class="field" id="field-name">
+          <label for="lead-name">First name</label>
+          <input type="text" id="lead-name" name="first_name" autocomplete="given-name">
+          <div class="err-msg">Please enter your first name.</div>
+        </div>
+        <div class="field" id="field-email">
+          <label for="lead-email">Email address</label>
+          <input type="email" id="lead-email" name="email" autocomplete="email">
+          <div class="err-msg">Please enter a valid email address.</div>
+        </div>
+        <div class="field" id="field-phone">
+          <label for="lead-phone">Phone number</label>
+          <input type="tel" id="lead-phone" name="phone" autocomplete="tel">
+          <div class="err-msg">Please enter a valid phone number.</div>
+        </div>
+        <button type="submit" class="btn full">Show My Results</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+
+  var questions = [
+    {
+      text: "What kind of operation are you running?",
+      options: [
+        "A restaurant, café or hotel kitchen",
+        "An office, hospital, school or other institutional kitchen",
+        "A mining site, industrial plant or large single-site facility",
+        "Multiple restaurant or retail locations under one brand"
+      ]
+    },
+    {
+      text: "Roughly how many meals or covers do you serve on a typical day?",
+      options: [
+        "Under 150",
+        "150–500",
+        "500+ at one site",
+        "Spread across more than one site"
+      ]
+    },
+    {
+      text: "What's the biggest headache with your kitchen equipment right now?",
+      options: [
+        "It's ageing and starting to let us down during service",
+        "We're planning a new kitchen or a major refit",
+        "We can't find a supplier who can handle our scale or spec",
+        "Every site runs different gear and it's a nightmare to manage"
+      ]
+    },
+    {
+      text: "How urgent is solving this?",
+      options: [
+        "Fairly urgent — something's close to failing",
+        "Within the next 1–3 months",
+        "We're planning ahead for a bigger project",
+        "It's an ongoing background issue"
+      ]
+    },
+    {
+      text: "What matters most when you're choosing an equipment supplier?",
+      options: [
+        "Fast turnaround from someone who gets service pressure",
+        "A partner who can manage planning, spec and sign-off",
+        "Capacity and heavy-duty reliability at scale",
+        "One consistent point of contact across every site"
+      ]
+    },
+    {
+      text: "Which of these sounds most like where you're headed?",
+      options: [
+        "Keeping the kitchen running smoothly, service after service",
+        "Getting a new or upgraded kitchen built right, first time",
+        "A large-scale, high-spec facility that can't afford downtime",
+        "Standardising equipment and service across a growing footprint"
+      ]
+    }
+  ];
+
+  var segmentKeys = ["hospitality", "institutional", "industrial", "multisite"];
+  var scores = { hospitality: 0, institutional: 0, industrial: 0, multisite: 0 };
+  var currentQ = 0;
+
+  var wrapper = document.getElementById("quiz-wrapper");
+
+  questions.forEach(function(q, qIndex){
+    var card = document.createElement("div");
+    card.className = "quiz-card";
+    card.id = "q-" + qIndex;
+
+    var progressPct = Math.round(((qIndex) / questions.length) * 100);
+
+    card.innerHTML =
+      '<div class="progress-row">' +
+        '<span>Question ' + (qIndex + 1) + ' of ' + questions.length + '</span>' +
+      '</div>' +
+      '<div class="progress-track"><div class="progress-fill" style="width:' + progressPct + '%"></div></div>' +
+      '<p class="question-text">' + q.text + '</p>' +
+      '<div class="options"></div>' +
+      '<button class="back-link" type="button" ' + (qIndex === 0 ? 'disabled' : '') + '>&larr; Back</button>';
+
+    var optionsContainer = card.querySelector(".options");
+    q.options.forEach(function(optText, optIndex){
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "option";
+      btn.innerHTML = '<span class="marker"></span><span>' + optText + '</span>';
+      btn.addEventListener("click", function(){
+        scores[segmentKeys[optIndex]] += 1;
+        goToNext(qIndex);
+      });
+      optionsContainer.appendChild(btn);
+    });
+
+    card.querySelector(".back-link").addEventListener("click", function(){
+      goToQuestion(qIndex - 1);
+    });
+
+    wrapper.appendChild(card);
+  });
+
+  function goToQuestion(index){
+    document.querySelectorAll(".quiz-card").forEach(function(c){ c.classList.remove("active"); });
+    document.getElementById("screen-intro").style.display = "none";
+    document.getElementById("screen-interstitial").classList.remove("active");
+    currentQ = index;
+    document.getElementById("q-" + index).classList.add("active");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function goToNext(qIndex){
+    if (qIndex < questions.length - 1){
+      goToQuestion(qIndex + 1);
+    } else {
+      document.querySelectorAll(".quiz-card").forEach(function(c){ c.classList.remove("active"); });
+      document.getElementById("screen-interstitial").classList.add("active");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }
+
+  document.getElementById("start-btn").addEventListener("click", function(){
+    goToQuestion(0);
+  });
+
+  var modalOverlay = document.getElementById("modal-overlay");
+
+  document.getElementById("reveal-btn").addEventListener("click", function(){
+    modalOverlay.classList.add("active");
+  });
+  document.getElementById("modal-close").addEventListener("click", function(){
+    modalOverlay.classList.remove("active");
+  });
+  modalOverlay.addEventListener("click", function(e){
+    if (e.target === modalOverlay){ modalOverlay.classList.remove("active"); }
+  });
+
+  var leadForm = document.getElementById("lead-form");
+  leadForm.addEventListener("submit", function(e){
+    e.preventDefault();
+    var name = document.getElementById("lead-name");
+    var email = document.getElementById("lead-email");
+    var phone = document.getElementById("lead-phone");
+
+    var valid = true;
+
+    if (name.value.trim().length < 2){
+      document.getElementById("field-name").classList.add("error");
+      valid = false;
+    } else {
+      document.getElementById("field-name").classList.remove("error");
+    }
+
+    var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email.value.trim())){
+      document.getElementById("field-email").classList.add("error");
+      valid = false;
+    } else {
+      document.getElementById("field-email").classList.remove("error");
+    }
+
+    var phonePattern = /^[0-9+\s()-]{7,}$/;
+    if (!phonePattern.test(phone.value.trim())){
+      document.getElementById("field-phone").classList.add("error");
+      valid = false;
+    } else {
+      document.getElementById("field-phone").classList.remove("error");
+    }
+
+    if (!valid) return;
+
+    try{
+      localStorage.setItem("b2b_quiz_lead", JSON.stringify({
+        first_name: name.value.trim(),
+        email: email.value.trim(),
+        phone: phone.value.trim(),
+        scores: scores,
+        timestamp: new Date().toISOString()
+      }));
+    }catch(err){ }
+
+    modalOverlay.classList.remove("active");
+    showResults();
+  });
+
+  function showResults(){
+    document.getElementById("screen-interstitial").classList.remove("active");
+    document.getElementById("screen-results").classList.add("active");
+
+    var winner = segmentKeys[0];
+    var topScore = scores[segmentKeys[0]];
+    segmentKeys.forEach(function(key){
+      if (scores[key] > topScore){
+        topScore = scores[key];
+        winner = key;
+      }
+    });
+
+    var panelIdMap = {
+      hospitality: "result-hospitality",
+      institutional: "result-institutional",
+      industrial: "result-industrial",
+      multisite: "result-multisite"
+    };
+
+    document.querySelectorAll(".result-panel").forEach(function(p){ p.classList.remove("active"); });
+    document.getElementById(panelIdMap[winner]).classList.add("active");
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  document.getElementById("restart-btn").addEventListener("click", function(){
+    Object.keys(scores).forEach(function(k){ scores[k] = 0; });
+    document.getElementById("screen-results").classList.remove("active");
+    document.querySelectorAll(".result-panel").forEach(function(p){ p.classList.remove("active"); });
+    document.getElementById("screen-intro").style.display = "block";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  var CALENDAR_LINK = "https://b2bcateringsuppliers.co.za/contact-us/"; // DEMO ONLY — swap for the real booking calendar URL before this goes live
+  ["cta-hospitality", "cta-institutional", "cta-industrial", "cta-multisite"].forEach(function(id){
+    document.getElementById(id).setAttribute("href", CALENDAR_LINK);
+  });
+
+})();
+</script>
+
+</body>
+</html>
