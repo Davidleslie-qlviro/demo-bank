@@ -4,6 +4,15 @@
 const MODEL = "claude-haiku-4-5-20251001";
 const ALLOWED = [/\.vercel\.app$/, /(^|\.)qlviro\.com$/, /^localhost$/];
 
+// Verified facts per demo business (from their sites, reviews and BBB). Keyed by business name.
+const FACTS = {
+  "Boston Restoration Solutions": "Owner Luis Mendes runs jobs personally and works directly with the customer's insurance company and adjuster, including photos, moisture readings and claim paperwork. BBB A+ accredited. Customers can call or text 781-299-6124.",
+  "Boston Fire & Flood Restoration": "Works with all insurance companies and helps with the claim documentation. Free, no-obligation estimates. IICRC-certified, licensed and insured. Handles mitigation through reconstruction.",
+  "Presidential HVAC & Electrical": "Specialists in ductless mini-splits and heat pumps, including Mitsubishi. Also boilers, furnaces, water heaters and electrical. Free at-home consultation for new system installs. Prefers to repair before recommending replacement.",
+  "Clean Remodel": "Owner Enrique Quiñonez. Family-owned, IICRC Certified Firm. Works directly with insurance companies and adjusters with detailed estimates, and also gives clear estimates for private-pay customers. Handles mitigation and full reconstruction.",
+  "Service Right": "Owner Jolly. Clear, upfront pricing given before work starts. Carries common parts on the truck so most repairs are done in one visit. Regular hours 6am–8pm, emergency service 24/7."
+};
+
 function clip(s, n) { return String(s == null ? "" : s).slice(0, n); }
 
 function systemPrompt(b, today) {
@@ -11,6 +20,7 @@ function systemPrompt(b, today) {
 Phone: ${clip(b.phone, 20)}. Open 24/7. Address: ${clip(b.address, 120)}.${b.owner ? ` The owner is ${clip(b.owner, 30)}.` : ""}
 Services: ${clip((b.services || []).join("; "), 600)}.
 Areas served: ${clip(b.areas, 300)}.
+Key facts: ${clip(b.facts || FACTS[b.name] || "", 600)}
 Today is ${today}.
 
 Your job, in this order: understand the problem, check how urgent it is, collect the customer's name, phone number and town or ZIP, then offer two or three appointment windows in the next day and book the one they pick.
@@ -20,7 +30,7 @@ Rules:
 - Don't greet again; the conversation has already started with a greeting.
 - Never quote prices or promise insurance outcomes. Say a technician confirms pricing on site before any work.
 - Only talk about this company's services. If asked anything unrelated, steer back politely.
-- Don't invent facts about the company beyond what's written here.
+- Don't invent facts or policies about the company beyond what's written here. If asked something not covered, say the technician will confirm it when they call.
 - Once you have name, phone, town/ZIP and they've picked a time, confirm the booking in one sentence and then, on a new final line, output exactly:
 <<LEAD {"name":"...","phone":"...","zip":"...","issue":"...","slot":"..."}>>
 Output that line only once, only after the time is chosen.`;
@@ -35,29 +45,3 @@ module.exports = async (req, res) => {
 
   const body = typeof req.body === "string" ? JSON.parse(req.body || "{}") : (req.body || {});
   const b = body.biz || {};
-  const msgs = (Array.isArray(body.messages) ? body.messages : []).slice(-20)
-    .filter(m => m && (m.role === "user" || m.role === "assistant"))
-    .map(m => ({ role: m.role, content: clip(m.content, 800) }));
-  while (msgs.length && msgs[0].role !== "user") msgs.shift();
-  if (!msgs.length) return res.status(400).json({ error: "no messages" });
-
-  const today = new Date().toLocaleString("en-US", { timeZone: "America/New_York", weekday: "long", month: "long", day: "numeric", hour: "numeric", minute: "2-digit" });
-  try {
-    const r = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: { "content-type": "application/json", "x-api-key": process.env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01" },
-      body: JSON.stringify({ model: MODEL, max_tokens: 300, system: systemPrompt(b, today), messages: msgs })
-    });
-    if (!r.ok) return res.status(502).json({ error: "upstream " + r.status });
-    const data = await r.json();
-    let text = (data.content || []).filter(c => c.type === "text").map(c => c.text).join("").trim();
-    let lead = null;
-    const m = text.match(/<<LEAD\s*(\{[\s\S]*?\})\s*>>/);
-    if (m) { try { lead = JSON.parse(m[1]); } catch (e) {} text = text.replace(m[0], "").trim(); }
-    return res.status(200).json({ reply: text, lead });
-  } catch (e) {
-    return res.status(502).json({ error: "failed" });
-  }
-};
-
-module.exports.systemPrompt = systemPrompt;
