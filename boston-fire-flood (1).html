@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Boston Fire &amp; Flood Restoration | South Boston, MA</title>
+<meta name="description" content="Water, fire, mold & storm restoration for Greater Boston">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ac:#EFA881;--ac2:#141414;--ink:#141414;--bg:#F6F4EF;--card:#fff;--line:#E4E0D6;--mut:#5B6472;--r:14px;--onac:#141414;--hl:#EFA881;--telc:#141414;--hbtn:#EFA881;--hbtntx:#141414}
+*{box-sizing:border-box;margin:0;padding:0}
+button,input,select,textarea{font-family:inherit}
+html{scroll-behavior:smooth}
+body{font-family:Inter,system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:Archivo,Inter,sans-serif;letter-spacing:-.02em;line-height:1.05}
+a{color:inherit}
+.wrap{max-width:1160px;margin:0 auto;padding:0 20px}
+/* preview banner */
+.pv{background:#111;color:#eee;font-size:13px;padding:8px 44px 8px 16px;text-align:center;position:relative}
+.pv a{color:#fff;font-weight:600}
+.pv button{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:0;color:#aaa;font-size:18px;cursor:pointer}
+/* header */
+header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.hd{display:flex;align-items:center;justify-content:space-between;min-height:68px;gap:16px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.mark{flex:none;width:38px;height:38px;letter-spacing:-.03em;border-radius:10px;background:var(--ac2);display:grid;place-items:center;color:#fff;font:900 15px Archivo,Inter,system-ui,sans-serif;position:relative;overflow:hidden}
+.mark:after{content:"";position:absolute;right:-6px;bottom:-6px;width:18px;height:18px;border-radius:50%;background:var(--ac)}
+.logo b{font:800 17px Archivo,Inter,system-ui,sans-serif;display:block}
+.logo small{font-size:12px;color:var(--mut)}
+.logo img{max-height:78px;max-width:min(300px,58vw);width:auto;height:auto;display:block;margin:6px 0}
+nav{display:flex;gap:22px;font-size:14px;font-weight:500}
+nav a{text-decoration:none;color:var(--mut)}nav a:hover{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 20px;border-radius:999px;font-weight:600;font-size:15px;text-decoration:none;border:0;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.pri{background:var(--ac);color:#fff;box-shadow:0 8px 20px -8px var(--ac)}
+.btn.ghost{background:transparent;color:inherit;border:1.5px solid currentColor}
+.btn.dark{background:var(--ink);color:#fff}
+/* hero */
+.hero{background:var(--ac2);color:#fff;position:relative;overflow:hidden}
+.hero:before{content:"";position:absolute;inset:0;background:radial-gradient(900px 400px at 85% 10%,color-mix(in srgb,var(--ac) 35%,transparent),transparent 60%),radial-gradient(600px 300px at 0% 100%,rgba(255,255,255,.07),transparent 60%)}
+.hgrid{position:relative;display:grid;grid-template-columns:1.15fr .85fr;gap:48px;padding-top:72px;padding-bottom:80px;align-items:center}
+.live{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:6px 12px;border-radius:999px;font-size:13px;font-weight:500}
+.live i{width:8px;height:8px;border-radius:50%;background:#35D07F;box-shadow:0 0 0 0 #35D07F;animation:p 1.8s infinite}
+@keyframes p{70%{box-shadow:0 0 0 10px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.hero h1{overflow-wrap:break-word;font-size:clamp(34px,5.6vw,64px);font-weight:900;margin:18px 0 18px}
+.hero h1 em{font-style:normal;color:var(--hl)}
+.hero p.sub{font-size:18px;color:rgba(255,255,255,.82);max-width:560px}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.cta .ghost{color:#fff}
+.rate{margin-top:22px;font-size:14px;color:rgba(255,255,255,.8)}
+.stars{color:#FFC53D;letter-spacing:2px}
+.hcard{background:#fff;color:var(--ink);border-radius:20px;padding:26px;box-shadow:0 30px 60px -20px rgba(0,0,0,.45)}
+.hcard h3{font-size:22px;margin-bottom:6px}
+.hcard p{color:var(--mut);font-size:14px;margin-bottom:16px}
+.bigtel{display:block;font:900 32px Archivo,Inter,system-ui,sans-serif;color:var(--telc);text-decoration:none;margin:4px 0 2px}
+.hcard .row{display:flex;gap:10px;margin-top:16px}.hcard .row .btn{flex:1}
+.hcard .alt{font-size:13px;color:var(--mut)}
+/* badges */
+.badges{background:#fff;border-bottom:1px solid var(--line)}
+.badges ul{list-style:none;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padding:18px 0}
+.badges li{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
+.badges li:before{content:"";width:18px;height:18px;border-radius:50%;background:var(--ac) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E") center/11px no-repeat}
+section{padding:84px 0}
+.eyebrow{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--ac)}
+.h2{font-size:clamp(30px,4vw,44px);font-weight:800;margin:10px 0 14px}
+.lede{color:var(--mut);font-size:17px;max-width:620px}
+/* quiz */
+.quiz{display:grid;grid-template-columns:.8fr 1.2fr;gap:40px;align-items:start}
+.qbox{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px;min-height:360px;box-shadow:0 20px 40px -30px rgba(0,0,0,.3)}
+.bar{height:6px;background:var(--line);border-radius:9px;overflow:hidden;margin-bottom:22px}.bar i{display:block;height:100%;width:0;background:var(--ac);transition:width .3s}
+.qn{font-size:13px;color:var(--mut);font-weight:600}
+.qq{font:800 24px Archivo,Inter,system-ui,sans-serif;margin:6px 0 18px}
+.opts{display:grid;gap:10px}
+.opt{text-align:left;padding:15px 16px;border:1.5px solid var(--line);border-radius:12px;background:#fff;font:500 15px Inter,system-ui,sans-serif;cursor:pointer;transition:.15s}
+.opt:hover{border-color:var(--ac);background:color-mix(in srgb,var(--ac) 6%,#fff)}
+.res .lvl{display:inline-block;padding:6px 12px;border-radius:999px;background:var(--ac);color:#fff;font-weight:700;font-size:13px}
+.res h3{font-size:26px;margin:12px 0 8px}
+.res ol{margin:14px 0 20px 20px;display:grid;gap:6px}
+.res .row{display:flex;gap:10px;flex-wrap:wrap}
+/* services */
+.svcs{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:36px}
+.svc{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px;transition:.2s}
+.svc:hover{transform:translateY(-3px);box-shadow:0 18px 30px -22px rgba(0,0,0,.35)}
+.svc .dot{display:block;width:34px;height:34px;border-radius:10px;background:color-mix(in srgb,var(--ac) 14%,#fff);border:2px solid var(--ac);margin-bottom:14px}
+.svc h3{font-size:19px;margin-bottom:6px}.svc p{color:var(--mut);font-size:15px}
+/* why */
+.dark{background:var(--ink);color:#fff}
+.whys{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:36px}
+.why{border-top:3px solid var(--ac);padding-top:18px}
+.why h3{font-size:21px;margin-bottom:8px}.why p{color:rgba(255,255,255,.72)}
+.dark .lede{color:rgba(255,255,255,.72)}
+/* estimate */
+.est{display:grid;grid-template-columns:.9fr 1.1fr;gap:40px}
+form{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+label{font-size:13px;font-weight:600;display:grid;gap:6px}
+label.full{grid-column:1/-1}
+input,select,textarea{font:15px Inter,system-ui,sans-serif;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);width:100%}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--ac)}
+textarea{min-height:96px;resize:vertical}
+form .btn{grid-column:1/-1}
+.ok{grid-column:1/-1;display:none;background:color-mix(in srgb,#35D07F 14%,#fff);border:1px solid #35D07F;border-radius:12px;padding:16px;font-size:15px}
+.contact{display:grid;gap:14px;margin-top:24px}
+.contact div{display:flex;gap:12px;align-items:baseline;min-width:0}.contact a,.contact span{overflow-wrap:anywhere;min-width:0}.est>div{min-width:0}.contact b{min-width:84px;font-size:13px;color:var(--mut);text-transform:uppercase;letter-spacing:.08em}
+.areas{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:20px;margin-top:22px;font-size:15px;color:var(--mut)}
+footer{background:var(--ink);color:rgba(255,255,255,.7);padding:40px 0 100px;font-size:14px}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px}
+footer b{color:#fff}
+/* sticky mobile */
+.mbar{display:none;position:fixed;left:0;right:0;bottom:0;z-index:50;background:#fff;border-top:1px solid var(--line);padding:10px 12px;gap:10px}
+.mbar .btn{flex:1;padding:14px}
+/* chat */
+.cfab{position:fixed;right:22px;bottom:22px;z-index:60;background:var(--ac);color:#fff;border:0;border-radius:999px;padding:14px 20px 14px 16px;font:600 15px Inter,system-ui,sans-serif;display:flex;align-items:center;gap:10px;cursor:pointer;box-shadow:0 14px 30px -10px rgba(0,0,0,.45)}
+.cfab i{width:10px;height:10px;border-radius:50%;background:#35D07F;border:2px solid #fff}
+.cw{position:fixed;right:22px;bottom:88px;z-index:61;width:370px;max-width:calc(100vw - 24px);height:540px;max-height:calc(100vh - 120px);background:#fff;border-radius:18px;box-shadow:0 30px 70px -20px rgba(0,0,0,.5);display:none;flex-direction:column;overflow:hidden}
+.cw.on{display:flex}
+.ch{background:var(--ac2);color:#fff;padding:14px 16px;display:flex;align-items:center;gap:10px}
+.ch .av{width:36px;height:36px;border-radius:50%;background:var(--ac);display:grid;place-items:center;font:800 14px Archivo}
+.ch b{display:block;font-size:15px}.ch small{font-size:12px;opacity:.8}
+.ch button{margin-left:auto;background:none;border:0;color:#fff;font-size:22px;cursor:pointer}
+.cb{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:#F7F7F5}
+.m{max-width:84%;padding:10px 13px;border-radius:14px;font-size:14px;line-height:1.45}
+.m.b{background:#fff;border:1px solid var(--line);border-bottom-left-radius:4px}
+.m.u{align-self:flex-end;background:var(--ac);color:#fff;border-bottom-right-radius:4px}
+.m.sys{align-self:center;background:var(--ink);color:#fff;font-size:13px;max-width:100%}
+.m.sys a{color:#fff;font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1.5px solid var(--ac);color:var(--ac);background:#fff;border-radius:999px;padding:7px 12px;font:600 13px Inter,system-ui,sans-serif;cursor:pointer}
+.chip:hover{background:var(--ac);color:#fff}
+.ci{display:flex;border-top:1px solid var(--line);padding:10px;gap:8px}
+.ci input{flex:1;border-radius:999px}
+.ci button{background:var(--ac);color:#fff;border:0;border-radius:999px;padding:0 16px;font-weight:600;cursor:pointer}
+.typing{display:flex;gap:4px;padding:12px 14px}.typing i{width:6px;height:6px;border-radius:50%;background:#aaa;animation:t 1s infinite}.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes t{50%{opacity:.2}}
+@media (max-width:900px){
+ nav{display:none}.hgrid,.quiz,.est{grid-template-columns:1fr}.hgrid{padding-top:44px;padding-bottom:52px}
+ .svcs,.whys{grid-template-columns:1fr}.badges ul{justify-content:flex-start}
+ form{grid-template-columns:1fr}.mbar{display:flex}.cfab{bottom:84px;padding:14px;font-size:0;gap:0}.cfab:before{content:'💬';font-size:22px}.cfab i{position:absolute;top:6px;right:6px}.cfab{position:fixed}.cw{bottom:150px}
+ section{padding:60px 0}.hd .btn span{display:none}
+}
+.btn.pri,.cfab,.m.u,.chip:hover,.res .lvl,.ci button{color:var(--onac)}
+.hero .btn.pri{background:var(--hbtn);color:var(--hbtntx)}
+</style>
+</head>
+<body>
+
+<div class="pv" id="pv">Concept preview built for Boston Fire &amp; Flood Restoration. This is not their live website. <a href="https://api.qlviro.com/widget/booking/IHttmUHATDkXrl5ldKur" target="_blank" rel="noopener">Want this live? Book 15 minutes →</a><button aria-label="Hide" onclick="this.parentNode.remove()">×</button></div>
+
+<header><div class="wrap hd">
+  <a class="logo" href="#top"><img src="data:image/png;base64,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" alt="Boston Fire &amp; Flood Restoration logo"></a>
+  <nav><a href="#check">Quick check</a><a href="#services">Services</a><a href="#why">Why us</a><a href="#estimate">Estimate</a></nav>
+  <a class="btn pri" href="tel:+13396751388">☎ <span>339-675-1388</span></a>
+</div></header>
+
+<main id="top">
+<section class="hero" style="padding:0"><div class="wrap hgrid">
+  <div>
+    <span class="live"><i></i> Answering now, 24/7</span>
+    <h1>Burst pipe. Fire. Flood.<br>Boston's crew <em>answers now.</em></h1>
+    <p class="sub">24/7 emergency water, fire, mold and storm restoration for Boston homes, condos and property managers. We work with all insurance companies.</p>
+    <div class="cta"><a class="btn pri" href="tel:+13396751388">Call 339-675-1388</a><button class="btn ghost" onclick="openChat()">Chat with us now</button></div>
+    <div class="rate"><span class="stars">★★★★★</span> Rated by Boston homeowners on Google</div>
+  </div>
+  <div class="hcard">
+    <h3>Emergency? Talk to a person.</h3>
+    <p>Day, night, weekends and holidays.</p>
+    <a class="bigtel" href="tel:+13396751388">339-675-1388</a>
+    <div class="alt"></div>
+    <div class="row"><a class="btn dark" href="#check">2-min check</a><a class="btn ghost" href="#estimate">Request estimate</a></div>
+  </div>
+</div></section>
+
+<div class="badges"><div class="wrap"><ul><li>IICRC-certified firm</li><li>Licensed & insured</li><li>All insurance accepted</li><li>24/7 emergency response</li></ul></div></div>
+
+<section id="check"><div class="wrap quiz">
+  <div>
+    <span class="eyebrow">Not sure what you need?</span>
+    <h2 class="h2">Water & damage triage</h2>
+    <p class="lede">Answer 4 quick questions and get your next steps, plus how urgent this really is.</p>
+  </div>
+  <div class="qbox" id="qbox"></div>
+</div></section>
+
+<section id="services" style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap">
+  <span class="eyebrow">What we do</span>
+  <h2 class="h2">Water, fire, mold & storm restoration for Greater Boston</h2>
+  <div class="svcs"><article class="svc"><span class="dot"></span><h3>Water Damage</h3><p>Rapid extraction, commercial drying and sanitizing after leaks, floods and sewage backups.</p></article><article class="svc"><span class="dot"></span><h3>Fire Damage</h3><p>Soot removal, smoke odor elimination and full restoration.</p></article><article class="svc"><span class="dot"></span><h3>Mold Remediation</h3><p>Eco-friendly remediation that fixes the source and the air quality.</p></article><article class="svc"><span class="dot"></span><h3>Storm Damage</h3><p>Emergency tarping, board-up and water intrusion repair.</p></article><article class="svc"><span class="dot"></span><h3>Flood Cleanup</h3><p>Basements, units and whole buildings, dried and documented.</p></article><article class="svc"><span class="dot"></span><h3>Reconstruction</h3><p>We rebuild after mitigation so you're not juggling contractors.</p></article></div>
+</div></section>
+
+<section class="dark" id="why"><div class="wrap">
+  <span class="eyebrow">Why Boston Fire &amp; Flood Restoration</span>
+  <h2 class="h2">The call you make first should be the last one.</h2>
+  <div class="whys"><div class="why"><h3>Built for property managers</h3><p>Multi-unit losses coordinated with owners, agents and adjusters.</p></div><div class="why"><h3>Free, no-obligation estimates</h3><p>Know the scope before work starts.</p></div><div class="why"><h3>Mitigation to rebuild</h3><p>One team from the emergency call to the final repair.</p></div></div>
+</div></section>
+
+<section id="estimate"><div class="wrap est">
+  <div>
+    <span class="eyebrow">Free estimate</span>
+    <h2 class="h2">Tell us what happened. We'll call you back fast.</h2>
+    <p class="lede">For emergencies, call. For everything else, this form goes straight to the team.</p>
+    <div class="contact">
+      <div><b>Phone</b><a href="tel:+13396751388">339-675-1388</a></div>
+      <div><b>Email</b></div>
+      <div><b>Office</b><span>60 Ellery St, Boston, MA 02127</span></div>
+      <div><b>Hours</b><span>Open 24 hours, 7 days</span></div>
+    </div>
+    <div class="areas"><b style="color:var(--ink)">Serving:</b> South Boston · Dorchester · Back Bay · South End · Seaport · Charlestown · Quincy · Brookline · Cambridge · Somerville</div>
+  </div>
+  <form id="f" novalidate>
+    <label>Name<input name="name" required autocomplete="name"></label>
+    <label>Phone<input name="phone" required type="tel" autocomplete="tel"></label>
+    <label class="full">Email<input name="email" type="email" autocomplete="email"></label>
+    <label>Service<select name="service"><option>Water Damage</option><option>Fire Damage</option><option>Mold Remediation</option><option>Storm Damage</option><option>Flood Cleanup</option><option>Reconstruction</option></select></label>
+    <label>Town / ZIP<input name="zip" autocomplete="postal-code"></label>
+    <label class="full">What's happening?<textarea name="details"></textarea></label>
+    <button class="btn pri" type="submit">Request my estimate</button>
+    <div class="ok" id="ok"></div>
+  </form>
+</div></section>
+</main>
+
+<footer><div class="wrap">
+  <div><b>Boston Fire &amp; Flood Restoration</b><br>60 Ellery St, Boston, MA 02127<br><a href="tel:+13396751388">339-675-1388</a></div>
+  <div>Open 24/7 · South Boston · Dorchester · Back Bay · South End · Seaport · Charlestown · Quincy · Brookline · Cambridge · Somerville</div>
+</div></footer>
+
+<div class="mbar"><a class="btn pri" href="tel:+13396751388">Call now</a><a class="btn dark" href="#estimate">Estimate</a></div>
+
+<button class="cfab" onclick="openChat()"><i></i>Chat, we reply instantly</button>
+<div class="cw" id="cw" role="dialog" aria-label="Chat">
+  <div class="ch"><span class="av">AI</span><span><b>Boston Fire &amp; Flood Restoration</b><small>Front desk · replies instantly</small></span><button onclick="closeChat()" aria-label="Close">×</button></div>
+  <div class="cb" id="cb"></div>
+  <form class="ci" id="ci" style="background:#fff;border:0;border-top:1px solid var(--line);border-radius:0;padding:10px;display:flex;grid-template-columns:none"><input id="cin" placeholder="Type a message…" autocomplete="off"><button type="submit">Send</button></form>
+</div>
+
+<script>
+/* ==== AFTER THE CLIENT PAYS ====
+   1. WEBHOOK: paste the GHL inbound webhook URL below. Form and chat leads will POST to it.
+   2. CHAT: to swap in the live GHL Conversation AI widget, paste its embed script
+      just before </body> and set USE_LIVE_CHAT = true (hides this demo bot).
+   While WEBHOOK is empty the site runs in demo mode: everything works on screen, nothing is sent. */
+const WEBHOOK = "";
+const USE_LIVE_CHAT = false;
+const AI_ENDPOINT = "/api/chat"; // live AI front desk (demo-bank/api/chat.js). Set to "" to use the scripted chat only.
+const C = {"name": "Boston Fire & Flood Restoration", "phone": "339-675-1388", "tel": "+13396751388", "owner": "", "trade": "restoration", "quiz": {"title": "Water & damage triage", "intro": "Answer 4 quick questions and get your next steps, plus how urgent this really is.", "qs": [["What's happening?", [["Active leak or standing water", 3], ["Water's stopped, things are wet", 2], ["Stains, musty smell or mold", 1], ["Fire or smoke damage", 3]]], ["How long has it been?", [["Under 24 hours", 3], ["1 to 3 days", 2], ["Longer than 3 days", 1], ["Not sure", 2]]], ["How big is the affected area?", [["One room or less", 1], ["Several rooms", 2], ["Whole floor or basement", 3], ["Multiple units", 3]]], ["Is it an insurance claim?", [["Yes, I have homeowners/condo insurance", 0], ["Not sure yet", 0], ["Paying out of pocket", 0], ["I'm a property manager", 0]]]], "results": [[7, "Act now", "Mold can start within 24 to 48 hours. Get the water stopped and extraction started today.", ["Shut off the water at the main if you can", "Turn off power to wet areas", "Take photos before moving anything", "Call now so we can get equipment moving"]], [5, "Book today", "You've got a small window before this gets more expensive. A same-day inspection keeps it cheap.", ["Move valuables off wet floors", "Run fans and open windows if safe", "Photograph everything for your insurer", "Book an inspection for today"]], [0, "Inspect this week", "It's not an emergency, but hidden moisture spreads. Get it measured before it becomes mold.", ["Note where you smell or see it", "Keep the area ventilated", "Don't paint over stains yet", "Book a moisture inspection"]]]}, "chat": {"q1": "Hi, you've reached Boston Fire & Flood Restoration. I'm the after-hours assistant. What's going on at the property?", "o1": ["Water leak / flooding", "Mold or musty smell", "Fire or smoke damage", "Just need an estimate"], "q2": "Got it. Is water still coming in right now?", "o2": ["Yes, it's active", "No, it's stopped", "Not sure"], "q3": "Understood. Is this going through insurance?", "o3": ["Yes", "Not sure", "No, private pay"]}, "booking": "https://api.qlviro.com/widget/booking/IHttmUHATDkXrl5ldKur", "profile": {"name": "Boston Fire & Flood Restoration", "trade": "restoration", "city": "South Boston, MA", "address": "60 Ellery St, Boston, MA 02127", "phone": "339-675-1388", "owner": "", "services": ["Water Damage", "Fire Damage", "Mold Remediation", "Storm Damage", "Flood Cleanup", "Reconstruction"], "areas": "South Boston \u00b7 Dorchester \u00b7 Back Bay \u00b7 South End \u00b7 Seaport \u00b7 Charlestown \u00b7 Quincy \u00b7 Brookline \u00b7 Cambridge \u00b7 Somerville"}};
+
+async function sendLead(data){
+  if(!WEBHOOK) return {demo:true};
+  try{ await fetch(WEBHOOK,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...data,business:C.name,source:location.href})}); return {demo:false}; }
+  catch(e){ return {error:true}; }
+}
+
+/* ---------- quiz ---------- */
+(function(){
+  const Q=C.quiz, box=document.getElementById("qbox"); let i=0, score=0, answers=[];
+  function step(){
+    if(i>=Q.qs.length) return result();
+    const [q,opts]=Q.qs[i];
+    box.innerHTML=`<div class="bar"><i style="width:${(i/Q.qs.length)*100}%"></i></div><div class="qn">Question ${i+1} of ${Q.qs.length}</div><div class="qq">${q}</div><div class="opts"></div>`;
+    const o=box.querySelector(".opts");
+    opts.forEach(([t,s])=>{const b=document.createElement("button");b.className="opt";b.textContent=t;b.onclick=()=>{score+=s;answers.push(t);i++;step()};o.appendChild(b)});
+  }
+  function result(){
+    const r=Q.results.find(([min])=>score>=min);
+    box.innerHTML=`<div class="bar"><i style="width:100%"></i></div><div class="res"><span class="lvl">${r[1]}</span><h3>${r[2]}</h3><div class="qn">Do this next:</div><ol>${r[3].map(x=>`<li>${x}</li>`).join("")}</ol><div class="row"><a class="btn pri" href="tel:${C.tel}">Call ${C.phone}</a><a class="btn dark" href="#estimate" id="toest">Get my estimate</a><button class="btn ghost" id="again">Start over</button></div></div>`;
+    document.getElementById("again").onclick=()=>{i=0;score=0;answers=[];step()};
+    document.getElementById("toest").onclick=()=>{const d=document.querySelector("#f textarea");d.value="Quick check: "+answers.join(" / ")+" ("+r[1]+")";};
+  }
+  step();
+})();
+
+/* ---------- form ---------- */
+document.getElementById("f").addEventListener("submit",async e=>{
+  e.preventDefault(); const f=e.target, fd=Object.fromEntries(new FormData(f));
+  if(!fd.name||!fd.phone){f.querySelector(fd.name?"[name=phone]":"[name=name]").focus();return}
+  const r=await sendLead({type:"estimate",...fd}); const ok=document.getElementById("ok");
+  ok.style.display="block";
+  ok.innerHTML=`<b>Thanks ${fd.name.split(" ")[0]}, your request is in.</b><br>We'll call ${fd.phone} shortly. If water is still coming in or you have no heat, call <a href="tel:${C.tel}">${C.phone}</a> now.`+(r.demo?`<br><small style="color:#555">Demo mode: in the live version this lands in the owner's CRM and texts them instantly.</small>`:"");
+  f.querySelectorAll("input,textarea").forEach(x=>x.value="");
+});
+
+/* ---------- chat ---------- */
+const cb=document.getElementById("cb"), cw=document.getElementById("cw"); let started=false, stage=0, lead={};
+function openChat(){ if(USE_LIVE_CHAT) return; cw.classList.add("on"); if(!started){started=true;bot(C.chat.q1,C.chat.o1)} setTimeout(()=>document.getElementById("cin").focus(),200)}
+function closeChat(){cw.classList.remove("on")}
+function add(t,cls){const d=document.createElement("div");d.className="m "+cls;d.innerHTML=t;cb.appendChild(d);cb.scrollTop=cb.scrollHeight;return d}
+function bot(t,chips){
+  const ty=add('<span class="typing"><i></i><i></i><i></i></span>',"b");ty.style.padding="0";
+  setTimeout(()=>{ty.remove();add(t,"b");if(chips){const w=document.createElement("div");w.className="chips";chips.forEach(c=>{const b=document.createElement("button");b.className="chip";b.textContent=c;b.onclick=()=>{w.remove();user(c)};w.appendChild(b)});cb.appendChild(w);cb.scrollTop=cb.scrollHeight}},650);
+}
+function user(t){add(t.replace(/</g,"&lt;"),"u"); if(aiDown||!AI_ENDPOINT) next(t); else aiTurn(t)}
+let aiDown=false, convo=[], revealed=false;
+async function aiTurn(t){
+  convo.push({role:"user",content:t});
+  const ty=add('<span class="typing"><i></i><i></i><i></i></span>',"b");ty.style.padding="0";
+  try{
+    const ctl=new AbortController(); const to=setTimeout(()=>ctl.abort(),12000);
+    const r=await fetch(AI_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({biz:C.profile,messages:convo}),signal:ctl.signal});
+    clearTimeout(to); if(!r.ok) throw 0; const d=await r.json(); if(!d.reply) throw 0;
+    ty.remove(); convo.push({role:"assistant",content:d.reply});
+    add(d.reply.replace(/</g,"&lt;").replace(/\n/g,"<br>"),"b");
+    if(d.lead&&!revealed){revealed=true;sendLead({type:"chat",...d.lead});
+      setTimeout(()=>add(`<b>This was an AI front desk.</b> It just qualified the job and booked it, at any hour. Want this answering for ${C.name}? <a href="${C.booking}" target="_blank" rel="noopener">Book 15 min →</a>`,"sys"),1600)}
+  }catch(e){ ty.remove(); aiDown=true; convo.pop(); next(t) }
+}
+function slots(){const d=new Date(),h=d.getHours();const s=[];
+  if(h<17) s.push("Today, "+(h<12?"1–3pm":"5–7pm")); s.push("Tomorrow, 8–10am","Tomorrow, 12–2pm"); return s}
+function next(t){
+  stage++;
+  if(stage===1){lead.issue=t;bot(C.chat.q2,C.chat.o2)}
+  else if(stage===2){lead.detail=t;bot(C.chat.q3,C.chat.o3)}
+  else if(stage===3){lead.extra=t;bot("Thanks. I can get someone out to you. What's your name?")}
+  else if(stage===4){lead.name=t;bot(`Nice to meet you, ${t.split(" ")[0]}. Best number to reach you?`)}
+  else if(stage===5){
+    if(t.replace(/\D/g,"").length<7){stage--;bot("That doesn't look like a full number. Could you type it again?");return}
+    lead.phone=t;bot("And the town or ZIP code for the property?")}
+  else if(stage===6){lead.zip=t;bot("Here are the next openings. Which works?",slots())}
+  else if(stage===7){lead.slot=t;sendLead({type:"chat",...lead});
+    bot(`You're booked for <b>${t}</b>. A tech will call ${lead.phone} before arriving. If it gets worse before then, call <a href="tel:${C.tel}">${C.phone}</a>.`);
+    setTimeout(()=>add(`<b>This was an AI front desk.</b> It just qualified the job and booked it in under a minute, at any hour. Want this answering for ${C.name}? <a href="${C.booking}" target="_blank" rel="noopener">Book 15 min →</a>`,"sys"),1900)}
+  else bot(`Got it, I've added that to your booking. For anything urgent, call <a href="tel:${C.tel}">${C.phone}</a>.`);
+}
+document.getElementById("ci").addEventListener("submit",e=>{e.preventDefault();const i=document.getElementById("cin");const v=i.value.trim();if(!v)return;i.value="";cb.querySelectorAll(".chips").forEach(x=>x.remove());if(!started){started=true}user(v)});
+if(USE_LIVE_CHAT){document.querySelector(".cfab").style.display="none"}
+setTimeout(()=>{if(!started&&innerWidth>900)openChat()},9000);
+</script>
+</body>
+</html>

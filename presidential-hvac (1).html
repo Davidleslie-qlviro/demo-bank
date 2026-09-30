@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Presidential HVAC &amp; Electrical | Boston, MA</title>
+<meta name="description" content="Mini-splits, heat pumps & emergency HVAC in Boston">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ac:#D51100;--ac2:#1F3A85;--ink:#0F1F45;--bg:#F6F4EF;--card:#fff;--line:#E4E0D6;--mut:#5B6472;--r:14px;--onac:#fff;--hl:#FF8A7A;--telc:#D51100;--hbtn:#D51100;--hbtntx:#fff}
+*{box-sizing:border-box;margin:0;padding:0}
+button,input,select,textarea{font-family:inherit}
+html{scroll-behavior:smooth}
+body{font-family:Inter,system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:Archivo,Inter,sans-serif;letter-spacing:-.02em;line-height:1.05}
+a{color:inherit}
+.wrap{max-width:1160px;margin:0 auto;padding:0 20px}
+/* preview banner */
+.pv{background:#111;color:#eee;font-size:13px;padding:8px 44px 8px 16px;text-align:center;position:relative}
+.pv a{color:#fff;font-weight:600}
+.pv button{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:0;color:#aaa;font-size:18px;cursor:pointer}
+/* header */
+header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.hd{display:flex;align-items:center;justify-content:space-between;min-height:68px;gap:16px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.mark{flex:none;width:38px;height:38px;letter-spacing:-.03em;border-radius:10px;background:var(--ac2);display:grid;place-items:center;color:#fff;font:900 15px Archivo,Inter,system-ui,sans-serif;position:relative;overflow:hidden}
+.mark:after{content:"";position:absolute;right:-6px;bottom:-6px;width:18px;height:18px;border-radius:50%;background:var(--ac)}
+.logo b{font:800 17px Archivo,Inter,system-ui,sans-serif;display:block}
+.logo small{font-size:12px;color:var(--mut)}
+.logo img{max-height:78px;max-width:min(300px,58vw);width:auto;height:auto;display:block;margin:6px 0}
+nav{display:flex;gap:22px;font-size:14px;font-weight:500}
+nav a{text-decoration:none;color:var(--mut)}nav a:hover{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 20px;border-radius:999px;font-weight:600;font-size:15px;text-decoration:none;border:0;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.pri{background:var(--ac);color:#fff;box-shadow:0 8px 20px -8px var(--ac)}
+.btn.ghost{background:transparent;color:inherit;border:1.5px solid currentColor}
+.btn.dark{background:var(--ink);color:#fff}
+/* hero */
+.hero{background:var(--ac2);color:#fff;position:relative;overflow:hidden}
+.hero:before{content:"";position:absolute;inset:0;background:radial-gradient(900px 400px at 85% 10%,color-mix(in srgb,var(--ac) 35%,transparent),transparent 60%),radial-gradient(600px 300px at 0% 100%,rgba(255,255,255,.07),transparent 60%)}
+.hgrid{position:relative;display:grid;grid-template-columns:1.15fr .85fr;gap:48px;padding-top:72px;padding-bottom:80px;align-items:center}
+.live{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:6px 12px;border-radius:999px;font-size:13px;font-weight:500}
+.live i{width:8px;height:8px;border-radius:50%;background:#35D07F;box-shadow:0 0 0 0 #35D07F;animation:p 1.8s infinite}
+@keyframes p{70%{box-shadow:0 0 0 10px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.hero h1{overflow-wrap:break-word;font-size:clamp(34px,5.6vw,64px);font-weight:900;margin:18px 0 18px}
+.hero h1 em{font-style:normal;color:var(--hl)}
+.hero p.sub{font-size:18px;color:rgba(255,255,255,.82);max-width:560px}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.cta .ghost{color:#fff}
+.rate{margin-top:22px;font-size:14px;color:rgba(255,255,255,.8)}
+.stars{color:#FFC53D;letter-spacing:2px}
+.hcard{background:#fff;color:var(--ink);border-radius:20px;padding:26px;box-shadow:0 30px 60px -20px rgba(0,0,0,.45)}
+.hcard h3{font-size:22px;margin-bottom:6px}
+.hcard p{color:var(--mut);font-size:14px;margin-bottom:16px}
+.bigtel{display:block;font:900 32px Archivo,Inter,system-ui,sans-serif;color:var(--telc);text-decoration:none;margin:4px 0 2px}
+.hcard .row{display:flex;gap:10px;margin-top:16px}.hcard .row .btn{flex:1}
+.hcard .alt{font-size:13px;color:var(--mut)}
+/* badges */
+.badges{background:#fff;border-bottom:1px solid var(--line)}
+.badges ul{list-style:none;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padding:18px 0}
+.badges li{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
+.badges li:before{content:"";width:18px;height:18px;border-radius:50%;background:var(--ac) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E") center/11px no-repeat}
+section{padding:84px 0}
+.eyebrow{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--ac)}
+.h2{font-size:clamp(30px,4vw,44px);font-weight:800;margin:10px 0 14px}
+.lede{color:var(--mut);font-size:17px;max-width:620px}
+/* quiz */
+.quiz{display:grid;grid-template-columns:.8fr 1.2fr;gap:40px;align-items:start}
+.qbox{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px;min-height:360px;box-shadow:0 20px 40px -30px rgba(0,0,0,.3)}
+.bar{height:6px;background:var(--line);border-radius:9px;overflow:hidden;margin-bottom:22px}.bar i{display:block;height:100%;width:0;background:var(--ac);transition:width .3s}
+.qn{font-size:13px;color:var(--mut);font-weight:600}
+.qq{font:800 24px Archivo,Inter,system-ui,sans-serif;margin:6px 0 18px}
+.opts{display:grid;gap:10px}
+.opt{text-align:left;padding:15px 16px;border:1.5px solid var(--line);border-radius:12px;background:#fff;font:500 15px Inter,system-ui,sans-serif;cursor:pointer;transition:.15s}
+.opt:hover{border-color:var(--ac);background:color-mix(in srgb,var(--ac) 6%,#fff)}
+.res .lvl{display:inline-block;padding:6px 12px;border-radius:999px;background:var(--ac);color:#fff;font-weight:700;font-size:13px}
+.res h3{font-size:26px;margin:12px 0 8px}
+.res ol{margin:14px 0 20px 20px;display:grid;gap:6px}
+.res .row{display:flex;gap:10px;flex-wrap:wrap}
+/* services */
+.svcs{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:36px}
+.svc{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px;transition:.2s}
+.svc:hover{transform:translateY(-3px);box-shadow:0 18px 30px -22px rgba(0,0,0,.35)}
+.svc .dot{display:block;width:34px;height:34px;border-radius:10px;background:color-mix(in srgb,var(--ac) 14%,#fff);border:2px solid var(--ac);margin-bottom:14px}
+.svc h3{font-size:19px;margin-bottom:6px}.svc p{color:var(--mut);font-size:15px}
+/* why */
+.dark{background:var(--ink);color:#fff}
+.whys{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:36px}
+.why{border-top:3px solid var(--ac);padding-top:18px}
+.why h3{font-size:21px;margin-bottom:8px}.why p{color:rgba(255,255,255,.72)}
+.dark .lede{color:rgba(255,255,255,.72)}
+/* estimate */
+.est{display:grid;grid-template-columns:.9fr 1.1fr;gap:40px}
+form{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+label{font-size:13px;font-weight:600;display:grid;gap:6px}
+label.full{grid-column:1/-1}
+input,select,textarea{font:15px Inter,system-ui,sans-serif;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);width:100%}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--ac)}
+textarea{min-height:96px;resize:vertical}
+form .btn{grid-column:1/-1}
+.ok{grid-column:1/-1;display:none;background:color-mix(in srgb,#35D07F 14%,#fff);border:1px solid #35D07F;border-radius:12px;padding:16px;font-size:15px}
+.contact{display:grid;gap:14px;margin-top:24px}
+.contact div{display:flex;gap:12px;align-items:baseline;min-width:0}.contact a,.contact span{overflow-wrap:anywhere;min-width:0}.est>div{min-width:0}.contact b{min-width:84px;font-size:13px;color:var(--mut);text-transform:uppercase;letter-spacing:.08em}
+.areas{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:20px;margin-top:22px;font-size:15px;color:var(--mut)}
+footer{background:var(--ink);color:rgba(255,255,255,.7);padding:40px 0 100px;font-size:14px}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px}
+footer b{color:#fff}
+/* sticky mobile */
+.mbar{display:none;position:fixed;left:0;right:0;bottom:0;z-index:50;background:#fff;border-top:1px solid var(--line);padding:10px 12px;gap:10px}
+.mbar .btn{flex:1;padding:14px}
+/* chat */
+.cfab{position:fixed;right:22px;bottom:22px;z-index:60;background:var(--ac);color:#fff;border:0;border-radius:999px;padding:14px 20px 14px 16px;font:600 15px Inter,system-ui,sans-serif;display:flex;align-items:center;gap:10px;cursor:pointer;box-shadow:0 14px 30px -10px rgba(0,0,0,.45)}
+.cfab i{width:10px;height:10px;border-radius:50%;background:#35D07F;border:2px solid #fff}
+.cw{position:fixed;right:22px;bottom:88px;z-index:61;width:370px;max-width:calc(100vw - 24px);height:540px;max-height:calc(100vh - 120px);background:#fff;border-radius:18px;box-shadow:0 30px 70px -20px rgba(0,0,0,.5);display:none;flex-direction:column;overflow:hidden}
+.cw.on{display:flex}
+.ch{background:var(--ac2);color:#fff;padding:14px 16px;display:flex;align-items:center;gap:10px}
+.ch .av{width:36px;height:36px;border-radius:50%;background:var(--ac);display:grid;place-items:center;font:800 14px Archivo}
+.ch b{display:block;font-size:15px}.ch small{font-size:12px;opacity:.8}
+.ch button{margin-left:auto;background:none;border:0;color:#fff;font-size:22px;cursor:pointer}
+.cb{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:#F7F7F5}
+.m{max-width:84%;padding:10px 13px;border-radius:14px;font-size:14px;line-height:1.45}
+.m.b{background:#fff;border:1px solid var(--line);border-bottom-left-radius:4px}
+.m.u{align-self:flex-end;background:var(--ac);color:#fff;border-bottom-right-radius:4px}
+.m.sys{align-self:center;background:var(--ink);color:#fff;font-size:13px;max-width:100%}
+.m.sys a{color:#fff;font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1.5px solid var(--ac);color:var(--ac);background:#fff;border-radius:999px;padding:7px 12px;font:600 13px Inter,system-ui,sans-serif;cursor:pointer}
+.chip:hover{background:var(--ac);color:#fff}
+.ci{display:flex;border-top:1px solid var(--line);padding:10px;gap:8px}
+.ci input{flex:1;border-radius:999px}
+.ci button{background:var(--ac);color:#fff;border:0;border-radius:999px;padding:0 16px;font-weight:600;cursor:pointer}
+.typing{display:flex;gap:4px;padding:12px 14px}.typing i{width:6px;height:6px;border-radius:50%;background:#aaa;animation:t 1s infinite}.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes t{50%{opacity:.2}}
+@media (max-width:900px){
+ nav{display:none}.hgrid,.quiz,.est{grid-template-columns:1fr}.hgrid{padding-top:44px;padding-bottom:52px}
+ .svcs,.whys{grid-template-columns:1fr}.badges ul{justify-content:flex-start}
+ form{grid-template-columns:1fr}.mbar{display:flex}.cfab{bottom:84px;padding:14px;font-size:0;gap:0}.cfab:before{content:'💬';font-size:22px}.cfab i{position:absolute;top:6px;right:6px}.cfab{position:fixed}.cw{bottom:150px}
+ section{padding:60px 0}.hd .btn span{display:none}
+}
+.btn.pri,.cfab,.m.u,.chip:hover,.res .lvl,.ci button{color:var(--onac)}
+.hero .btn.pri{background:var(--hbtn);color:var(--hbtntx)}
+</style>
+</head>
+<body>
+
+<div class="pv" id="pv">Concept preview built for Presidential HVAC &amp; Electrical. This is not their live website. <a href="https://api.qlviro.com/widget/booking/IHttmUHATDkXrl5ldKur" target="_blank" rel="noopener">Want this live? Book 15 minutes →</a><button aria-label="Hide" onclick="this.parentNode.remove()">×</button></div>
+
+<header><div class="wrap hd">
+  <a class="logo" href="#top"><span class="mark">PH</span><span><b>Presidential HVAC &amp; Electrical</b><small>Boston, MA</small></span></a>
+  <nav><a href="#check">Quick check</a><a href="#services">Services</a><a href="#why">Why us</a><a href="#estimate">Estimate</a></nav>
+  <a class="btn pri" href="tel:+18578951220">☎ <span>857-895-1220</span></a>
+</div></header>
+
+<main id="top">
+<section class="hero" style="padding:0"><div class="wrap hgrid">
+  <div>
+    <span class="live"><i></i> Answering now, 24/7</span>
+    <h1>No heat? No AC?<br>Honest fixes, <em>same day.</em></h1>
+    <p class="sub">Boston's mini-split and heat pump specialists. We diagnose it properly, fix what's broken, and only quote a replacement when it's truly needed.</p>
+    <div class="cta"><a class="btn pri" href="tel:+18578951220">Call 857-895-1220</a><button class="btn ghost" onclick="openChat()">Chat with us now</button></div>
+    <div class="rate"><span class="stars">★★★★★</span> <b>4.9</b> from 221 Google reviews</div>
+  </div>
+  <div class="hcard">
+    <h3>Emergency? Talk to a person.</h3>
+    <p>Day, night, weekends and holidays.</p>
+    <a class="bigtel" href="tel:+18578951220">857-895-1220</a>
+    <div class="alt"></div>
+    <div class="row"><a class="btn dark" href="#check">2-min check</a><a class="btn ghost" href="#estimate">Request estimate</a></div>
+  </div>
+</div></section>
+
+<div class="badges"><div class="wrap"><ul><li>4.9★ · 221 Google reviews</li><li>Mitsubishi ductless specialists</li><li>Heating, cooling & electrical</li><li>Open 24/7</li></ul></div></div>
+
+<section id="check"><div class="wrap quiz">
+  <div>
+    <span class="eyebrow">Not sure what you need?</span>
+    <h2 class="h2">No heat / no AC check</h2>
+    <p class="lede">4 quick questions. Find out if it's likely a repair or a replacement, and how fast you need us.</p>
+  </div>
+  <div class="qbox" id="qbox"></div>
+</div></section>
+
+<section id="services" style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap">
+  <span class="eyebrow">What we do</span>
+  <h2 class="h2">Mini-splits, heat pumps & emergency HVAC in Boston</h2>
+  <div class="svcs"><article class="svc"><span class="dot"></span><h3>Mini-Split & Ductless</h3><p>Installs, repairs and cleaning for ductless systems, including Mitsubishi.</p></article><article class="svc"><span class="dot"></span><h3>Heat Pumps</h3><p>Repair and installation of high-efficiency heat pumps for Boston homes.</p></article><article class="svc"><span class="dot"></span><h3>AC Repair</h3><p>Refrigerant, compressors, drainage and no-cool calls, often same day.</p></article><article class="svc"><span class="dot"></span><h3>Boilers & Furnaces</h3><p>High-efficiency gas boilers and forced hot air, repaired or replaced.</p></article><article class="svc"><span class="dot"></span><h3>Water Heaters</h3><p>Tank, tankless and heat pump water heater replacement.</p></article><article class="svc"><span class="dot"></span><h3>Electrical</h3><p>Licensed electrical repairs and inspections alongside your HVAC.</p></article></div>
+</div></section>
+
+<section class="dark" id="why"><div class="wrap">
+  <span class="eyebrow">Why Presidential HVAC &amp; Electrical</span>
+  <h2 class="h2">The call you make first should be the last one.</h2>
+  <div class="whys"><div class="why"><h3>Repair before replace</h3><p>Customers tell us we saved them thousands when others said replace.</p></div><div class="why"><h3>Same-day when it's urgent</h3><p>A heat wave or a cold snap shouldn't mean a week of waiting.</p></div><div class="why"><h3>Straight pricing</h3><p>You approve the price before any work starts.</p></div></div>
+</div></section>
+
+<section id="estimate"><div class="wrap est">
+  <div>
+    <span class="eyebrow">Free estimate</span>
+    <h2 class="h2">Tell us what happened. We'll call you back fast.</h2>
+    <p class="lede">For emergencies, call. For everything else, this form goes straight to the team.</p>
+    <div class="contact">
+      <div><b>Phone</b><a href="tel:+18578951220">857-895-1220</a></div>
+      <div><b>Email</b><a href="mailto:info@peboston.com">info@peboston.com</a></div>
+      <div><b>Office</b><span>31 Milk St, Boston, MA 02109</span></div>
+      <div><b>Hours</b><span>Open 24 hours, 7 days</span></div>
+    </div>
+    <div class="areas"><b style="color:var(--ink)">Serving:</b> Downtown · Back Bay · Beacon Hill · South End · Charlestown · Cambridge · Somerville · Brookline · Newton · Quincy</div>
+  </div>
+  <form id="f" novalidate>
+    <label>Name<input name="name" required autocomplete="name"></label>
+    <label>Phone<input name="phone" required type="tel" autocomplete="tel"></label>
+    <label class="full">Email<input name="email" type="email" autocomplete="email"></label>
+    <label>Service<select name="service"><option>Mini-Split & Ductless</option><option>Heat Pumps</option><option>AC Repair</option><option>Boilers & Furnaces</option><option>Water Heaters</option><option>Electrical</option></select></label>
+    <label>Town / ZIP<input name="zip" autocomplete="postal-code"></label>
+    <label class="full">What's happening?<textarea name="details"></textarea></label>
+    <button class="btn pri" type="submit">Request my estimate</button>
+    <div class="ok" id="ok"></div>
+  </form>
+</div></section>
+</main>
+
+<footer><div class="wrap">
+  <div><b>Presidential HVAC &amp; Electrical</b><br>31 Milk St, Boston, MA 02109<br><a href="tel:+18578951220">857-895-1220</a></div>
+  <div>Open 24/7 · Downtown · Back Bay · Beacon Hill · South End · Charlestown · Cambridge · Somerville · Brookline · Newton · Quincy</div>
+</div></footer>
+
+<div class="mbar"><a class="btn pri" href="tel:+18578951220">Call now</a><a class="btn dark" href="#estimate">Estimate</a></div>
+
+<button class="cfab" onclick="openChat()"><i></i>Chat, we reply instantly</button>
+<div class="cw" id="cw" role="dialog" aria-label="Chat">
+  <div class="ch"><span class="av">AI</span><span><b>Presidential HVAC &amp; Electrical</b><small>Front desk · replies instantly</small></span><button onclick="closeChat()" aria-label="Close">×</button></div>
+  <div class="cb" id="cb"></div>
+  <form class="ci" id="ci" style="background:#fff;border:0;border-top:1px solid var(--line);border-radius:0;padding:10px;display:flex;grid-template-columns:none"><input id="cin" placeholder="Type a message…" autocomplete="off"><button type="submit">Send</button></form>
+</div>
+
+<script>
+/* ==== AFTER THE CLIENT PAYS ====
+   1. WEBHOOK: paste the GHL inbound webhook URL below. Form and chat leads will POST to it.
+   2. CHAT: to swap in the live GHL Conversation AI widget, paste its embed script
+      just before </body> and set USE_LIVE_CHAT = true (hides this demo bot).
+   While WEBHOOK is empty the site runs in demo mode: everything works on screen, nothing is sent. */
+const WEBHOOK = "";
+const USE_LIVE_CHAT = false;
+const AI_ENDPOINT = "/api/chat"; // live AI front desk (demo-bank/api/chat.js). Set to "" to use the scripted chat only.
+const C = {"name": "Presidential HVAC & Electrical", "phone": "857-895-1220", "tel": "+18578951220", "owner": "Adi", "trade": "hvac", "quiz": {"title": "No heat / no AC check", "intro": "4 quick questions. Find out if it's likely a repair or a replacement, and how fast you need us.", "qs": [["What's going on?", [["No heat at all", 3], ["No cooling at all", 3], ["Running, but weak", 2], ["Leaking, noisy or smells", 2]]], ["What kind of system?", [["Boiler", 0], ["Furnace / forced air", 0], ["Mini-split or heat pump", 0], ["Central AC", 0]]], ["How old is it?", [["Under 8 years", 1], ["8 to 15 years", 2], ["15+ years", 3], ["No idea", 2]]], ["Who's affected?", [["Just me", 1], ["Family with kids or elderly", 3], ["Tenants", 3], ["A business", 3]]]], "results": [[7, "Same-day call", "With no heat or cooling and people affected, this shouldn't wait. We'll prioritise you today.", ["Check the thermostat batteries and settings", "Check the breaker and emergency switch", "Don't keep restarting the unit", "Call now for a same-day tech"]], [5, "Repair likely", "Most calls like this are a single failed part. Diagnosis first, clear price before any work.", ["Note any error codes or noises", "Change or check the filter", "Keep vents and outdoor unit clear", "Book a diagnostic visit"]], [0, "Tune-up visit", "Sounds like it's running, just not well. A tune-up usually restores efficiency.", ["Replace the filter", "Clear around the outdoor unit", "Note when the problem happens", "Book a maintenance visit"]]]}, "chat": {"q1": "Hi, you've reached Presidential HVAC & Electrical. I'm the after-hours assistant. What's going on with your system?", "o1": ["No heat", "No AC / no cooling", "Weak or noisy", "Want a quote"], "q2": "Okay. What type of system is it?", "o2": ["Boiler", "Furnace", "Mini-split / heat pump", "Not sure"], "q3": "Is anyone vulnerable in the home, like kids, elderly or tenants?", "o3": ["Yes", "No", "It's a business"]}, "booking": "https://api.qlviro.com/widget/booking/IHttmUHATDkXrl5ldKur", "profile": {"name": "Presidential HVAC & Electrical", "trade": "hvac", "city": "Boston, MA", "address": "31 Milk St, Boston, MA 02109", "phone": "857-895-1220", "owner": "Adi", "services": ["Mini-Split & Ductless", "Heat Pumps", "AC Repair", "Boilers & Furnaces", "Water Heaters", "Electrical"], "areas": "Downtown \u00b7 Back Bay \u00b7 Beacon Hill \u00b7 South End \u00b7 Charlestown \u00b7 Cambridge \u00b7 Somerville \u00b7 Brookline \u00b7 Newton \u00b7 Quincy"}};
+
+async function sendLead(data){
+  if(!WEBHOOK) return {demo:true};
+  try{ await fetch(WEBHOOK,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...data,business:C.name,source:location.href})}); return {demo:false}; }
+  catch(e){ return {error:true}; }
+}
+
+/* ---------- quiz ---------- */
+(function(){
+  const Q=C.quiz, box=document.getElementById("qbox"); let i=0, score=0, answers=[];
+  function step(){
+    if(i>=Q.qs.length) return result();
+    const [q,opts]=Q.qs[i];
+    box.innerHTML=`<div class="bar"><i style="width:${(i/Q.qs.length)*100}%"></i></div><div class="qn">Question ${i+1} of ${Q.qs.length}</div><div class="qq">${q}</div><div class="opts"></div>`;
+    const o=box.querySelector(".opts");
+    opts.forEach(([t,s])=>{const b=document.createElement("button");b.className="opt";b.textContent=t;b.onclick=()=>{score+=s;answers.push(t);i++;step()};o.appendChild(b)});
+  }
+  function result(){
+    const r=Q.results.find(([min])=>score>=min);
+    box.innerHTML=`<div class="bar"><i style="width:100%"></i></div><div class="res"><span class="lvl">${r[1]}</span><h3>${r[2]}</h3><div class="qn">Do this next:</div><ol>${r[3].map(x=>`<li>${x}</li>`).join("")}</ol><div class="row"><a class="btn pri" href="tel:${C.tel}">Call ${C.phone}</a><a class="btn dark" href="#estimate" id="toest">Get my estimate</a><button class="btn ghost" id="again">Start over</button></div></div>`;
+    document.getElementById("again").onclick=()=>{i=0;score=0;answers=[];step()};
+    document.getElementById("toest").onclick=()=>{const d=document.querySelector("#f textarea");d.value="Quick check: "+answers.join(" / ")+" ("+r[1]+")";};
+  }
+  step();
+})();
+
+/* ---------- form ---------- */
+document.getElementById("f").addEventListener("submit",async e=>{
+  e.preventDefault(); const f=e.target, fd=Object.fromEntries(new FormData(f));
+  if(!fd.name||!fd.phone){f.querySelector(fd.name?"[name=phone]":"[name=name]").focus();return}
+  const r=await sendLead({type:"estimate",...fd}); const ok=document.getElementById("ok");
+  ok.style.display="block";
+  ok.innerHTML=`<b>Thanks ${fd.name.split(" ")[0]}, your request is in.</b><br>We'll call ${fd.phone} shortly. If water is still coming in or you have no heat, call <a href="tel:${C.tel}">${C.phone}</a> now.`+(r.demo?`<br><small style="color:#555">Demo mode: in the live version this lands in the owner's CRM and texts them instantly.</small>`:"");
+  f.querySelectorAll("input,textarea").forEach(x=>x.value="");
+});
+
+/* ---------- chat ---------- */
+const cb=document.getElementById("cb"), cw=document.getElementById("cw"); let started=false, stage=0, lead={};
+function openChat(){ if(USE_LIVE_CHAT) return; cw.classList.add("on"); if(!started){started=true;bot(C.chat.q1,C.chat.o1)} setTimeout(()=>document.getElementById("cin").focus(),200)}
+function closeChat(){cw.classList.remove("on")}
+function add(t,cls){const d=document.createElement("div");d.className="m "+cls;d.innerHTML=t;cb.appendChild(d);cb.scrollTop=cb.scrollHeight;return d}
+function bot(t,chips){
+  const ty=add('<span class="typing"><i></i><i></i><i></i></span>',"b");ty.style.padding="0";
+  setTimeout(()=>{ty.remove();add(t,"b");if(chips){const w=document.createElement("div");w.className="chips";chips.forEach(c=>{const b=document.createElement("button");b.className="chip";b.textContent=c;b.onclick=()=>{w.remove();user(c)};w.appendChild(b)});cb.appendChild(w);cb.scrollTop=cb.scrollHeight}},650);
+}
+function user(t){add(t.replace(/</g,"&lt;"),"u"); if(aiDown||!AI_ENDPOINT) next(t); else aiTurn(t)}
+let aiDown=false, convo=[], revealed=false;
+async function aiTurn(t){
+  convo.push({role:"user",content:t});
+  const ty=add('<span class="typing"><i></i><i></i><i></i></span>',"b");ty.style.padding="0";
+  try{
+    const ctl=new AbortController(); const to=setTimeout(()=>ctl.abort(),12000);
+    const r=await fetch(AI_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({biz:C.profile,messages:convo}),signal:ctl.signal});
+    clearTimeout(to); if(!r.ok) throw 0; const d=await r.json(); if(!d.reply) throw 0;
+    ty.remove(); convo.push({role:"assistant",content:d.reply});
+    add(d.reply.replace(/</g,"&lt;").replace(/\n/g,"<br>"),"b");
+    if(d.lead&&!revealed){revealed=true;sendLead({type:"chat",...d.lead});
+      setTimeout(()=>add(`<b>This was an AI front desk.</b> It just qualified the job and booked it, at any hour. Want this answering for ${C.name}? <a href="${C.booking}" target="_blank" rel="noopener">Book 15 min →</a>`,"sys"),1600)}
+  }catch(e){ ty.remove(); aiDown=true; convo.pop(); next(t) }
+}
+function slots(){const d=new Date(),h=d.getHours();const s=[];
+  if(h<17) s.push("Today, "+(h<12?"1–3pm":"5–7pm")); s.push("Tomorrow, 8–10am","Tomorrow, 12–2pm"); return s}
+function next(t){
+  stage++;
+  if(stage===1){lead.issue=t;bot(C.chat.q2,C.chat.o2)}
+  else if(stage===2){lead.detail=t;bot(C.chat.q3,C.chat.o3)}
+  else if(stage===3){lead.extra=t;bot("Thanks. I can get someone out to you. What's your name?")}
+  else if(stage===4){lead.name=t;bot(`Nice to meet you, ${t.split(" ")[0]}. Best number to reach you?`)}
+  else if(stage===5){
+    if(t.replace(/\D/g,"").length<7){stage--;bot("That doesn't look like a full number. Could you type it again?");return}
+    lead.phone=t;bot("And the town or ZIP code for the property?")}
+  else if(stage===6){lead.zip=t;bot("Here are the next openings. Which works?",slots())}
+  else if(stage===7){lead.slot=t;sendLead({type:"chat",...lead});
+    bot(`You're booked for <b>${t}</b>. A tech will call ${lead.phone} before arriving. If it gets worse before then, call <a href="tel:${C.tel}">${C.phone}</a>.`);
+    setTimeout(()=>add(`<b>This was an AI front desk.</b> It just qualified the job and booked it in under a minute, at any hour. Want this answering for ${C.name}? <a href="${C.booking}" target="_blank" rel="noopener">Book 15 min →</a>`,"sys"),1900)}
+  else bot(`Got it, I've added that to your booking. For anything urgent, call <a href="tel:${C.tel}">${C.phone}</a>.`);
+}
+document.getElementById("ci").addEventListener("submit",e=>{e.preventDefault();const i=document.getElementById("cin");const v=i.value.trim();if(!v)return;i.value="";cb.querySelectorAll(".chips").forEach(x=>x.remove());if(!started){started=true}user(v)});
+if(USE_LIVE_CHAT){document.querySelector(".cfab").style.display="none"}
+setTimeout(()=>{if(!started&&innerWidth>900)openChat()},9000);
+</script>
+</body>
+</html>
