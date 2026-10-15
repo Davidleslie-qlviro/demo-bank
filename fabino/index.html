@@ -132,6 +132,27 @@ pre{white-space:pre-wrap;word-break:break-all;font-size:11px;color:var(--mute);m
 #toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#151008;color:#fff;padding:10px 18px;border-radius:99px;font-size:14px;opacity:0;pointer-events:none;transition:.3s;z-index:90;max-width:90vw}
 #toast.on{opacity:1}
 .steps{display:flex;gap:5px;margin:4px 0 16px}.steps i{flex:1;height:3px;border-radius:2px;background:var(--line)}.steps i.on{background:#151008}
+.mrow{display:flex;gap:14px;align-items:center;width:100%;text-align:left}
+.mrow .mic{width:76px;height:76px;flex:none}.mrow .mic svg{width:34px;height:34px}
+.mtxt{min-width:0}.mtxt b{font-family:'Playfair Display',serif;font-size:19px;line-height:1.15;display:block}.mtxt b em{font-style:normal;color:var(--crema)}
+.state{font-size:13px;color:var(--mute);margin-top:4px}
+.bars{display:flex;gap:3px;align-items:center;height:22px;margin-top:4px}.bars i{width:4px;border-radius:2px;background:var(--gold);height:4px;transition:height .12s}
+.talkcard textarea{margin-top:12px;min-height:60px;font-size:15px;resize:vertical}
+.row2{display:flex;gap:8px;margin-top:10px;width:100%}.row2 .btn{flex:1}
+.talkcard{align-items:stretch;padding:12px;margin-top:8px;border-radius:18px}.mrow .mic{width:64px;height:64px}.bars{height:14px;margin-top:6px}
+.ordercard{margin-top:16px}.ohead{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.cmdhint{font-size:12.5px;color:var(--mute);margin:10px 0 0}
+.mic.live{background:radial-gradient(circle at 35% 30%,#e86a4a,#b8341a)}
+#stkBack{display:none!important}
+.menu{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.mi{display:flex;align-items:center;gap:12px;background:#fff;border:2px solid #151008;border-radius:14px;padding:7px 10px 7px 7px}
+.mi .im{width:48px;height:48px;border-radius:9px;flex:none;background:#e6d9bb center/cover}
+.mi .nf{flex:1;min-width:0}.mi .nf b{display:block;font-family:'Playfair Display',serif;font-size:16px;line-height:1.15}
+.mi .nf span{display:block;font-size:12px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mi .pr{font-size:13px;text-align:right;white-space:nowrap}
+.mi .qb{display:none;background:#151008;color:var(--gold);border-radius:99px;padding:1px 9px;font-weight:700;font-size:13px;margin-top:2px}
+.mi.has{background:#fbf4de;border-color:var(--gold)}.mi.has .qb{display:inline-block}
+.mi .add{flex:none;width:34px;height:34px;border-radius:50%;background:#151008;color:var(--gold);font-size:20px;line-height:1}
 </style>
 </head>
 <body>
@@ -139,21 +160,28 @@ pre{white-space:pre-wrap;word-break:break-all;font-size:11px;color:var(--mute);m
 
 <!-- HOME -->
 <section class="screen on" id="s-home">
-  <div class="top"><span class="logo">Fabino <em>Coffee</em></span><button class="cartpill" id="pill" onclick="go('review')" hidden></button></div>
+  <div class="top"><span class="logo" style="display:flex;align-items:center;gap:10px"><img src="data:image/jpeg;base64,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" alt="" style="width:34px;height:34px;border-radius:6px;object-fit:cover">Fabino <em>Coffee</em></span><span></span></div>
   <div id="reorderCard"></div>
-  <div class="brandrow"><img src="data:image/jpeg;base64,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" alt="Fabino"><p>Pure, Guilt-Free Pleasure In Every Single Pour.</p></div>
-  <div class="hero">
-    <h1>Say it.<br><em>We'll brew the rest.</em></h1>
-    <div class="cert">Swiss-Roasted · Certified Organic · Serving Gauteng</div>
-  </div>
   <div class="talkcard">
-    <button class="mic" id="micBtn" aria-label="Start voice order" onclick="startListening()"><svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V22h2v-3.1A7 7 0 0 0 19 12h-2z"/></svg></button>
-    <div class="hint" id="micHint">Try: “Two bags of the house blend, espresso grind, and a box of capsules”</div>
-    <div class="typed"><input id="typedIn" placeholder="…or type your order" onkeydown="if(event.key==='Enter')typedGo()"><button class="btn sm" onclick="typedGo()">Go</button></div>
+    <div class="mrow">
+      <button class="mic" id="micBtn" aria-label="Start or stop voice order" onclick="startListening()"><svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V22h2v-3.1A7 7 0 0 0 19 12h-2z"/></svg></button>
+      <div class="mtxt" style="flex:1"><div class="state" id="micState" style="margin:0 0 6px;font-size:13.5px;color:var(--ink);font-weight:600">Tap the mic and say your order</div>
+        <div style="display:flex;gap:8px"><textarea id="orderText" rows="1" aria-label="Your order in words" placeholder="…or type your order" style="margin:0;min-height:44px;height:44px;padding:11px 12px"></textarea><button class="btn sm" onclick="submitText()" style="flex:none">Add</button></div>
+        <div class="bars" id="bars"></div></div>
+    </div>
   </div>
-  <h2 class="sec">The menu</h2>
-  <p style="color:var(--mute);margin:4px 0 0">Prefer tapping? Add straight from here.</p>
+  <h2 class="sec" style="margin-top:18px">Menu</h2>
+  <p style="color:var(--mute);margin:2px 0 0">Tap an item to add it, or just say it.</p>
   <div class="menu" id="menu"></div>
+  <div class="ordercard" id="orderCard">
+    <div class="ohead"><h2>Your order</h2><span style="display:flex;gap:6px"><button class="btn ghost sm" onclick="speakReadback(false)">🔊 Read back</button><button class="btn ghost sm" onclick="clearAll()">Clear</button></span></div>
+    <p id="rvSub" style="color:var(--mute);margin:2px 0 0"></p>
+    <div id="lines"></div>
+    <div id="missed"></div>
+    <select id="addSel" aria-label="Add a product" onchange="addFromSel(this)" style="margin-top:12px"></select>
+    <div class="box" id="rvTotals"></div>
+    <p class="cmdhint">Voice commands: “make it three”, “remove the Forte”, “change the grind to filter”, “add a box of capsules”, “confirm”.</p>
+  </div>
   <div class="box" id="getApp" style="text-align:center;margin-top:30px">
     <h3>Get the Fabino app</h3>
     <p style="color:var(--mute);margin:6px 0 0">Scan with your phone camera to open it, then add it to your home screen.</p>
@@ -163,21 +191,9 @@ pre{white-space:pre-wrap;word-break:break-all;font-size:11px;color:var(--mute);m
   </div>
 </section>
 
-<!-- REVIEW -->
-<section class="screen" id="s-review">
-  <div class="top"><button class="back" onclick="go('home')">← Menu</button><span class="logo">Fabino <em>Coffee</em></span><span></span></div>
-  <div class="steps"><i class="on"></i><i></i><i></i><i></i></div>
-  <h2>Your order</h2>
-  <p style="color:var(--mute);margin:4px 0 0" id="rvSub"></p>
-  <div id="lines"></div>
-  <div id="missed"></div>
-  <div class="box" id="rvTotals"></div>
-  <button class="btn ghost" style="margin-top:14px" onclick="startListening()">🎙 Add more by voice</button>
-</section>
-
 <!-- SUBSCRIBE -->
 <section class="screen" id="s-sub">
-  <div class="top"><button class="back" onclick="go('review')">← Order</button><span class="logo">Fabino <em>Coffee</em></span><span></span></div>
+  <div class="top"><button class="back" onclick="go('home')">← Order</button><span class="logo">Fabino <em>Coffee</em></span><span></span></div>
   <div class="steps"><i class="on"></i><i class="on"></i><i></i><i></i></div>
   <h2>Never run out.</h2>
   <p style="color:var(--mute)">Subscribe &amp; save 10% on every order. Pause or cancel anytime.</p>
@@ -239,13 +255,6 @@ pre{white-space:pre-wrap;word-break:break-all;font-size:11px;color:var(--mute);m
 
 <div class="sticky" id="sticky"><div class="wrap"><button class="btn ghost" id="stkBack" onclick="stkBack()">Edit</button><button class="btn" id="stkMain" onclick="stkMain()">Continue</button></div></div>
 
-<div id="listen">
-  <div class="mic live" style="width:92px;height:92px" onclick="stopListening()"><svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V22h2v-3.1A7 7 0 0 0 19 12h-2z"/></svg></div>
-  <div class="bars" id="bars"></div>
-  <div id="tr"></div>
-  <p style="color:var(--mute);margin:18px 0 22px" id="lstSub">Listening… tap to stop</p>
-  <button class="btn ghost sm" onclick="stopListening()">Tap to stop</button>
-</div>
 <div id="proc"><div><div class="spin"></div><b id="procTxt">Processing payment…</b></div></div>
 <div id="toast"></div>
 
@@ -2597,30 +2606,36 @@ function addLine(pid,qty=1,size=500,grind=null,defGrind=false){
 }
 
 /* ========= NAV ========= */
-let cur='home';
+let cur='home',base=[];
+const clone=o=>JSON.parse(JSON.stringify(o));
 function go(s){
-  cur=s;document.querySelectorAll('.screen').forEach(e=>e.classList.remove('on'));$('s-'+s).classList.add('on');window.scrollTo(0,0);
-  if(s==='review')renderReview();if(s==='sub')renderSub();if(s==='pay')renderPay();
-  const st=$('sticky'),m=$('stkMain'),b=$('stkBack');
-  st.classList.toggle('on',['review','sub','del','pay'].includes(s));
-  b.style.display=s==='review'?'block':'none';
-  m.textContent={review:'Continue',sub:'Continue',del:'Continue to payment',pay:'Pay now'}[s]||'';
-  updPill();
+  if(s==='review')s='home';
+  cur=s;document.querySelectorAll('.screen').forEach(e=>e.classList.remove('on'));$('s-'+s).classList.add('on');
+  if(s!=='home')window.scrollTo(0,0);
+  $('stkMain').textContent={home:'Looks good · Continue',sub:'Continue',del:'Continue to payment',pay:'Pay now'}[s]||'';
+  if(s==='home')renderOrder();if(s==='sub')renderSub();if(s==='pay')renderPay();
+  updSticky();
 }
-function stkBack(){speakReadback()}
+function updSticky(){
+  $('sticky').classList.toggle('on',['sub','del','pay'].includes(cur)||(cur==='home'&&S.cart.length>0));
+  if(cur==='home'){const n=S.cart.reduce((a,l)=>a+l.qty,0);$('stkMain').textContent=n?`Continue · ${n} item${n>1?'s':''} · ${zarf(subtotal())}`:'Continue'}
+  PRODUCTS.forEach(p=>{const q=S.cart.filter(l=>l.pid===p.id).reduce((a,l)=>a+l.qty,0),e=$('mi-'+p.id);if(!e)return;e.classList.toggle('has',q>0);$('qb-'+p.id).textContent='× '+q})
+}
 function stkMain(){
-  if(cur==='review'){if(!S.cart.length)return toast('Your order is empty');stopSpeech();go('sub')}
+  if(cur==='home'){commitDraft();if(!S.cart.length)return toast('Your order is empty');stopSpeech();stopListening(true);go('sub')}
   else if(cur==='sub')go('del');
   else if(cur==='del'){if(validateDel())go('pay')}
   else if(cur==='pay')processAndFinish();
 }
-function updPill(){const n=S.cart.reduce((a,l)=>a+l.qty,0),p=$('pill');p.hidden=!n||cur!=='home';p.textContent=`🛒 ${n} · ${zar(subtotal())}`}
+const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 
 /* ========= MENU / REORDER ========= */
 function renderMenu(){
-  $('menu').innerHTML=PRODUCTS.map(p=>`<div class="pc"><div class="im" style="background-image:url('${img(p.im)}')"></div><div class="bd"><b>${p.name}</b><span>${p.desc}</span><div class="row"><span style="flex:none">${p.kind==='bean'?'from '+zar(p.prices[250]):zar(p.price)}</span><button class="add" aria-label="Add ${p.name}" onclick="tapAdd('${p.id}')">+</button></div></div></div>`).join('');
+  $('menu').innerHTML=PRODUCTS.map(p=>`<div class="mi" id="mi-${p.id}" onclick="tapAdd('${p.id}')" style="cursor:pointer"><div class="im" style="background-image:url('${img(p.im)}')"></div><div class="nf"><b>${p.name}</b><span>${p.desc}</span></div><div class="pr">${p.kind==='bean'?'from '+zar(p.prices[250]):zar(p.price)}<br><span class="qb" id="qb-${p.id}"></span></div><button class="add" aria-label="Add ${p.name}">+</button></div>`).join('');
+  $('addSel').innerHTML='<option value="">+ Add a product…</option>'+PRODUCTS.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
 }
-function tapAdd(pid){const l=addLine(pid,1,500,null);toast(P[pid].name+' added');updPill();if(cur==='home'){go('review')}}
+function tapAdd(pid){commitDraft();addLine(pid,1,500,null);base=clone(S.cart);renderOrder();toast(P[pid].name+' added')}
+function addFromSel(el){if(!el.value)return;tapAdd(el.value);el.value=''}
 function renderReorder(){
   const last=store.get('fabino_last');
   if(!last){$('reorderCard').innerHTML='';return}
@@ -2630,35 +2645,97 @@ function renderReorder(){
 function reorder(){
   const last=store.get('fabino_last');if(!last)return toast('No previous order found');
   S.cart=[];last.items.forEach(i=>{if(P[i.pid]){const l=addLine(i.pid,i.qty,i.size||500,i.grind);l.def=false}});
-  S.missed=[];toast('Last order loaded');go('review');setTimeout(speakReadback,500);
+  base=clone(S.cart);S.missed=[];toast('Last order loaded');go('home');setTimeout(()=>speakReadback(true),500);
 }
 
-/* ========= SPEECH RECOGNITION ========= */
+/* ========= LIVE ORDER (fills while you talk) ========= */
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-let rec=null,finalT='',interimT='',barT=null,listening=false;
-const bars=$('bars');bars.innerHTML='<i></i>'.repeat(24);
+function stripAdd(t){return t.replace(/^\s*(?:ok(?:ay)?[, ]+)?(?:please\s+)?(?:also\s+)?add\s+/i,'')}
+const CMD=/^\s*(?:ok(?:ay)?[, ]+|please\s+|can you\s+)?(?:remove|delete|take off|take out|cancel|clear|start over|change|edit|make(?!\s+(?:me|us)\b)|set|switch|update|confirm|check ?out|continue|proceed|that'?s (?:all|it)|done|yes|yeah|yep|no|nope|read|repeat|looks good)\b/i;
+const isCommand=t=>CMD.test(t);
+function applyDraft(text){
+  S.cart=clone(base);S.missed=[];
+  const t=(text||'').trim();
+  if(t&&!isCommand(t)){
+    const r=parseOrder(stripAdd(t));
+    r.items.forEach(i=>{const l=addLine(i.pid,i.qty,i.size,i.grindSpoken?i.grind:null);if(P[i.pid].kind==='bean'&&i.grindSpoken)l.def=false});
+    S.missed=r.missed;
+  }
+  renderOrder();
+}
+function commitDraft(){
+  const t=$('orderText').value.trim();
+  if(t&&!isCommand(t))applyDraft(t);
+  base=clone(S.cart);$('orderText').value='';
+}
+function submitText(){
+  const t=$('orderText').value.trim();if(!t)return toast('Say or type your order first');
+  if(isCommand(t)){$('orderText').value='';S.cart=clone(base);runCommand(t)}
+  else{commitDraft();speakReadback(true)}
+}
+function clearAll(){stopSpeech();stopListening(true);S.cart=[];base=[];S.missed=[];$('orderText').value='';renderOrder();toast('Order cleared')}
+let dbT=null;
+$('orderText').addEventListener('input',e=>{if(listening)return;clearTimeout(dbT);dbT=setTimeout(()=>applyDraft(e.target.value),350)});
+
+/* ========= SPEECH RECOGNITION ========= */
+let rec=null,listening=false,silT=null,barT=null,sessionText='';
+const bars=$('bars');bars.innerHTML='<i></i>'.repeat(14);
 function startListening(){
+  if(listening){stopListening();return}
   stopSpeech();
-  if(!SR){toast('Voice not supported in this browser. Please type your order.');$('typedIn').focus();return}
-  finalT='';interimT='';$('tr').innerHTML='';$('lstSub').textContent='Listening… tap to stop';
-  $('listen').classList.add('on');listening=true;
-  rec=new SR();rec.lang='en-ZA';rec.interimResults=true;rec.continuous=true;rec.maxAlternatives=1;
-  rec.onresult=e=>{interimT='';for(let i=e.resultIndex;i<e.results.length;i++){const r=e.results[i];if(r.isFinal)finalT+=r[0].transcript+' ';else interimT+=r[0].transcript}
-    $('tr').innerHTML=esc(finalT)+'<span class="int">'+esc(interimT)+'</span>';if(!window._sil)window._sil=0;};
-  rec.onerror=e=>{if(e.error==='not-allowed'||e.error==='service-not-allowed'){toast('Microphone blocked. Allow mic access or type your order.');endListen(false)}else if(e.error==='no-speech'){$('lstSub').textContent="Didn't hear anything. Try again."}};
+  if(!SR){toast('Voice not available in this browser. Use the 🎤 on your phone keyboard in the box.');$('orderText').focus();return}
+  commitDraft();sessionText='';
+  rec=new SR();rec.lang='en-ZA';rec.interimResults=true;rec.continuous=true;
+  rec.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript+' ';
+    sessionText=t.trim();$('orderText').value=sessionText;applyDraft(sessionText);armSilence(2200)};
+  rec.onerror=e=>{if(e.error==='not-allowed'||e.error==='service-not-allowed'){toast('Microphone blocked. Allow mic access in your browser settings.');listening=false;ui(false)}};
   rec.onend=()=>{if(listening)finishListening()};
-  try{rec.start()}catch(e){}
-  barT=setInterval(()=>{[...bars.children].forEach(b=>b.style.height=(8+Math.random()*(interimT?52:18))+'px')},120);
+  try{rec.start()}catch(e){return}
+  listening=true;ui(true);armSilence(9000);
 }
-function stopListening(){try{rec&&rec.stop()}catch(e){}setTimeout(()=>{if(listening)finishListening()},400)}
-function endListen(){listening=false;clearInterval(barT);$('listen').classList.remove('on');try{rec&&rec.abort()}catch(e){}}
+function armSilence(ms){clearTimeout(silT);silT=setTimeout(()=>stopListening(),ms)}
+function ui(on){
+  $('micBtn').classList.toggle('live',on);
+  $('micState').textContent=on?'Listening… tap the mic to stop':'Tap the mic and tell us your order';
+  clearInterval(barT);
+  if(on)barT=setInterval(()=>[...bars.children].forEach(b=>b.style.height=(4+Math.random()*(sessionText?18:6))+'px'),130);
+  else [...bars.children].forEach(b=>b.style.height='4px');
+}
+function stopListening(silent){
+  clearTimeout(silT);
+  if(!listening)return;
+  if(silent){listening=false;ui(false);try{rec.abort()}catch(e){}return}
+  try{rec.stop()}catch(e){}
+  setTimeout(()=>{if(listening)finishListening()},500);
+}
 function finishListening(){
-  const text=(finalT+' '+interimT).trim();endListen();
-  if(!text){toast("We didn't catch that. Tap the mic and try again.");return}
-  handleUtterance(text);
+  if(!listening)return;listening=false;clearTimeout(silT);ui(false);
+  const text=$('orderText').value.trim();
+  if(!text)return;
+  if(isCommand(text)){$('orderText').value='';S.cart=clone(base);renderOrder();runCommand(text)}
+  else{commitDraft();speakReadback(true)}
 }
-function typedGo(){const v=$('typedIn').value.trim();if(!v)return;$('typedIn').value='';handleUtterance(v)}
-const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+/* ========= RENDER ORDER ========= */
+function renderOrder(){
+  const n=S.cart.length;
+  $('rvSub').textContent=n?'Check it over. Change anything by voice or tap.':'Your order fills in here as you speak.';
+  $('lines').innerHTML=S.cart.map(l=>{
+    const p=P[l.pid],isB=p.kind==='bean';
+    return `<div class="line"><div class="h"><div><b>${p.name}</b><div style="color:var(--mute);font-size:13px">${isB?'Coffee beans':p.unit}</div></div><button class="x" aria-label="Remove" onclick="rm(${l.id})">✕</button></div>
+    ${isB?`<div class="sels ${l.def?'hl':''}"><select onchange="chg(${l.id},'size',this.value)">${Object.entries(SIZES).map(([k,v])=>`<option value="${k}" ${+k===l.size?'selected':''}>${v}</option>`).join('')}</select>
+    <select class="${l.def?'def':''}" onchange="chg(${l.id},'grind',this.value)">${Object.entries(GRINDS).map(([k,v])=>`<option value="${k}" ${k===l.grind?'selected':''}>${v}</option>`).join('')}</select></div>
+    ${l.def?'<div class="note">Whole bean unless you say otherwise. Say “change the grind to filter”.</div>':''}`:''}
+    <div class="qty"><div class="c"><button onclick="qty(${l.id},-1)">–</button><b>${l.qty}</b><button onclick="qty(${l.id},1)">+</button></div><div style="text-align:right"><small style="color:var(--mute)">${zar(price(l))} each</small><div style="font-size:18px;font-weight:600">${zar(price(l)*l.qty)}</div></div></div></div>`}).join('');
+  $('missed').innerHTML=S.missed&&S.missed.length?`<div class="miss"><b>Didn't catch these</b><ul>${S.missed.map(m=>`<li>“${esc(m)}”</li>`).join('')}</ul><button class="btn sm" onclick="S.missed=[];startListening()">Try again</button></div>`:'';
+  const t=totals();
+  $('rvTotals').innerHTML=`<div class="tot g"><span>Subtotal</span><span>${zarf(t.sub)}</span></div><div style="color:var(--mute);font-size:12.5px">Prices include VAT. Delivery calculated at checkout.</div>`;
+  updSticky();
+}
+function edit(fn){commitDraft();fn();base=clone(S.cart);renderOrder()}
+function chg(id,k,v){edit(()=>{const l=S.cart.find(x=>x.id===id);l[k]=k==='size'?+v:v;if(k==='grind')l.def=false})}
+function qty(id,d){edit(()=>{const l=S.cart.find(x=>x.id===id);l.qty+=d;if(l.qty<1)S.cart=S.cart.filter(x=>x!==l)})}
+function rm(id){edit(()=>{S.cart=S.cart.filter(x=>x.id!==id)})}
 
 /* ========= PARSER ========= */
 const NUM={a:1,an:1,one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10,eleven:11,twelve:12,couple:2,another:1};
@@ -2703,36 +2780,74 @@ function parseOrder(text){
   }
   return {items,missed};
 }
-function handleUtterance(text){
-  const lc=text.toLowerCase();
-  if(/(same as (last|before)|reorder|repeat (my )?(last )?order|usual)/.test(lc)){if(store.get('fabino_last'))return reorder();toast('No previous order saved yet')}
-  const r=parseOrder(text);
-  if(!r.items.length&&!r.missed.length){S.missed=[text];toast("Sorry, we couldn't match that to our menu.")}
-  r.items.forEach(i=>{const l=addLine(i.pid,i.qty,i.size,i.grindSpoken?i.grind:null);if(P[i.pid].kind==='bean'&&i.grindSpoken){l.def=false}});
-  S.missed=r.missed;
-  go('review');
-  if(r.items.length)setTimeout(speakReadback,700);
+/* ========= VOICE COMMANDS ========= */
+const NUMW={one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10,eleven:11,twelve:12};
+function grindIn(t){
+  const G=[[/ (?:espresso(?: grind| ground)?|grind(?:ed)? (?:for|as) espresso) /,'espresso'],[/ (?:filter|pour[- ]?over|v60|drip)(?: grind| ground)? /,'filter'],[/ (?:plunger|french press|cafeti[eè]re)(?: grind| ground)? /,'plunger'],[/ (?:moka|mokka|stove ?top) pot(?: grind| ground)? /,'moka'],[/ (?:whole ?beans?|unground|whole) /,'whole']];
+  for(const [re,g] of G)if(re.test(t))return {grind:g,rest:t.replace(re,' ')};
+  return {grind:null,rest:t};
 }
-
-/* ========= REVIEW ========= */
-function renderReview(){
-  const n=S.cart.length;
-  $('rvSub').textContent=n?'Check it over. Change anything you like.':'Nothing here yet. Tap the mic or add from the menu.';
-  $('lines').innerHTML=S.cart.map(l=>{
-    const p=P[l.pid],isB=p.kind==='bean';
-    return `<div class="line"><div class="h"><div><b>${p.name}</b><div style="color:var(--mute);font-size:13px">${isB?'Coffee beans':p.unit}</div></div><button class="x" aria-label="Remove" onclick="rm(${l.id})">✕</button></div>
-    ${isB?`<div class="sels ${l.def?'hl':''}"><select onchange="chg(${l.id},'size',this.value)">${Object.entries(SIZES).map(([k,v])=>`<option value="${k}" ${+k===l.size?'selected':''}>${v}</option>`).join('')}</select>
-    <select class="${l.def?'def':''}" onchange="chg(${l.id},'grind',this.value)">${Object.entries(GRINDS).map(([k,v])=>`<option value="${k}" ${k===l.grind?'selected':''}>${v}</option>`).join('')}</select></div>
-    ${l.def?'<div class="note">We set this to Whole bean. Change it if you want it ground.</div>':''}`:''}
-    <div class="qty"><div class="c"><button onclick="qty(${l.id},-1)">–</button><b>${l.qty}</b><button onclick="qty(${l.id},1)">+</button></div><div style="text-align:right"><small style="color:var(--mute)">${zar(price(l))} each</small><div style="font-size:18px;font-weight:600">${zar(price(l)*l.qty)}</div></div></div></div>`}).join('');
-  $('missed').innerHTML=S.missed.length?`<div class="miss"><b>Didn't catch these</b><ul>${S.missed.map(m=>`<li>“${esc(m)}”</li>`).join('')}</ul><button class="btn sm" onclick="S.missed=[];startListening()">Try again</button></div>`:'';
-  const t=totals();
-  $('rvTotals').innerHTML=`<div class="tot g"><span>Subtotal</span><span>${zarf(t.sub)}</span></div><div style="color:var(--mute);font-size:12.5px">Prices include VAT. Delivery calculated at checkout.</div>`;
-  $('stkMain').disabled=!n;
+function sizeIn(t){
+  const Z=[[/ (?:1 ?kg|one kilo(?:gram)?|a kilo(?:gram)?|1000 ?(?:g|grams?)|kilo(?:gram)?s?) /,1000],[/ (?:500 ?(?:g|grams?)?|half a kilo(?:gram)?|half kilo) /,500],[/ (?:250 ?(?:g|grams?)?|quarter(?: of a)? kilo) /,250]];
+  for(const [re,z] of Z)if(re.test(t))return {size:z,rest:t.replace(re,' ')};
+  return {size:null,rest:t};
 }
-function chg(id,k,v){const l=S.cart.find(x=>x.id===id);l[k]=k==='size'?+v:v;if(k==='grind')l.def=false;renderReview()}
-function qty(id,d){const l=S.cart.find(x=>x.id===id);l.qty+=d;if(l.qty<1)S.cart=S.cart.filter(x=>x!==l);renderReview()}
-function rm(id){S.cart=S.cart.filter(x=>x.id!==id);renderReview()}
+function productsIn(t){
+  const out=[];
+  PRODUCTS.filter(p=>p.kind==='bean').forEach(p=>{p.kw.forEach(k=>{const m=new RegExp('\\b'+k+'\\b').exec(t.replace(/[éè]/g,'e'));if(m&&!out.find(o=>o.pid===p.id))out.push({pid:p.id,idx:m.index})})});
+  const c=/\b(?:capsules?|pods?|jovo)\b/.exec(t);
+  if(c){let pid='jdark';if(/\bdecaf/.test(t))pid='jdec';else if(/\bmedium\b/.test(t))pid='jmed';out.push({pid,idx:c.index})}
+  return out.sort((a,b)=>a.idx-b.idx);
+}
+function numIn(t){const m=t.match(new RegExp('\\b(\\d+|'+Object.keys(NUMW).join('|')+')\\b'));if(!m)return null;return /^\d+$/.test(m[1])?+m[1]:NUMW[m[1]]}
+function sayThen(text,cb){
+  toast(text);
+  if(!('speechSynthesis' in window)){cb&&cb();return}
+  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='en-ZA';u.onend=()=>cb&&cb();u.onerror=()=>cb&&cb();speechSynthesis.speak(u)}catch(e){cb&&cb()}
+}
+function afterEdit(msg){base=clone(S.cart);renderOrder();sayThen(msg+' Say confirm, or change something else.',()=>startListening())}
+function runCommand(raw){
+  const t=' '+raw.toLowerCase().replace(/[.,!?]/g,' ').replace(/\s+/g,' ')+' ';
+  const edits=/\b(remove|delete|take off|take out|cancel|change|make|set|switch|update|edit)\b/.test(t);
+  if(/\b(clear|start over)\b/.test(t)&&!/\b(grind)\b/.test(t)){S.cart=[];base=[];renderOrder();return sayThen('Okay, order cleared. What would you like?',()=>startListening())}
+  if(!edits&&/\b(confirm|check ?out|continue|proceed|that'?s (?:all|it)|done|looks good|yes|yeah|yep)\b/.test(t)){
+    if(!S.cart.length)return sayThen('Your order is empty. What would you like?',()=>startListening());
+    stopSpeech();return go('sub')}
+  if(!edits&&/\b(read|repeat)\b/.test(t))return speakReadback(true);
+  // remove
+  if(/\b(remove|delete|take off|take out|cancel)\b/.test(t)){
+    if(/\b(everything|all)\b/.test(t)){S.cart=[];base=[];renderOrder();return sayThen('Okay, order cleared. What would you like?',()=>startListening())}
+    const ps=productsIn(grindIn(t).rest);
+    let removed=[];
+    if(ps.length){S.cart=S.cart.filter(l=>{const hit=ps.some(p=>p.pid===l.pid);if(hit)removed.push(P[l.pid].name);return !hit})}
+    else if(S.cart.length){removed.push(P[S.cart[S.cart.length-1].pid].name);S.cart.pop()}
+    if(!removed.length){return sayThen("I couldn't find that in your order. What would you like to change?",()=>startListening())}
+    return afterEdit('Removed '+[...new Set(removed)].join(' and ')+'.');
+  }
+  // change / make / set
+  const g=grindIn(t),z=sizeIn(g.rest);
+  const ps=productsIn(z.rest);
+  let q=numIn(z.rest.replace(/\b(?:\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\s+(?=(?:grams?|g|kilos?|kg)\b)/g,' '));
+  if(!g.grind&&!z.size&&!ps.length&&q===null){
+    return sayThen('Okay. What would you like to change? You can say remove the Forte, make it three, or change the grind to filter.',()=>startListening());
+  }
+  if(!S.cart.length)return sayThen('Your order is empty. What would you like?',()=>startListening());
+  const lastBean=[...S.cart].reverse().find(l=>P[l.pid].kind==='bean');
+  const target=ps.length?ps[0].pid:((g.grind||z.size)&&lastBean?lastBean.pid:S.cart[S.cart.length-1].pid);
+  const oldName=P[target].name;
+  let lines=S.cart.filter(l=>l.pid===target);
+  if(!lines.length)return sayThen(P[target].name+" isn't in your order yet. Say add, then the product.",()=>startListening());
+  const done=[];
+  if(ps.length>=2&&/\bto\b|\binto\b|\binstead\b/.test(t)){
+    const nw=ps[1].pid;lines.forEach(l=>{const wasBean=P[l.pid].kind==='bean';l.pid=nw;if(P[nw].kind==='caps'){l.size=0;l.grind=null;l.def=false}else if(!wasBean){l.size=500;l.grind='whole';l.def=true}});
+    lines=S.cart.filter(l=>l.pid===nw);done.push('now '+P[nw].name);
+  }
+  if(g.grind){lines.forEach(l=>{if(P[l.pid].kind==='bean'){l.grind=g.grind;l.def=false}});done.push(GRINDS[g.grind]+' grind')}
+  if(z.size){lines.forEach(l=>{if(P[l.pid].kind==='bean')l.size=z.size});done.push(SIZES[z.size])}
+  if(q!==null&&q>0&&q<=50&&!(ps.length>=2)){lines[0].qty=q;done.push('quantity '+q)}
+  if(!done.length)return sayThen("Sorry, I didn't get that change. Try: make it three, or change the grind to filter.",()=>startListening());
+  afterEdit('Done, '+oldName+' '+done.join(', ')+'.');
+}
 
 /* ========= READ-BACK ========= */
 const WORDS=['zero','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve'];
@@ -2742,30 +2857,14 @@ function readbackText(){
     return `${q} ${l.qty>1?'boxes':'box'} of 50 ${p.name}`});
   if(!parts.length)return '';
   const list=parts.length>1?parts.slice(0,-1).join(', ')+', and '+parts.slice(-1):parts[0];
-  const t=subtotal();
-  return `${list}. Total ${zarSpeak(t)}. Say confirm, or tap to edit.`;
+  return `${list}. Total ${zarSpeak(subtotal())}.`;
 }
 const zarSpeak=n=>Number.isInteger(n)?`R ${n}`:`R ${Math.floor(n)} ${Math.round((n%1)*100)}`;
-let confirmRec=null;
-function speakReadback(){
-  const t=readbackText();if(!t||cur!=='review')return;
-  if(!('speechSynthesis' in window)){return}
-  stopSpeech();const u=new SpeechSynthesisUtterance(t);u.lang='en-ZA';u.rate=1;
-  u.onend=()=>listenForConfirm();
-  speechSynthesis.speak(u);
+function speakReadback(thenListen){
+  const t=readbackText();if(!t){toast('Your order is empty');return}
+  sayThen(t+(thenListen?' Say confirm, or say change.':''),()=>{if(thenListen)startListening()});
 }
-function stopSpeech(){try{speechSynthesis.cancel()}catch(e){}try{confirmRec&&confirmRec.abort()}catch(e){}confirmRec=null}
-function listenForConfirm(){
-  if(!SR||cur!=='review')return;
-  try{
-    confirmRec=new SR();confirmRec.lang='en-ZA';confirmRec.interimResults=false;confirmRec.continuous=false;
-    confirmRec.onresult=e=>{const t=e.results[0][0].transcript.toLowerCase();
-      if(/\b(confirm|yes|yeah|yep|correct|go ahead|continue|that'?s right|looks good)\b/.test(t)){toast('Confirmed');stkMain()}
-      else if(/\b(change|edit|no|nope|wrong)\b/.test(t)){toast('Okay, tap anything to change it')}
-      else handleUtterance(t)};
-    confirmRec.onerror=()=>{};confirmRec.start();toast('Say “confirm” or “change”…');
-  }catch(e){}
-}
+function stopSpeech(){try{speechSynthesis.cancel()}catch(e){}}
 
 /* ========= SUBSCRIBE ========= */
 function renderSub(){
@@ -2889,7 +2988,7 @@ function showDone(o,payload){
   $('waBtn').href='https://wa.me/'+normPhone(o.customer.whatsapp.replace('+',''))+'?text='+encodeURIComponent(msg);
   try{speechSynthesis.speak(Object.assign(new SpeechSynthesisUtterance('Thank you. Your order is confirmed.'),{lang:'en-ZA'}))}catch(e){}
 }
-function resetAll(){S.cart=[];S.missed=[];S.sub=false;S.slot=null;renderReorder()}
+function resetAll(){S.cart=[];base=[];S.missed=[];S.sub=false;S.slot=null;renderReorder();renderOrder()}
 
 /* ========= GET THE APP (QR of this page's own address) ========= */
 (function(){
@@ -2902,8 +3001,8 @@ function resetAll(){S.cart=[];S.missed=[];S.sub=false;S.slot=null;renderReorder(
   }catch(e){$('getApp').style.display='none'}
 })();
 /* ========= INIT ========= */
-renderMenu();renderReorder();buildSlots();renderPay.bind;
-if(!SR)$('micHint').textContent='Voice ordering needs Chrome or Safari. You can type your order below.';
+renderMenu();renderReorder();buildSlots();renderOrder();
+if(!SR)$('micState').textContent='Voice needs Chrome or Safari. Or use the 🎤 on your phone keyboard in the box.';
 </script>
 </body>
 </html>
