@@ -2584,7 +2584,7 @@ const PRODUCTS=[
  {id:'forte',name:'Forte',kind:'bean',desc:'Bold and dark, built for milk drinks.',kw:['forte','fortay'],prices:BEAN_PRICE,im:2},
  {id:'espresso',name:'Espresso',kind:'bean',desc:'Rich crema, classic Italian-style roast.',kw:['espresso'],prices:BEAN_PRICE,im:3},
  {id:'cafe',name:'Café',kind:'bean',desc:'Light-bodied filter-friendly everyday cup.',kw:['cafe','café'],prices:BEAN_PRICE,im:4},
- {id:'mokka',name:'Mokka',kind:'bean',desc:'Deep, chocolatey, made for the stovetop.',kw:['mokka','mocha'],prices:BEAN_PRICE,im:0},
+ {id:'mokka',name:'Mokka',kind:'bean',desc:'Deep, chocolatey, made for the stovetop.',kw:['mokka','mocha','mocca','mokha'],prices:BEAN_PRICE,im:0},
  {id:'jdark',name:'Jovo Dark capsules',kind:'caps',unit:'box of 50',desc:'Dark roast, 50 capsules.',kw:['dark'],price:214,im:2},
  {id:'jmed',name:'Jovo Medium capsules',kind:'caps',unit:'box of 50',desc:'Medium roast, 50 capsules.',kw:['medium'],price:214,im:1},
  {id:'jdec',name:'Jovo Decaf capsules',kind:'caps',unit:'box of 50',desc:'Decaf, 50 capsules.',kw:['decaf','decaff'],price:250,im:3}
@@ -2607,6 +2607,8 @@ function parseOrder(text){
   let t=' '+text.toLowerCase().replace(/[.!?]/g,' ').replace(/\s+/g,' ')+' ';
   const items=[],missed=[];
   const numPat='(?:\\d+|'+Object.keys(NUM).join('|')+')';
+  // a number straight after a product word starts a new item ("1 jova 1 mocca 1 house")
+  t=t.replace(new RegExp('\\b(house|blend|allora|alora|forte|fortay|espresso|cafe|café|mokka|mocca|mocha|capsules?|pods?|jovo|jova|dark|medium|decaf|decaff|bags?|boxes|box|packs?|kilos?|kg|grams?|g)\\s+(?=(?:\\d+|'+Object.keys(NUM).filter(k=>k!=='a'&&k!=='an'&&k!=='another').join('|')+')\\b)','g'),'$1, ');
   const segs=t.split(new RegExp('\\s*,\\s*|\\s+(?:and|plus|also|then|with)\\s+(?=(?:'+numPat+')\\b|some\\b|the\\b|my\\b)|\\s+plus\\s+|\\s+also\\s+','g')).map(s=>s.trim()).filter(Boolean);
   let prev=null;
   for(let seg of segs){
@@ -2625,11 +2627,12 @@ function parseOrder(text){
     qty=Math.min(Math.max(qty,1),50);
     // product
     let pid=null;
-    if(/\b(?:capsules?|pods?|jovo|nespresso)\b/.test(s)){
+    if(/\b(?:capsules?|pods?|jovo|jova|nespresso)\b/.test(s)){
       pid='jdark';if(/\bdecaf/.test(s))pid='jdec';else if(/\bmedium\b/.test(s))pid='jmed';
     }else{
       const order=['house','allora','forte','mokka','cafe','espresso'];
       for(const id of order){if(P[id].kw.some(k=>new RegExp('\\b'+k+'\\b').test(s.replace(/[éè]/g,'e')))){pid=id;break}}
+      if(!pid&&/\bdecaf/.test(s))pid='jdec';
       if(!pid&&/\b(?:coffee|beans?|bags?)\b/.test(s))pid='house';
     }
     if(!pid){
