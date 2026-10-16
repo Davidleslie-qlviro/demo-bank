@@ -222,7 +222,7 @@ pre{white-space:pre-wrap;word-break:break-all;font-size:11px;color:var(--mute);m
 
   <section class="talk">
     <div class="tlabel">Describe your order</div>
-    <div class="hintbox">🎤 <b>Tap Speak</b> and say <b>your name, your email and your phone number</b>, then what you'd like and where to deliver it. You can scroll the menu while it listens. Tap again to stop. <small>Or just tap the box and type.</small></div>
+    <div class="hintbox">🎤 <b>Tap the box below, then tap the 🎤 on your keyboard</b> and say <b>your name, your email and your phone number</b>, then what you'd like and where to deliver it. Tap <b>Done</b> when you've finished, then scroll the menu. <small>iPhone: 🎤 bottom right of the keyboard · Android: tap Speak below</small></div>
     <textarea id="orderText" rows="3" aria-label="Your name, email, phone and order" placeholder="Hi, it's Thandi Mokoena, thandi at jozicoffee dot co dot za, 082 123 4567. Two bags of Forte beans, three bags of Allora filter grind and a box of Jovo dark capsules. Deliver to 22 Main Road, Bedfordview."></textarea>
     <div class="trow" style="margin-bottom:8px"><button class="btn ghost" id="micBtn" hidden onclick="toggleMic()">🎤 Tap to speak</button></div>
     <div class="trow"><button class="btn" onclick="getInvoice()">Get invoice</button><button class="btn ghost" style="width:auto;padding:15px 20px" onclick="clearText()">Clear</button></div>
@@ -2878,7 +2878,7 @@ function toggleMic(){
   REC.onend=function(){if(micOn){micBase=ta.value.replace(/\s+$/,'')+' ';finalT='';try{REC.start()}catch(e){micOn=false;setMic(false)}}else setMic(false)};
   try{REC.start();setMic(true)}catch(e){toast('Could not start the microphone')}
 }
-(function(){if(window.SpeechRecognition||window.webkitSpeechRecognition){var b=$('micBtn');if(b)b.hidden=false}})();
+(function(){var ios=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);if(!ios&&(window.SpeechRecognition||window.webkitSpeechRecognition)){var b=$('micBtn');if(b)b.hidden=false}})();
 function clearText(){stopMic();$('orderText').value='';$('st').innerHTML=''}
 function newOrder(){S.cart=[];S.paid=false;S.no='';S.sub=false;S.slot=null;S.eta=null;S.missed=[];S.view='order';$('st').innerHTML='';renderReorder();renderSheet();window.scrollTo({top:0,behavior:'smooth'})}
 
