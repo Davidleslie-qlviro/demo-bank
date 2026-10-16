@@ -51,6 +51,7 @@ button{font:inherit;cursor:pointer;border:0;color:inherit}
 .typed input{flex:1}
 input,select,textarea{width:100%;background:#fff;border:1px solid var(--line);color:var(--cream);border-radius:12px;padding:13px 14px;font:inherit;font-size:16px}
 input:focus,select:focus{outline:2px solid var(--gold);outline-offset:0}
+.btn.on{background:#b3261e;color:#fff;border-color:#b3261e}
 label{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:14px 0 6px}
 .err{color:var(--bad);font-size:13px;margin-top:4px;display:none}
 .bad input{border-color:var(--bad)}.bad .err{display:block}
@@ -221,8 +222,9 @@ pre{white-space:pre-wrap;word-break:break-all;font-size:11px;color:var(--mute);m
 
   <section class="talk">
     <div class="tlabel">Describe your order</div>
-    <div class="hintbox">👆 <b>Tap Clear, then tap the box below.</b> Tap the <b>🎤 on your keyboard</b> and say <b>your name, your email and your phone number</b>, then what you'd like and where to deliver it.<small>iPhone: 🎤 bottom right of the keyboard · Android: 🎤 top right</small></div>
+    <div class="hintbox">🎤 <b>Tap Speak</b> and say <b>your name, your email and your phone number</b>, then what you'd like and where to deliver it. You can scroll the menu while it listens. Tap again to stop. <small>Or just tap the box and type.</small></div>
     <textarea id="orderText" rows="3" aria-label="Your name, email, phone and order" placeholder="Hi, it's Thandi Mokoena, thandi at jozicoffee dot co dot za, 082 123 4567. Two bags of Forte beans, three bags of Allora filter grind and a box of Jovo dark capsules. Deliver to 22 Main Road, Bedfordview."></textarea>
+    <div class="trow" style="margin-bottom:8px"><button class="btn ghost" id="micBtn" hidden onclick="toggleMic()">🎤 Tap to speak</button></div>
     <div class="trow"><button class="btn" onclick="getInvoice()">Get invoice</button><button class="btn ghost" style="width:auto;padding:15px 20px" onclick="clearText()">Clear</button></div>
     <div id="st" class="st"></div>
   </section>
@@ -2811,7 +2813,7 @@ function extractDetails(raw){
 }
 
 /* ========= GET INVOICE (Qlviro "Build quote" -> invoice) ========= */
-function getInvoice(){
+function getInvoice(){stopMic();
   const raw=$('orderText').value.trim();let got=null,heard=0;
   if(raw){
     const d=extractDetails(raw);got=d;
@@ -2863,7 +2865,21 @@ function submitModal(){
   S.cust.name=n;S.cust.email=m;S.cust.phone=p;S.consent=$('rCons').checked;
   closeModal();showStatus();finishInvoice();
 }
-function clearText(){$('orderText').value='';$('st').innerHTML='';$('orderText').focus()}
+var REC=null,micOn=false,micBase='';
+function setMic(on){micOn=on;var b=$('micBtn');if(!b)return;b.classList.toggle('on',on);b.textContent=on?'⏹ Listening… tap to stop':'🎤 Tap to speak'}
+function stopMic(){micOn=false;try{REC&&REC.stop()}catch(e){}setMic(false)}
+function toggleMic(){
+  if(micOn){stopMic();return}
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return;
+  var ta=$('orderText'),finalT='';REC=new SR();REC.lang='en-ZA';REC.continuous=true;REC.interimResults=true;
+  micBase=ta.value?ta.value.replace(/\s+$/,'')+' ':'';
+  REC.onresult=function(e){var interim='';for(var i=e.resultIndex;i<e.results.length;i++){var r=e.results[i];if(r.isFinal)finalT+=r[0].transcript+' ';else interim+=r[0].transcript}ta.value=micBase+finalT+interim};
+  REC.onerror=function(e){if(e.error==='not-allowed'||e.error==='service-not-allowed'){micOn=false;setMic(false);toast('Allow the microphone for this page, or type your order.')}};
+  REC.onend=function(){if(micOn){micBase=ta.value.replace(/\s+$/,'')+' ';finalT='';try{REC.start()}catch(e){micOn=false;setMic(false)}}else setMic(false)};
+  try{REC.start();setMic(true)}catch(e){toast('Could not start the microphone')}
+}
+(function(){if(window.SpeechRecognition||window.webkitSpeechRecognition){var b=$('micBtn');if(b)b.hidden=false}})();
+function clearText(){stopMic();$('orderText').value='';$('st').innerHTML=''}
 function newOrder(){S.cart=[];S.paid=false;S.no='';S.sub=false;S.slot=null;S.eta=null;S.missed=[];S.view='order';$('st').innerHTML='';renderReorder();renderSheet();window.scrollTo({top:0,behavior:'smooth'})}
 
 /* ========= THE SHEET (order draft -> tax invoice) ========= */
