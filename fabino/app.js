@@ -172,6 +172,9 @@
     bean:    sticky('(?:' + alternation(Object.keys(BEAN_WORDS)) + ')\\b'),
     variant: sticky('(?:' + alternation(Object.keys(VARIANT_WORDS)) + ')\\b'),
     family:  sticky('(?:' + alternation(Object.keys(FAMILY_WORDS)) + ')\\b'),
+    codeWord: sticky('(?:number|num|no\\.?|nr\\.?|item|code|#)\\s*(\\d{1,2}|one|two|three|four|five|six|seven|eight|nine)\\b'),
+    packSize: sticky('of\\s+\\d+\\s+(?=(?:capsules?|pods?)\\b)'),     // "a box of 50 capsules": 50 is the pack, not the quantity
+    codeOf:   sticky('of\\s+([1-9]|one|two|three|four|five|six|seven|eight|nine)\\b(?!\\s*(?:kg|kilo|g\\b|gram|x\\b))'),
     number:  sticky('(?:\\d+(?:\\s*x\\b)?|(?:' + numberPattern + ')\\b)'),
     word:    /[a-z][a-z'’-]*/y
   };
@@ -186,6 +189,9 @@
     while (i < s.length) {
       if (take(RE.space, () => ({ type: 'skip' }))) { tokens.pop(); continue; }
       if (take(RE.sep, () => ({ type: 'sep' }))) continue;
+      if (take(RE.codeWord, m => ({ type: 'code', n: parseNumber(m[1]) }))) continue;
+      if (take(RE.packSize, () => ({ type: 'skip' }))) { tokens.pop(); continue; }
+      if (take(RE.codeOf, m => ({ type: 'code', n: parseNumber(m[1]) }))) continue;
       if (take(RE.oneKilo, () => ({ type: 'size', v: 1000 }))) continue;
       if (take(RE.half, () => ({ type: 'size', v: 500 }))) continue;
       if (take(RE.quarter, () => ({ type: 'size', v: 250 }))) continue;
@@ -260,6 +266,12 @@
           if (cur.pid && cur.pid !== t.pid) flush(t.start);
           else if (cur.family && cur.pid) flush(t.start);
           cur.pid = t.pid; break;
+        case 'code': {                                         // "number 3" / "of 3": the number printed on the menu
+          const p = PRODUCTS[t.n - 1];
+          if (!p) break;
+          if (cur.pid && cur.pid !== p.id) flush(t.start);
+          cur.pid = p.id; break;
+        }
         case 'family': cur.family = t.pid; break;                   // "jovo dark capsules": all one item
         case 'variant': cur.variant = t.pid; break;
         case 'word':
@@ -441,10 +453,10 @@
      6. MENU, REORDER, SHEET
      =================================================================== */
   function renderMenu() {
-    $('menu').innerHTML = PRODUCTS.map(p => `
+    $('menu').innerHTML = PRODUCTS.map((p, i) => `
       <div class="mi" id="mi-${p.id}" data-act="add" data-pid="${p.id}">
         <div class="im" style="background-image:url('${picture(p.im)}')"></div>
-        <div class="nf"><b>${esc(p.name)}</b><span>${esc(p.desc)}</span></div>
+        <div class="nf"><b><span class="code" aria-label="number ${i + 1}">${i + 1}</span>${esc(p.name)}</b><span>${esc(p.desc)}</span></div>
         <div class="pr">${p.kind === 'bean' ? 'from ' + zar(CFG.prices.beans250) : zar(CFG.prices[p.id])}<br><span class="qb" id="qb-${p.id}"></span></div>
         <button type="button" class="add" aria-label="Add ${esc(p.name)}">+</button>
       </div>`).join('');
