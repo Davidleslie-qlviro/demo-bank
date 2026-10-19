@@ -857,18 +857,8 @@
 
   /* --- start-up --- */
   (function init() {
-    if ('serviceWorker' in navigator && /^https?:/.test(location.protocol + '//')) { try { navigator.serviceWorker.register('sw.js').catch(() => {}); } catch (e) { /* no service worker: carry on */ } }
     /* Phone keyboard: close it when the customer scrolls on to the menu, so the menu is visible.
        The text stays in the box. Ignore the scroll the phone does itself when the box is tapped. */
-    (function keyboardAutoClose() {
-      var box = $('orderText'), t0 = 0, y0 = 0;
-      box.addEventListener('focus', function () { t0 = Date.now(); y0 = window.scrollY; });
-      window.addEventListener('scroll', function () {
-        if (document.activeElement === box && Date.now() - t0 > 1200 && Math.abs(window.scrollY - y0) > 60) box.blur();
-      }, { passive: true });
-      var menu = $('menu');
-      if (menu) menu.addEventListener('touchstart', function () { if (document.activeElement === box) box.blur(); }, { passive: true });
-    })();
     $('brandImg').src = ASSETS.brand;
     $('micBtn').hidden = !CAN_SPEAK;
     $('micHint').textContent = IS_IOS ? 'iPhone: tap 🎤 at the bottom right of your keyboard.'

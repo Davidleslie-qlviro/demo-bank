@@ -2,7 +2,7 @@
   "name": "Fabino Coffee",
   "short_name": "Fabino",
   "description": "Say it. We'll brew the rest.",
-  "start_url": "./?src=app",
+  "start_url": "./?src=app&v=27",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
