@@ -111,7 +111,7 @@ function cleanPatch(p) {
     if (b.vatReg !== undefined) out.business.vatReg = !!b.vatReg; if (b.vatRate !== undefined) out.business.vatRate = num(b.vatRate, 0, 30); }
   if (p.bank) { out.bank = {}; for (const k of ['bankName', 'accHolder', 'accNo', 'branch', 'accType', 'payRef']) if (p.bank[k] !== undefined) out.bank[k] = str(p.bank[k], 80); }
   if (p.specials) { if (!Array.isArray(p.specials) || p.specials.length > 5) throw fail(400, 'Up to 5 specials'); out.specials = p.specials.map(s => {
-    if (!PIDS.includes(s.pid)) throw fail(400, 'Unknown product in a special'); const o = { t: str(s.t, 60), x: str(s.x, 200), pid: s.pid };
+    if (!PIDS.includes(s.pid)) throw fail(400, 'Unknown product in a special'); const o = { t: str(s.t, 60), x: str(s.x, 1200), pid: s.pid };
     if (isBean(s.pid)) { o.size = [250, 500, 1000].includes(+s.size) ? +s.size : 500; o.grind = GRINDS.includes(s.grind) ? s.grind : 'whole'; } return o; }); }
   for (const g of Object.keys(out)) if (!Object.keys(out[g]).length && !Array.isArray(out[g])) delete out[g];
   if (!Object.keys(out).length) throw fail(400, 'Nothing to change');

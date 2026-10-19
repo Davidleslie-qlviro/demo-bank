@@ -520,16 +520,20 @@
       ${S.sub ? `<div class="freq">${[2, 3, 4].map(w => `<button type="button" class="${S.freq === w ? 'sel' : ''}" data-act="freq" data-w="${w}">${w} weeks</button>`).join('')}</div>` : ''}</div>`;
   }
 
+  /* A recipe is free text with line breaks. The card shows its first line; "Read recipe" opens the rest. */
   function specialsHtml(readOnly) {
     if (readOnly || !CFG.specials.length) return '';
-    return `<div class="dsec"><div class="lab">Specials &amp; recipes for you</div>${CFG.specials.map((sp, i) =>
-      `<div class="spec"><div><b>${esc(sp.t)}</b><small>${esc(sp.x)}</small></div><button type="button" class="btn sm" data-act="special" data-i="${i}">Add</button></div>`).join('')}</div>`;
+    return `<div class="dsec"><div class="lab">Specials &amp; recipes for you</div>${CFG.specials.map((sp, i) => {
+      const full = String(sp.x || '').trim(), first = full.split('\n')[0], short = first.length > 90 ? first.slice(0, 87) + '...' : first;
+      const more = full.length > short.length ? `<details><summary>Read recipe</summary><div class="rtxt">${esc(full)}</div></details>` : '';
+      return `<div class="spec"><div><b>${esc(sp.t)}</b><small>${esc(short)}</small>${more}</div><button type="button" class="btn sm" data-act="special" data-i="${i}">Add</button></div>`;
+    }).join('')}</div>`;
   }
 
   function recipesHtml() {
     if (!S.recipes.length) return '';
     return `<div class="dsec"><div class="lab">Your recipes</div>${S.recipes.map(r =>
-      `<div class="spec"><div><b>${esc(r.t)}</b><small>${esc(r.x)}</small></div></div>`).join('')}</div>`;
+      `<div class="spec"><div><b>${esc(r.t)}</b><div class="rtxt">${esc(r.x)}</div></div></div>`).join('')}</div>`;
   }
 
   function partiesHtml(invoiceView, readOnly) {
@@ -623,7 +627,9 @@
     const t = totals(), c = S.cust, b = CFG.business, W = 800, pad = 40;
     const rowH = 84, recLines = [];
     const wrap = (txt, font, maxW) => { const m = document.createElement('canvas').getContext('2d'); m.font = font; const out = []; let line = '';
-      String(txt).split(/\s+/).forEach(w => { const tryL = line ? line + ' ' + w : w; if (m.measureText(tryL).width > maxW && line) { out.push(line); line = w; } else line = tryL; }); if (line) out.push(line); return out; };
+      String(txt).split('\n').forEach(par => { line = ''; if (!par.trim()) { out.push(''); return; }
+        par.trim().split(/\s+/).forEach(w => { const tryL = line ? line + ' ' + w : w; if (m.measureText(tryL).width > maxW && line) { out.push(line); line = w; } else line = tryL; }); if (line) out.push(line); });
+      return out; };
     S.recipes.forEach(r => { recLines.push({ h: r.t }); wrap(r.x, '16px sans-serif', W - pad * 2).forEach(l => recLines.push({ b: l })); });
     const recH = S.recipes.length ? 50 + recLines.length * 26 : 0;
     const H = 400 + S.cart.length * rowH + 220 + recH;

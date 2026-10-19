@@ -190,3 +190,7 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--gold); outl
 #getApp .shareic { display: inline-block; border: 1.5px solid var(--mute); border-radius: 5px; padding: 0 5px; line-height: 1.2; font-weight: 700; }
 #gaPhone p { margin: 8px 0; font-size: 14px; color: var(--mute); }
 #gaInstall { margin: 4px 0 6px; }
+
+.rtxt { white-space: pre-line; font-size: 14px; line-height: 1.5; color: var(--ink); margin-top: 6px; }
+.spec details { margin-top: 4px; }
+.spec summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var(--gold-d, #8a6d12); text-decoration: underline; }
