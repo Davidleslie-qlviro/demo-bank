@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Glenro Group Dispute Read</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100,600;112,700;125,800&family=Source+Sans+3:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: split hero. Left carries the thesis and a sample matter ledger; right is the live intake funnel, open at step 1. */
+:root {
+  --bg: #e9edf1;
+  --surface: #ffffff;
+  --surface-2: #f2f5f8;
+  --ink: #0d1b2c;
+  --muted: #4b5b6e;
+  --line: #cdd5de;
+  --action: #0b6a82;
+  --on-action: #ffffff;
+  --accent: #8a6d12;
+  --accent-soft: #f3ead0;
+  --ok: #17694a;
+  --warn: #a85f00;
+  --crit: #a3281f;
+  --f-display: "Archivo", "Arial Narrow", Arial, sans-serif;
+  --f-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #09121c; --surface: #111e2e; --surface-2: #0d1826; --ink: #e7edf4; --muted: #9aabbd;
+    --line: #243649; --action: #d4b04a; --on-action: #1a1204; --accent: #d4b04a; --accent-soft: #2b2610;
+    --ok: #5fc79a; --warn: #f0b43c; --crit: #ff8a7d; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #09121c; --surface: #111e2e; --surface-2: #0d1826; --ink: #e7edf4; --muted: #9aabbd;
+  --line: #243649; --action: #d4b04a; --on-action: #1a1204; --accent: #d4b04a; --accent-soft: #2b2610;
+  --ok: #5fc79a; --warn: #f0b43c; --crit: #ff8a7d; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 17px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 48px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; }
+h1, h2, h3 { font-family: var(--f-display); font-stretch: 112%; line-height: 1.08; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+p { margin: 0; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.mono { font-family: var(--f-mono); }
+.label { font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+
+/* top bar */
+.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 20px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.mark { width: 34px; height: 34px; background: var(--action); position: relative; flex: none; }
+.mark::before { content: ""; position: absolute; left: 7px; right: 7px; bottom: 7px; height: 4px; background: var(--on-action); }
+.mark::after { content: ""; position: absolute; left: 7px; width: 4px; top: 7px; bottom: 7px; background: var(--on-action); box-shadow: 8px 6px 0 var(--on-action), 16px 12px 0 var(--on-action); }
+.brand b { font-family: var(--f-display); font-stretch: 118%; font-weight: 800; font-size: 18px; letter-spacing: 0.01em; display: block; line-height: 1.1; }
+.brand span { font-size: 13px; color: var(--muted); }
+.top nav { display: flex; gap: 22px; align-items: center; font-size: 15px; flex-wrap: wrap; }
+.top nav a { text-decoration: none; color: var(--muted); }
+.top nav a:hover { color: var(--ink); }
+.top nav .tel { font-family: var(--f-mono); color: var(--ink); font-size: 14px; }
+
+/* hero */
+.hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 520px); gap: 56px; padding-block: 56px 64px; align-items: start; }
+.eyebrow { color: var(--accent); margin-bottom: 18px; }
+.hero h1 { font-size: clamp(34px, 5.4vw, 60px); font-weight: 800; }
+.hero .lede { margin-top: 22px; font-size: 19px; color: var(--muted); max-width: 54ch; }
+.ledger { margin-top: 36px; border: 1px solid var(--line); background: var(--surface); max-width: 560px; }
+.ledger-h { display: flex; justify-content: space-between; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--line); background: var(--surface-2); flex-wrap: wrap; }
+.ledger table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.ledger td { padding: 9px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.ledger tr:last-child td { border-bottom: 0; }
+.ledger td:first-child { font-family: var(--f-mono); font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+.ledger td:last-child { text-align: right; font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.tag { display: inline-block; font-family: var(--f-mono); font-size: 11.5px; padding: 2px 7px; letter-spacing: 0.04em; text-transform: uppercase; }
+.tag.crit { background: var(--crit); color: #fff; }
+.tag.warn { background: var(--accent-soft); color: var(--accent); }
+.tag.ok { background: var(--ok); color: #fff; }
+.ledger-note { padding: 9px 14px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); }
+
+/* funnel card */
+.funnel { background: var(--surface); border: 1px solid var(--line); border-top: 5px solid var(--action); padding: 26px 26px 24px; box-shadow: 0 18px 40px -24px rgba(8, 20, 35, 0.45); min-width: 0; }
+.prog { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 10px; }
+.prog i { height: 5px; background: var(--line); display: block; }
+.prog i.on { background: var(--action); }
+.stepmeta { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 18px; }
+.back { background: none; border: 0; color: var(--muted); font: inherit; font-size: 14px; cursor: pointer; padding: 4px 0; text-decoration: underline; text-underline-offset: 3px; }
+.back[hidden] { display: none; }
+.funnel h2 { font-size: 26px; font-weight: 700; }
+.funnel .hint { color: var(--muted); font-size: 15px; margin-top: 8px; }
+.opts { display: grid; gap: 9px; margin-top: 20px; }
+.opt { text-align: left; background: var(--surface-2); border: 1px solid var(--line); color: var(--ink); font: inherit; padding: 12px 14px; cursor: pointer; display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 12px; align-items: start; transition: border-color .15s, background .15s; }
+.opt:hover { border-color: var(--action); }
+.opt .dot { width: 18px; height: 18px; border: 2px solid var(--muted); border-radius: 50%; margin-top: 3px; }
+.opt[aria-pressed="true"] { border-color: var(--action); background: var(--surface); box-shadow: inset 3px 0 0 var(--action); }
+.opt[aria-pressed="true"] .dot { border-color: var(--action); background: radial-gradient(circle, var(--action) 0 4px, transparent 5px); }
+.opt b { display: block; font-weight: 600; font-size: 16.5px; line-height: 1.3; }
+.opt small { display: block; color: var(--muted); font-size: 14px; line-height: 1.35; margin-top: 2px; }
+.opts.compact { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.opts.compact .opt { padding: 11px 12px; }
+.field { display: grid; gap: 6px; margin-top: 16px; }
+.field label, .group-label { font-family: var(--f-mono); font-size: 12px; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+.field input, .field select, .field textarea { font: inherit; font-size: 16px; color: var(--ink); background: var(--surface-2); border: 1px solid var(--line); padding: 11px 12px; width: 100%; border-radius: 0; }
+.field textarea { min-height: 78px; resize: vertical; }
+.field .err { color: var(--crit); font-size: 13.5px; min-height: 0; }
+.row2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.group-label { margin-top: 20px; display: block; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: var(--action); color: var(--on-action); border: 0; font-family: var(--f-display); font-stretch: 112%; font-weight: 700; font-size: 16px; letter-spacing: .02em; padding: 14px 22px; cursor: pointer; }
+.btn:hover { filter: brightness(1.12); }
+.btn:disabled { opacity: .45; cursor: not-allowed; filter: none; }
+.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--ink); }
+.actions { margin-top: 22px; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+.fine { font-size: 13px; color: var(--muted); margin-top: 14px; }
+
+/* result */
+.tabs { display: flex; border-bottom: 1px solid var(--line); margin: 18px 0 20px; gap: 4px; flex-wrap: wrap; }
+.tab { background: none; border: 0; border-bottom: 3px solid transparent; color: var(--muted); font: inherit; font-weight: 600; padding: 9px 12px; cursor: pointer; font-size: 15px; }
+.tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--action); }
+.verdict { display: flex; gap: 14px; align-items: flex-start; flex-wrap: wrap; }
+.verdict h2 { font-size: 24px; }
+.path { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); margin: 20px 0 4px; }
+.path div { font-family: var(--f-mono); font-size: 11px; letter-spacing: .03em; text-transform: uppercase; color: var(--muted); padding-top: 12px; border-top: 4px solid var(--line); line-height: 1.25; }
+.path div.past { border-top-color: var(--muted); }
+.path div.now { border-top-color: var(--accent); color: var(--ink); font-weight: 500; }
+.path div.now::after { content: "You are here"; display: block; color: var(--accent); margin-top: 4px; }
+.block { margin-top: 22px; }
+.block h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; font-stretch: 100%; }
+.block p { color: var(--muted); font-size: 16px; }
+.check { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+.check li label { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; align-items: start; font-size: 15.5px; padding: 8px 10px; background: var(--surface-2); border: 1px solid var(--line); cursor: pointer; }
+.check input { width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--action); }
+.slots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+.slot { background: var(--surface-2); border: 1px solid var(--line); color: var(--ink); font: inherit; padding: 10px 8px; cursor: pointer; text-align: center; line-height: 1.25; }
+.slot small { display: block; color: var(--muted); font-family: var(--f-mono); font-size: 11.5px; }
+.slot[aria-pressed="true"] { background: var(--action); color: var(--on-action); border-color: var(--action); }
+.slot[aria-pressed="true"] small { color: inherit; }
+.confirm { margin-top: 12px; padding: 12px 14px; border-left: 4px solid var(--ok); background: var(--surface-2); font-size: 15px; }
+.intake { border: 1px solid var(--line); background: var(--surface-2); }
+.intake-h { padding: 10px 14px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; align-items: center; }
+.intake dl { margin: 0; display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr); }
+.intake dt, .intake dd { margin: 0; padding: 9px 14px; border-bottom: 1px solid var(--line); font-size: 15px; }
+.intake dt { font-family: var(--f-mono); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); padding-top: 11px; }
+.intake dd { overflow-wrap: anywhere; }
+.intake dl > :nth-last-child(-n+2) { border-bottom: 0; }
+.score { display: flex; align-items: center; gap: 10px; }
+.score i { display: block; height: 8px; background: var(--line); flex: 1; position: relative; min-width: 60px; }
+.score i b { position: absolute; inset: 0 auto 0 0; background: var(--accent); }
+.intake-note { padding: 10px 14px; font-size: 13.5px; color: var(--muted); border-top: 1px solid var(--line); }
+
+/* sections */
+.section { padding-block: 56px; border-top: 1px solid var(--line); }
+.section h2 { font-size: clamp(26px, 3.4vw, 38px); font-weight: 800; max-width: 22ch; }
+.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; margin-top: 32px; border: 1px solid var(--line); background: var(--surface); }
+.steps > div { padding: 24px; border-right: 1px solid var(--line); min-width: 0; }
+.steps > div:last-child { border-right: 0; }
+.steps .n { font-family: var(--f-mono); color: var(--accent); font-size: 13px; }
+.steps h3 { font-size: 20px; margin: 8px 0 8px; font-weight: 700; }
+.steps p { color: var(--muted); font-size: 16px; }
+.areas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 48px; margin-top: 28px; }
+.areas div { padding-block: 18px; border-bottom: 1px solid var(--line); min-width: 0; }
+.areas h3 { font-size: 19px; font-weight: 700; }
+.areas p { color: var(--muted); font-size: 16px; margin-top: 4px; }
+.areas .mono { font-size: 12.5px; color: var(--accent); display: block; margin-top: 8px; }
+.foot { border-top: 1px solid var(--line); padding-top: 24px; display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; color: var(--muted); font-size: 14px; }
+.foot p { max-width: 70ch; }
+
+@media (max-width: 920px) {
+  .hero { grid-template-columns: minmax(0, 1fr); gap: 36px; padding-block: 36px 44px; }
+  .steps { grid-template-columns: minmax(0, 1fr); }
+  .steps > div { border-right: 0; border-bottom: 1px solid var(--line); }
+  .steps > div:last-child { border-bottom: 0; }
+  .areas { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 520px) {
+  .funnel { padding: 20px 16px; }
+  .opts.compact, .row2, .slots { grid-template-columns: minmax(0, 1fr); }
+  .intake dl { grid-template-columns: minmax(0, 1fr); }
+  .intake dt { border-bottom: 0; padding-bottom: 0; }
+  .intake dl > :nth-last-child(-n+2) { border-bottom: 1px solid var(--line); }
+  .intake dl > :last-child { border-bottom: 0; }
+  .path div { font-size: 10px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#top">
+      <span class="mark" aria-hidden="true"></span>
+      <span><b>Glenro Group</b><span>Measured by results</span></span>
+    </a>
+    <nav>
+      <a href="#process">How it works</a>
+      <a href="#areas">Disputes we handle</a>
+      <span class="tel">+27 (0)11 478 7452</span>
+    </nav>
+  </header>
+
+  <section class="hero" id="top">
+    <div>
+      <p class="label eyebrow">Built environment disputes &middot; West Rand, Johannesburg</p>
+      <h1>Find out where your site dispute stands before you brief anyone.</h1>
+      <p class="lede">Five questions. You get a written read of your route, your deadline risk and the documents to pull together. A partner sees the same read when you book.</p>
+
+      <div class="ledger" aria-label="Example matter ledger">
+        <div class="ledger-h"><span class="label">Example matter</span><span class="label">Rand, excl. VAT</span></div>
+        <table>
+          <tr><td>Pay Cert 6</td><td>Paid</td><td>R 1 240 000</td></tr>
+          <tr><td>Pay Cert 7</td><td><span class="tag crit">41 days unpaid</span></td><td>R 2 310 500</td></tr>
+          <tr><td>EOT Claim 2</td><td><span class="tag warn">Notice window</span></td><td>R 684 000</td></tr>
+          <tr><td>Retention</td><td><span class="tag ok">Held</span></td><td>R 530 000</td></tr>
+        </table>
+        <p class="ledger-note">Illustrative figures. This is the picture the Dispute Read builds from your answers.</p>
+      </div>
+    </div>
+
+    <div class="funnel" id="funnel" aria-live="polite">
+      <div id="stage"></div>
+    </div>
+  </section>
+
+  <section class="section" id="process">
+    <p class="label">After you submit</p>
+    <h2>A written route first, a conversation second.</h2>
+    <div class="steps">
+      <div><span class="n">Same business day</span><h3>Intake read</h3><p>A senior associate checks your answers against the contract form and flags any notice that is close to lapsing.</p></div>
+      <div><span class="n">20 minutes</span><h3>Partner triage</h3><p>A call with the partner who would run the matter. You leave knowing the forum, the exposure and the first move.</p></div>
+      <div><span class="n">Within 48 hours</span><h3>Route and fee estimate</h3><p>A short written note setting out the recommended route, a fee range and what you need to send us.</p></div>
+    </div>
+  </section>
+
+  <section class="section" id="areas">
+    <p class="label">Disputes we handle</p>
+    <h2>The matters that stall projects and cash flow.</h2>
+    <div class="areas">
+      <div><h3>Unpaid certificates and withheld retention</h3><p>Recovery of certified and claimed amounts, set-off challenges, payment guarantees.</p><span class="mono">Adjudication &middot; demand &middot; urgent relief</span></div>
+      <div><h3>Delay, disruption and extensions of time</h3><p>Critical path analysis, time-bar compliance, prolongation and standing-time claims.</p><span class="mono">JBCC &middot; GCC &middot; NEC &middot; FIDIC</span></div>
+      <div><h3>Defects and professional negligence</h3><p>Latent defects, failed works, claims against engineers and other consultants.</p><span class="mono">Expert determination &middot; arbitration</span></div>
+      <div><h3>Termination and repudiation</h3><p>Validity of default notices, cancellation rights, guarantees called early.</p><span class="mono">Notice review &middot; interdict</span></div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <p>Prospect demo prepared for Glenro Group. This is not their live site. The Dispute Read is indicative, is not legal advice and does not create a client relationship. Nothing entered here is stored or sent.</p>
+    <p class="mono">Glenro Group &middot; Demo &middot; info@glenro.co.za</p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var SIT = [
+    { id: 'owed', t: 'I am owed money', d: 'Certified or claimed amounts unpaid or withheld', stage: 1,
+      route: 'Payment recovery by adjudication or formal demand',
+      why: 'Unpaid certified amounts are usually the quickest dispute type to put before a decision-maker, subject to what your contract allows.',
+      docs: ['The payment certificate and the date it was issued', 'Invoices and proof they were submitted', 'Any payment notice or notice of withholding', 'The contract and any amendments', 'Payment guarantee or retention terms'] },
+    { id: 'claimed', t: 'A claim has been made against me', d: 'Counterclaim, set-off or penalty', stage: 1,
+      route: 'Defence and counterclaim assessment',
+      why: 'The first job is to test the claim against the contract machinery and fix your response dates before anything else.',
+      docs: ['The claim notice and everything attached to it', 'The contract clauses it relies on', 'Your site records for the period claimed', 'Instructions and variation orders', 'Correspondence since the event'] },
+    { id: 'defects', t: 'Defects or failed works', d: 'Latent or patent defects, rectification disputes', stage: 0,
+      route: 'Expert-led assessment before any formal referral',
+      why: 'Defect disputes turn on evidence. An independent engineering opinion usually decides which forum is worth the cost.',
+      docs: ['Inspection and snag lists', 'Photographs with dates', 'As-built drawings and specifications', 'Certificates of practical and final completion', 'Rectification quotes already received'] },
+    { id: 'delay', t: 'Delay and extension of time', d: 'Programme slippage, standing time, prolongation', stage: 1,
+      route: 'Delay analysis and time-bar protection',
+      why: 'Extension and prolongation claims are lost on notice dates and thin records, so we secure both first.',
+      docs: ['The baseline programme and every revision', 'Notices of delay and their dates', 'Site diaries and daily reports', 'Instructions, RFIs and variation orders', 'Weather and access records'] },
+    { id: 'termination', t: 'Termination, or the threat of it', d: 'Notice of default, cancellation, repudiation', stage: 1,
+      route: 'Protect your position: termination validity review',
+      why: 'A defective termination notice can turn the terminating party into the one in breach. The notice and cure periods decide this.',
+      docs: ['The default or termination notice', 'The termination clause and notice provisions', 'Earlier warnings and the replies', 'Status of works and payments at the date of notice', 'Any guarantees or bonds that could be called'] },
+    { id: 'notice', t: 'I have received a referral notice', d: 'Adjudication, arbitration or summons', stage: 2,
+      route: 'Respond-first: protect your response window',
+      why: 'Once a matter is referred, the response window runs fast. We confirm the date, the forum and the appointing process straight away.',
+      docs: ['The referral notice or summons, with the date you received it', 'The dispute clause from the contract', 'The notice of dissatisfaction or earlier dispute record', 'All correspondence on the disputed item', 'Names of anyone who can give a witness account'] },
+    { id: 'contract', t: 'I need a contract drafted or reviewed', d: 'Before work starts or before you sign', stage: 0,
+      route: 'Pre-signature contract review and risk allocation',
+      why: 'Most site disputes are decided by clauses written before the first day on site. A review of payment, time-bar and dispute terms costs a fraction of the dispute it prevents.',
+      docs: ['The draft contract and any tender conditions', 'The scope, programme and pricing schedules', 'Any employer amendments to the standard form', 'Payment guarantee and retention terms', 'Your list of the clauses that worry you most'] }
+  ];
+  var ROLES = ['Main contractor', 'Subcontractor', 'Employer or developer', 'Engineer, QS or consultant', 'Supplier'];
+  var FORMS = ['JBCC', 'GCC', 'NEC', 'FIDIC', 'Bespoke or not sure'];
+  var BANDS = [
+    { id: 'u500', t: 'Under R500 000', n: 25, desk: 'Associate', forum: 'Keep cost proportionate: negotiation or fast adjudication ahead of arbitration.' },
+    { id: '500k5m', t: 'R500 000 to R5 million', n: 48, desk: 'Senior associate', forum: 'Adjudication is the natural first step, with arbitration held in reserve.' },
+    { id: '5m25m', t: 'R5 million to R25 million', n: 72, desk: 'Director', forum: 'Plan for the full ladder: adjudication, then arbitration, with expert evidence budgeted early.' },
+    { id: 'o25m', t: 'Over R25 million', n: 90, desk: 'Director with project team', forum: 'Treat as a full arbitration matter from day one, with experts and a document strategy.' }
+  ];
+  var TIMING = [
+    { id: 'w14', t: 'Yes, and a deadline is within 14 days', tier: 'Urgent', cls: 'crit', add: 10, line: 'Act this week. A notice window may close before you can instruct us in the usual way.' },
+    { id: 'o14', t: 'Yes, and the deadline is more than 14 days away', tier: 'Priority', cls: 'warn', add: 6, line: 'You have time, but not much. Book triage in the next few days and gather the documents below.' },
+    { id: 'none', t: 'No notice yet, but the dispute is building', tier: 'Standard', cls: 'ok', add: 2, line: 'Your window is open. Acting now keeps your options wide and your costs lower.' },
+    { id: 'unsure', t: 'I am not sure what has been issued', tier: 'Verify now', cls: 'warn', add: 5, line: 'Start by establishing which notices exist and when they were served. That fixes every date after it.' }
+  ];
+  var PATH = ['Event', 'Notice', 'Referral', 'Decision', 'Enforcement'];
+  var SLOTS = [['Tue 20 Oct', '08:30'], ['Tue 20 Oct', '14:00'], ['Wed 21 Oct', '10:30']];
+
+  var state = { step: 0, a: {}, tab: 'read', slot: null };
+  var stage = document.getElementById('stage');
+
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function find(arr, id) { for (var i = 0; i < arr.length; i++) { if (arr[i].id === id) return arr[i]; } return null; }
+  function head(n, title, hint) {
+    var bars = '';
+    for (var i = 0; i < 5; i++) bars += '<i class="' + (i < n ? 'on' : '') + '"></i>';
+    return '<div class="prog" aria-hidden="true">' + bars + '</div>' +
+      '<div class="stepmeta"><span class="label">Step ' + n + ' of 5</span><button class="back" type="button" id="back"' + (n === 1 ? ' hidden' : '') + '>Back</button></div>' +
+      '<h2>' + title + '</h2>' + (hint ? '<p class="hint">' + hint + '</p>' : '');
+  }
+  function bindBack() {
+    var b = document.getElementById('back');
+    if (b) b.onclick = function () { state.step = Math.max(0, state.step - 1); render(); };
+  }
+  function go(step) { state.step = step; render(); var f = document.getElementById('funnel'); if (f && f.getBoundingClientRect().top < 0) f.scrollIntoView({ block: 'start' }); }
+
+  function step1() {
+    var h = head(1, 'What is happening on the project?', 'Pick the closest fit. You can add detail at the end.') + '<div class="opts">';
+    SIT.forEach(function (s) {
+      h += '<button type="button" class="opt" data-id="' + s.id + '" aria-pressed="' + (state.a.sit === s.id) + '"><span class="dot"></span><span><b>' + s.t + '</b><small>' + s.d + '</small></span></button>';
+    });
+    stage.innerHTML = h + '</div>';
+    stage.querySelectorAll('.opt').forEach(function (b) { b.onclick = function () { state.a.sit = b.dataset.id; go(1); }; });
+  }
+  function step2() {
+    var h = head(2, 'What is your role on the project?', '') + '<div class="opts">';
+    ROLES.forEach(function (r) {
+      h += '<button type="button" class="opt" data-id="' + esc(r) + '" aria-pressed="' + (state.a.role === r) + '"><span class="dot"></span><span><b>' + r + '</b></span></button>';
+    });
+    stage.innerHTML = h + '</div>';
+    stage.querySelectorAll('.opt').forEach(function (b) { b.onclick = function () { state.a.role = b.dataset.id; go(2); }; });
+  }
+  function step3() {
+    var h = head(3, 'Which contract, and how much is in dispute?', 'Roughly is fine. Exclude VAT.') +
+      '<span class="group-label">Contract form</span><div class="opts compact">';
+    FORMS.forEach(function (f) {
+      h += '<button type="button" class="opt" data-f="' + esc(f) + '" aria-pressed="' + (state.a.form === f) + '"><span class="dot"></span><span><b>' + f + '</b></span></button>';
+    });
+    h += '</div><span class="group-label">Amount in dispute</span><div class="opts compact">';
+    BANDS.forEach(function (b) {
+      h += '<button type="button" class="opt" data-b="' + b.id + '" aria-pressed="' + (state.a.band === b.id) + '"><span class="dot"></span><span><b>' + b.t + '</b></span></button>';
+    });
+    h += '</div><div class="actions"><button class="btn" type="button" id="next3"' + (state.a.form && state.a.band ? '' : ' disabled') + '>Continue</button></div>';
+    stage.innerHTML = h;
+    stage.querySelectorAll('[data-f]').forEach(function (b) { b.onclick = function () { state.a.form = b.dataset.f; step3(); bindBack(); }; });
+    stage.querySelectorAll('[data-b]').forEach(function (b) { b.onclick = function () { state.a.band = b.dataset.b; step3(); bindBack(); }; });
+    var n = document.getElementById('next3'); if (n) n.onclick = function () { go(3); };
+  }
+  function step4() {
+    var h = head(4, 'Has a notice or deadline already been issued?', 'Default notices, referral notices, time-bars and payment deadlines all count.') + '<div class="opts">';
+    TIMING.forEach(function (t) {
+      h += '<button type="button" class="opt" data-id="' + t.id + '" aria-pressed="' + (state.a.timing === t.id) + '"><span class="dot"></span><span><b>' + t.t + '</b></span></button>';
+    });
+    stage.innerHTML = h + '</div>';
+    stage.querySelectorAll('.opt').forEach(function (b) { b.onclick = function () { state.a.timing = b.dataset.id; go(4); }; });
+  }
+  function step5() {
+    var a = state.a;
+    stage.innerHTML = head(5, 'Where should we send your Dispute Read?', 'Your read is ready. Add your details to see it.') +
+      '<form id="lead" novalidate>' +
+      '<div class="row2"><div class="field"><label for="f-name">Name</label><input id="f-name" autocomplete="name" value="' + esc(a.name || '') + '"><span class="err" id="e-name"></span></div>' +
+      '<div class="field"><label for="f-co">Company</label><input id="f-co" autocomplete="organization" value="' + esc(a.co || '') + '"></div></div>' +
+      '<div class="row2"><div class="field"><label for="f-mail">Email</label><input id="f-mail" type="email" autocomplete="email" value="' + esc(a.mail || '') + '"><span class="err" id="e-mail"></span></div>' +
+      '<div class="field"><label for="f-tel">Phone</label><input id="f-tel" type="tel" autocomplete="tel" value="' + esc(a.tel || '') + '"><span class="err" id="e-tel"></span></div></div>' +
+      '<div class="field"><label for="f-note">Anything we should know first (optional)</label><textarea id="f-note">' + esc(a.note || '') + '</textarea></div>' +
+      '<div class="actions"><button class="btn" type="submit">Show my Dispute Read</button></div>' +
+      '<p class="fine">Demo form. Nothing you type here is stored or sent.</p></form>';
+    document.getElementById('lead').onsubmit = function (e) {
+      e.preventDefault();
+      var v = { name: val('f-name'), co: val('f-co'), mail: val('f-mail'), tel: val('f-tel'), note: val('f-note') };
+      var ok = true;
+      ok = flag('e-name', v.name.length > 1, 'Enter your name.') && ok;
+      ok = flag('e-mail', /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.mail), 'Enter a valid email address.') && ok;
+      ok = flag('e-tel', v.tel.replace(/\D/g, '').length >= 9, 'Enter a phone number with at least 9 digits.') && ok;
+      if (!ok) return;
+      for (var k in v) state.a[k] = v[k];
+      state.step = 5; state.tab = 'read'; render();
+    };
+  }
+  function val(id) { return document.getElementById(id).value.trim(); }
+  function flag(id, good, msg) { document.getElementById(id).textContent = good ? '' : msg; return good; }
+
+  function result() {
+    var a = state.a, s = find(SIT, a.sit), b = find(BANDS, a.band), t = find(TIMING, a.timing);
+    var score = Math.min(99, b.n + t.add + (a.sit === 'notice' ? 5 : 0));
+    var tier = t.tier;
+    if (a.sit === 'notice' && tier === 'Standard') { tier = 'Priority'; }
+    var cls = tier === 'Urgent' ? 'crit' : (tier === 'Standard' ? 'ok' : 'warn');
+    var first = a.name.split(' ')[0];
+    var h = '<div class="prog" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div>' +
+      '<div class="stepmeta"><span class="label">Dispute Read</span><button class="back" type="button" id="restart">Start again</button></div>' +
+      '<div class="verdict"><span class="tag ' + cls + '">' + esc(tier) + '</span><h2>' + esc(first) + ', here is where you stand.</h2></div>' +
+      '<div class="tabs" role="tablist"><button class="tab" role="tab" data-t="read" aria-selected="' + (state.tab === 'read') + '">Your read</button>' +
+      '<button class="tab" role="tab" data-t="intake" aria-selected="' + (state.tab === 'intake') + '">What our team receives</button></div>';
+    if (state.tab === 'read') {
+      var p = '';
+      PATH.forEach(function (n, i) { p += '<div class="' + (i < s.stage ? 'past' : (i === s.stage ? 'now' : '')) + '">' + n + '</div>'; });
+      h += '<div class="path" aria-label="Position on the dispute path">' + p + '</div>' +
+        '<div class="block"><h3>Recommended route</h3><p><b style="color:var(--ink)">' + esc(s.route) + '.</b> ' + esc(s.why) + '</p></div>' +
+        '<div class="block"><h3>Forum and cost</h3><p>' + esc(b.forum) + '</p></div>' +
+        '<div class="block"><h3>Timing</h3><p>' + esc(t.line) + '</p></div>' +
+        '<div class="block"><h3>Pull these together before the call</h3><ul class="check">';
+      s.docs.forEach(function (d, i) { h += '<li><label><input type="checkbox" id="d' + i + '"><span>' + esc(d) + '</span></label></li>'; });
+      h += '</ul></div><div class="block"><h3>Book your 20-minute triage</h3><p>With the ' + esc(b.desk.toLowerCase()) + ' who would run this matter.</p><div class="slots">';
+      SLOTS.forEach(function (sl, i) { h += '<button type="button" class="slot" data-i="' + i + '" aria-pressed="' + (state.slot === i) + '">' + sl[0] + '<small>' + sl[1] + '</small></button>'; });
+      h += '</div>';
+      if (state.slot !== null) h += '<div class="confirm"><b>' + SLOTS[state.slot][0] + ' at ' + SLOTS[state.slot][1] + ' selected.</b> In the live build this books straight into the partner calendar and sends you a confirmation.</div>';
+      h += '</div><p class="fine">Indicative only. This read is not legal advice. Contract terms and dates can change the route.</p>';
+    } else {
+      h += '<div class="intake"><div class="intake-h"><span class="label">New intake &middot; auto-generated</span><span class="tag ' + cls + '">' + esc(tier) + '</span></div><dl>' +
+        '<dt>Client</dt><dd>' + esc(a.name) + (a.co ? ', ' + esc(a.co) : '') + '</dd>' +
+        '<dt>Contact</dt><dd>' + esc(a.mail) + '<br>' + esc(a.tel) + '</dd>' +
+        '<dt>Matter type</dt><dd>' + esc(s.t) + '</dd>' +
+        '<dt>Role</dt><dd>' + esc(a.role) + '</dd>' +
+        '<dt>Contract</dt><dd>' + esc(a.form) + '</dd>' +
+        '<dt>Value band</dt><dd>' + esc(b.t) + '</dd>' +
+        '<dt>Notice status</dt><dd>' + esc(t.t) + '</dd>' +
+        '<dt>Priority score</dt><dd><div class="score"><i><b style="width:' + score + '%"></b></i><span class="mono">' + score + '/100</span></div></dd>' +
+        '<dt>Routed to</dt><dd>' + esc(b.desk) + '</dd>' +
+        '<dt>First action</dt><dd>' + esc(s.route) + '</dd>' +
+        (a.note ? '<dt>Client note</dt><dd>' + esc(a.note) + '</dd>' : '') +
+        '</dl><p class="intake-note">The intake team sees this the moment the form is submitted, so the first call starts from facts instead of a blank page.</p></div>';
+    }
+    stage.innerHTML = h;
+    document.getElementById('restart').onclick = function () { state = { step: 0, a: {}, tab: 'read', slot: null }; render(); };
+    stage.querySelectorAll('.tab').forEach(function (b) { b.onclick = function () { state.tab = b.dataset.t; result(); }; });
+    stage.querySelectorAll('.slot').forEach(function (b) { b.onclick = function () { state.slot = +b.dataset.i; result(); }; });
+  }
+
+  function render() {
+    [step1, step2, step3, step4, step5, result][state.step]();
+    bindBack();
+  }
+  render();
+})();
+</script>
+</body>
+</html>
