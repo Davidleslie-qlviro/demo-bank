@@ -770,14 +770,36 @@
     } catch (e) { toast(e.message); }
   }
 
+  /* "Get the app" box: a phone installs from this page (no QR needed); a laptop shows a QR to scan with a phone. */
+  let installEvt = null;
+  window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if ($('gaInstall')) { $('gaInstall').hidden = false; $('gaAnd').hidden = true; } });
+  window.addEventListener('appinstalled', () => { $('getApp').hidden = true; store.set('fabino_hideapp', true); });
+
   function showAppQr() {
+    const box = $('getApp');
+    const installed = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
+    if (installed || store.get('fabino_hideapp')) { box.hidden = true; return; }
+    const phone = IS_IOS || (window.matchMedia && matchMedia('(pointer: coarse)').matches) || /Android/i.test(navigator.userAgent);
+    if (phone) {
+      $('gaPhone').hidden = false;
+      if (IS_IOS) $('gaIos').hidden = false; else if (!installEvt) $('gaAnd').hidden = false;
+      return;
+    }
     try {
       const url = location.href.split('#')[0].split('?')[0];
       if (!/^https?:/.test(url) || typeof qrcode === 'undefined') throw new Error('no qr');
       const q = qrcode(0, 'M'); q.addData(url); q.make();
       $('appQr').innerHTML = q.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
       $('appUrl').textContent = url;
-    } catch (e) { $('getApp').hidden = true; }
+      $('gaDesk').hidden = false;
+    } catch (e) { box.hidden = true; }
+  }
+
+  async function installApp() {
+    if (!installEvt) { $('gaAnd').hidden = false; $('gaInstall').hidden = true; return; }
+    installEvt.prompt();
+    try { await installEvt.userChoice; } catch (e) { /* closed */ }
+    installEvt = null;
   }
 
   /* --- one click handler and one change handler for the whole page --- */
@@ -791,6 +813,8 @@
     slot: el => { S.slot = el.dataset.slot; renderSheet(); },
     freq: el => { S.freq = +el.dataset.w; renderSheet(); },
     special: el => { const sp = CFG.specials[+el.dataset.i]; addLine(sp.pid, 1, sp.size || CFG.defaultSize, sp.grind || null).def = false; if (!S.recipes.some(r => r.t === sp.t)) S.recipes.push({ t: sp.t, x: sp.x }); toast(P[sp.pid].name + ' added'); renderSheet(); },
+    installApp,
+    hideApp: () => { $('getApp').hidden = true; store.set('fabino_hideapp', true); },
     reorder,
     newOrder,
     backToOrder: () => { S.view = 'order'; renderSheet(); },
@@ -827,6 +851,7 @@
 
   /* --- start-up --- */
   (function init() {
+    if ('serviceWorker' in navigator && /^https?:/.test(location.protocol + '//')) { try { navigator.serviceWorker.register('sw.js').catch(() => {}); } catch (e) { /* no service worker: carry on */ } }
     /* Phone keyboard: close it when the customer scrolls on to the menu, so the menu is visible.
        The text stays in the box. Ignore the scroll the phone does itself when the box is tapped. */
     (function keyboardAutoClose() {
