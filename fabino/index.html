@@ -12,9 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="stylesheet" href="styles.css?v=27">
+<link rel="stylesheet" href="styles.css?v=21">
 </head>
 <body>
 <div class="wrap">
@@ -23,34 +21,6 @@
     <img id="brandImg" alt="Fabino Coffee">
     <div><div class="logo" id="bizName">Fabino Coffee</div><div class="tag" id="bizTag"></div></div>
   </header>
-
-  <div class="box" id="getApp">
-    <div class="gaTop"><h3>Get the Fabino app</h3><button type="button" class="gaX" data-act="hideApp" aria-label="Hide this">Not now</button></div>
-    <!-- Phone or tablet: install straight from this page -->
-    <div id="gaPhone" hidden>
-      <p>Keep Fabino on your home screen and order in seconds.</p>
-      <button type="button" class="btn" id="gaInstall" data-act="installApp" hidden>Add to home screen</button>
-      <ol class="gaSteps" id="gaIos" hidden>
-        <li>Tap the <b>Share</b> button <span class="shareic" aria-hidden="true">&#x2191;</span> at the bottom of Safari.</li>
-        <li>Scroll down and tap <b>Add to Home Screen</b>.</li>
-        <li>Tap <b>Add</b>. Fabino is now on your home screen.</li>
-      </ol>
-      <ol class="gaSteps" id="gaAnd" hidden>
-        <li>Tap the <b>&#8942;</b> menu at the top right of Chrome.</li>
-        <li>Tap <b>Install app</b> or <b>Add to Home screen</b>.</li>
-      </ol>
-    </div>
-    <!-- Laptop or desktop: scan with a phone -->
-    <div id="gaDesk" hidden>
-      <div class="gaBody">
-        <div class="qr" id="appQr"></div>
-        <div class="gaTxt">
-          <p><b>Scan with your phone camera.</b> The app opens on your phone, then add it to your home screen.</p>
-          <div id="appUrl"></div>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <section class="talk" aria-labelledby="orderLabel">
     <div class="tlabel" id="orderLabel">Describe your order</div>
@@ -81,7 +51,6 @@
   </div>
 
   <div id="sheetWrap"></div>
-
 </div>
 
 <div class="sticky" id="sticky"><div class="wrap"><button type="button" class="btn" id="stkMain" data-act="invoice">Get invoice</button></div></div>
@@ -128,9 +97,8 @@
 
 <div id="toast" role="status"></div>
 
-<script src="qr.js?v=27"></script>
-<script src="config.js?v=27"></script>
-<script src="assets.js?v=27"></script>
-<script src="app.js?v=27"></script>
+<script src="config.js?v=21"></script>
+<script src="assets.js?v=21"></script>
+<script src="app.js?v=21"></script>
 </body>
 </html>
