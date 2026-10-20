@@ -3,86 +3,148 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Glenro Group Dispute Read</title>
+<title>Glenro Group</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100,600;112,700;125,800&family=Source+Sans+3:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: split hero. Left carries the thesis and a sample matter ledger; right is the live intake funnel, open at step 1. */
+/* Layout: classic company site. Gold utility strip, teal logo and nav band, full-width banner, then content pages switched by the URL hash. */
 :root {
-  --bg: #e9edf1;
+  --bg: #f4f6f8;
   --surface: #ffffff;
-  --surface-2: #f2f5f8;
-  --ink: #0d1b2c;
-  --muted: #4b5b6e;
-  --line: #cdd5de;
+  --surface-2: #eef2f5;
+  --ink: #12222f;
+  --muted: #4d5d6b;
+  --line: #d3dbe2;
   --action: #0b6a82;
   --on-action: #ffffff;
   --accent: #8a6d12;
   --accent-soft: #f3ead0;
   --ok: #17694a;
-  --warn: #a85f00;
+  --warn: #8a6d12;
   --crit: #a3281f;
+  --teal: #0b6a82;
+  --teal-deep: #08566a;
+  --gold: #c4a13e;
+  --on-teal: #ffffff;
   --f-display: "Archivo", "Arial Narrow", Arial, sans-serif;
   --f-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
   --f-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #09121c; --surface: #111e2e; --surface-2: #0d1826; --ink: #e7edf4; --muted: #9aabbd;
-    --line: #243649; --action: #d4b04a; --on-action: #1a1204; --accent: #d4b04a; --accent-soft: #2b2610;
-    --ok: #5fc79a; --warn: #f0b43c; --crit: #ff8a7d; color-scheme: dark;
+    --bg: #0a131c; --surface: #111e2b; --surface-2: #0d1822; --ink: #e6edf3; --muted: #9bacba; --line: #24364a;
+    --action: #3fb0cc; --on-action: #04161c; --accent: #d4b04a; --accent-soft: #2b2610;
+    --ok: #5fc79a; --warn: #d4b04a; --crit: #ff8a7d; --teal: #0b5568; --teal-deep: #08404f; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #09121c; --surface: #111e2e; --surface-2: #0d1826; --ink: #e7edf4; --muted: #9aabbd;
-  --line: #243649; --action: #d4b04a; --on-action: #1a1204; --accent: #d4b04a; --accent-soft: #2b2610;
-  --ok: #5fc79a; --warn: #f0b43c; --crit: #ff8a7d; color-scheme: dark;
+  --bg: #0a131c; --surface: #111e2b; --surface-2: #0d1822; --ink: #e6edf3; --muted: #9bacba; --line: #24364a;
+  --action: #3fb0cc; --on-action: #04161c; --accent: #d4b04a; --accent-soft: #2b2610;
+  --ok: #5fc79a; --warn: #d4b04a; --crit: #ff8a7d; --teal: #0b5568; --teal-deep: #08404f; color-scheme: dark;
 }
 * { box-sizing: border-box; }
-body {
-  background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 17px; line-height: 1.55;
-  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
-  padding-block: 0 48px;
-}
-.wrap { max-width: 1180px; margin: 0 auto; }
-h1, h2, h3 { font-family: var(--f-display); font-stretch: 112%; line-height: 1.08; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 17px; line-height: 1.6; }
+h1, h2, h3 { font-family: var(--f-display); font-stretch: 112%; line-height: 1.12; margin: 0; text-wrap: balance; }
 p { margin: 0; }
-a { color: inherit; }
-:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+a { color: var(--action); }
+:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 .mono { font-family: var(--f-mono); }
-.label { font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-
-/* top bar */
-.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 20px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
-.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-.mark { width: 34px; height: 34px; background: var(--action); position: relative; flex: none; }
-.mark::before { content: ""; position: absolute; left: 7px; right: 7px; bottom: 7px; height: 4px; background: var(--on-action); }
-.mark::after { content: ""; position: absolute; left: 7px; width: 4px; top: 7px; bottom: 7px; background: var(--on-action); box-shadow: 8px 6px 0 var(--on-action), 16px 12px 0 var(--on-action); }
-.brand b { font-family: var(--f-display); font-stretch: 118%; font-weight: 800; font-size: 18px; letter-spacing: 0.01em; display: block; line-height: 1.1; }
-.brand span { font-size: 13px; color: var(--muted); }
-.top nav { display: flex; gap: 22px; align-items: center; font-size: 15px; flex-wrap: wrap; }
-.top nav a { text-decoration: none; color: var(--muted); }
-.top nav a:hover { color: var(--ink); }
-.top nav .tel { font-family: var(--f-mono); color: var(--ink); font-size: 14px; }
-
-/* hero */
-.hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 520px); gap: 56px; padding-block: 56px 64px; align-items: start; }
-.eyebrow { color: var(--accent); margin-bottom: 18px; }
-.hero h1 { font-size: clamp(34px, 5.4vw, 60px); font-weight: 800; }
-.hero .lede { margin-top: 22px; font-size: 19px; color: var(--muted); max-width: 54ch; }
-.ledger { margin-top: 36px; border: 1px solid var(--line); background: var(--surface); max-width: 560px; }
-.ledger-h { display: flex; justify-content: space-between; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--line); background: var(--surface-2); flex-wrap: wrap; }
-.ledger table { width: 100%; border-collapse: collapse; font-size: 14px; }
-.ledger td { padding: 9px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
-.ledger tr:last-child td { border-bottom: 0; }
-.ledger td:first-child { font-family: var(--f-mono); font-size: 12.5px; color: var(--muted); white-space: nowrap; }
-.ledger td:last-child { text-align: right; font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
-.tag { display: inline-block; font-family: var(--f-mono); font-size: 11.5px; padding: 2px 7px; letter-spacing: 0.04em; text-transform: uppercase; }
+.label { font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.inner { max-width: 1160px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.tag { display: inline-block; font-family: var(--f-mono); font-size: 11.5px; padding: 2px 7px; letter-spacing: .04em; text-transform: uppercase; }
 .tag.crit { background: var(--crit); color: #fff; }
 .tag.warn { background: var(--accent-soft); color: var(--accent); }
 .tag.ok { background: var(--ok); color: #fff; }
-.ledger-note { padding: 9px 14px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); }
+
+/* demo strip */
+.demo { background: #101c26; color: #cdd8e2; font-size: 13px; text-align: center; padding: 6px 16px; }
+
+/* header */
+.strip { background: var(--gold); color: #1b1503; font-size: 14px; }
+.strip .inner { display: flex; justify-content: flex-end; gap: 22px; padding-block: 6px; flex-wrap: wrap; }
+.strip a { color: inherit; text-decoration: none; font-weight: 600; }
+.band { background: var(--teal); border-bottom: 3px solid var(--gold); position: sticky; top: 0; z-index: 20; }
+.band .inner { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding-block: 14px; flex-wrap: wrap; }
+.logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--on-teal); }
+.logo .mk { width: 40px; height: 40px; background: var(--on-teal); position: relative; flex: none; }
+.logo .mk::before { content: ""; position: absolute; left: 8px; top: 8px; bottom: 8px; width: 5px; background: var(--teal); box-shadow: 9px 7px 0 var(--teal), 18px 14px 0 var(--teal); }
+.logo .mk::after { content: ""; position: absolute; left: 8px; right: 8px; bottom: 8px; height: 5px; background: var(--gold); }
+.logo b { font-family: var(--f-display); font-stretch: 118%; font-weight: 800; font-size: 26px; letter-spacing: .01em; line-height: 1; display: block; }
+.logo small { display: block; font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; margin-top: 4px; color: var(--gold); }
+.menu { display: flex; gap: 4px; flex-wrap: wrap; }
+.menu a { color: var(--on-teal); text-decoration: none; font-weight: 600; font-size: 15px; padding: 9px 13px; border-bottom: 3px solid transparent; }
+.menu a:hover { background: var(--teal-deep); }
+.menu a[aria-current="page"] { color: var(--gold); border-bottom-color: var(--gold); }
+
+/* banner */
+.banner { position: relative; height: clamp(300px, 42vw, 460px); overflow: hidden; background: #2a1408; }
+.banner svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.banner .inner { position: relative; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; }
+.banner h1 { color: #fff; font-size: clamp(28px, 4.6vw, 52px); font-weight: 800; text-shadow: 0 2px 14px rgba(0,0,0,.55); max-width: 20ch; }
+.pagehead { background: var(--teal-deep); color: var(--on-teal); }
+.pagehead .inner { padding-block: 34px; }
+.pagehead h1 { font-size: clamp(28px, 4vw, 42px); font-weight: 800; }
+.pagehead p { margin-top: 8px; color: #c9e4ec; max-width: 62ch; }
+
+/* content */
+main { min-height: 50vh; }
+.sec { padding-block: 56px; }
+.sec + .sec { border-top: 1px solid var(--line); }
+.intro { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: 56px; align-items: center; }
+.crest { background: var(--surface); border: 1px solid var(--line); padding: 36px 24px; text-align: center; }
+.crest .mk2 { width: 76px; height: 76px; margin: 0 auto 16px; background: var(--teal); position: relative; }
+.crest .mk2::before { content: ""; position: absolute; left: 15px; top: 15px; bottom: 15px; width: 9px; background: var(--on-teal); box-shadow: 17px 13px 0 var(--on-teal), 34px 26px 0 var(--on-teal); }
+.crest .mk2::after { content: ""; position: absolute; left: 15px; right: 15px; bottom: 15px; height: 9px; background: var(--gold); }
+.crest b { font-family: var(--f-display); font-stretch: 118%; font-size: 30px; font-weight: 800; display: block; color: var(--teal); }
+:root[data-theme="dark"] .crest b { color: var(--action); }
+.crest span { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); }
+.intro p { font-size: 19px; color: var(--ink); }
+.rule { height: 3px; width: 72px; background: var(--gold); margin: 22px 0; border: 0; }
+.h2 { font-size: clamp(24px, 3vw, 34px); font-weight: 800; margin-bottom: 8px; }
+.cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; margin-top: 28px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-top: 4px solid var(--teal); padding: 26px 24px; min-width: 0; }
+.card h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+.card p { color: var(--muted); font-size: 16px; }
+.card a.more { display: inline-block; margin-top: 14px; font-weight: 600; }
+.cta { background: var(--teal); color: var(--on-teal); }
+.cta .inner { padding-block: 44px; display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
+.cta h2 { font-size: clamp(22px, 2.8vw, 30px); font-weight: 800; max-width: 26ch; }
+.cta p { color: #c9e4ec; margin-top: 6px; }
+.gobtn { display: inline-block; background: var(--gold); color: #1b1503; font-family: var(--f-display); font-stretch: 112%; font-weight: 700; padding: 14px 24px; text-decoration: none; letter-spacing: .02em; }
+.gobtn:hover { filter: brightness(1.08); }
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; }
+.two p + p { margin-top: 14px; }
+.prose p { max-width: 68ch; }
+.prose p + p { margin-top: 14px; }
+.list { list-style: none; padding: 0; margin: 18px 0 0; display: grid; gap: 10px; }
+.list li { padding-left: 22px; position: relative; }
+.list li::before { content: ""; position: absolute; left: 0; top: 11px; width: 10px; height: 4px; background: var(--gold); }
+.svc { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 22px; padding-block: 28px; border-bottom: 1px solid var(--line); }
+.svc:last-child { border-bottom: 0; }
+.svc .n { font-family: var(--f-mono); color: var(--accent); font-size: 14px; padding-top: 6px; }
+.svc h3 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+.svc p { color: var(--muted); max-width: 66ch; }
+.svc .mono { display: block; margin-top: 10px; font-size: 12.5px; color: var(--accent); }
+.note { background: var(--accent-soft); color: var(--ink); border-left: 4px solid var(--gold); padding: 12px 16px; font-size: 15px; margin-bottom: 24px; }
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); background: var(--surface); }
+table.rec { width: 100%; border-collapse: collapse; font-size: 15.5px; min-width: 620px; }
+table.rec th { text-align: left; font-family: var(--f-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); background: var(--surface-2); padding: 11px 14px; border-bottom: 1px solid var(--line); }
+table.rec td { padding: 13px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.rec tr:last-child td { border-bottom: 0; }
+.contactgrid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 520px); gap: 48px; align-items: start; }
+.detail { display: grid; gap: 18px; }
+.detail div { border-left: 4px solid var(--gold); padding-left: 16px; }
+.detail b { display: block; font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin-bottom: 2px; }
+.detail span { font-size: 18px; }
+
+/* footer */
+footer { background: #0e1a24; color: #b9c7d3; margin-top: 0; border-top: 3px solid var(--gold); }
+footer .inner { padding-block: 36px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; font-size: 15px; }
+footer b { display: block; color: #fff; font-family: var(--f-display); font-stretch: 112%; margin-bottom: 8px; font-size: 16px; }
+footer a { color: #e9d9a1; text-decoration: none; display: block; padding-block: 2px; }
+footer .legal { grid-column: 1 / -1; border-top: 1px solid #23364a; padding-top: 18px; font-size: 13px; color: #8da0b0; }
 
 /* funnel card */
 .funnel { background: var(--surface); border: 1px solid var(--line); border-top: 5px solid var(--action); padding: 26px 26px 24px; box-shadow: 0 18px 40px -24px rgba(8, 20, 35, 0.45); min-width: 0; }
@@ -153,29 +215,13 @@ a { color: inherit; }
 .score i b { position: absolute; inset: 0 auto 0 0; background: var(--accent); }
 .intake-note { padding: 10px 14px; font-size: 13.5px; color: var(--muted); border-top: 1px solid var(--line); }
 
-/* sections */
-.section { padding-block: 56px; border-top: 1px solid var(--line); }
-.section h2 { font-size: clamp(26px, 3.4vw, 38px); font-weight: 800; max-width: 22ch; }
-.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; margin-top: 32px; border: 1px solid var(--line); background: var(--surface); }
-.steps > div { padding: 24px; border-right: 1px solid var(--line); min-width: 0; }
-.steps > div:last-child { border-right: 0; }
-.steps .n { font-family: var(--f-mono); color: var(--accent); font-size: 13px; }
-.steps h3 { font-size: 20px; margin: 8px 0 8px; font-weight: 700; }
-.steps p { color: var(--muted); font-size: 16px; }
-.areas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 48px; margin-top: 28px; }
-.areas div { padding-block: 18px; border-bottom: 1px solid var(--line); min-width: 0; }
-.areas h3 { font-size: 19px; font-weight: 700; }
-.areas p { color: var(--muted); font-size: 16px; margin-top: 4px; }
-.areas .mono { font-size: 12.5px; color: var(--accent); display: block; margin-top: 8px; }
-.foot { border-top: 1px solid var(--line); padding-top: 24px; display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; color: var(--muted); font-size: 14px; }
-.foot p { max-width: 70ch; }
 
-@media (max-width: 920px) {
-  .hero { grid-template-columns: minmax(0, 1fr); gap: 36px; padding-block: 36px 44px; }
-  .steps { grid-template-columns: minmax(0, 1fr); }
-  .steps > div { border-right: 0; border-bottom: 1px solid var(--line); }
-  .steps > div:last-child { border-bottom: 0; }
-  .areas { grid-template-columns: minmax(0, 1fr); }
+
+@media (max-width: 900px) {
+  .intro, .two, .contactgrid { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  .cards { grid-template-columns: minmax(0, 1fr); }
+  footer .inner { grid-template-columns: minmax(0, 1fr); }
+  .strip .inner { justify-content: center; }
 }
 @media (max-width: 520px) {
   .funnel { padding: 20px 16px; }
@@ -185,76 +231,206 @@ a { color: inherit; }
   .intake dl > :nth-last-child(-n+2) { border-bottom: 1px solid var(--line); }
   .intake dl > :last-child { border-bottom: 0; }
   .path div { font-size: 10px; }
+  .svc { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .menu a { padding: 8px 9px; font-size: 14px; }
+  .logo b { font-size: 22px; }
 }
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
 </style>
-
 </head>
 <body>
-<div class="wrap">
-  <header class="top">
-    <a class="brand" href="#top">
-      <span class="mark" aria-hidden="true"></span>
-      <span><b>Glenro Group</b><span>Measured by results</span></span>
-    </a>
-    <nav>
-      <a href="#process">How it works</a>
-      <a href="#areas">Disputes we handle</a>
-      <span class="tel">+27 (0)11 478 7452</span>
+<div class="demo">Prospect demo prepared for Glenro Group. Not their live website. Sample content is marked.</div>
+
+<div class="strip"><div class="inner"><a href="#contact">info@glenro.co.za</a><a href="#contact">+27 (0)11 478 7452</a></div></div>
+<header class="band">
+  <div class="inner">
+    <a class="logo" href="#home"><span class="mk" aria-hidden="true"></span><span><b>Glenro Group</b><small>Measured by results</small></span></a>
+    <nav class="menu" aria-label="Main">
+      <a href="#home" data-p="home">Home</a>
+      <a href="#about" data-p="about">About Us</a>
+      <a href="#services" data-p="services">Service Areas</a>
+      <a href="#track" data-p="track">Track Record</a>
+      <a href="#social" data-p="social">Social Responsibility</a>
+      <a href="#contact" data-p="contact">Contact Us</a>
     </nav>
-  </header>
+  </div>
+</header>
 
-  <section class="hero" id="top">
+<main>
+
+<!-- HOME -->
+<section id="p-home" class="page">
+  <div class="banner" role="img" aria-label="Railway line at sunset">
+    <svg viewBox="0 0 1600 460" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#3a2a4a"/><stop offset=".35" stop-color="#c2592a"/><stop offset=".62" stop-color="#f2a33a"/><stop offset=".78" stop-color="#f7cf72"/><stop offset="1" stop-color="#e88a2e"/>
+        </linearGradient>
+        <radialGradient id="sun" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff6d0"/><stop offset=".4" stop-color="#ffe08a" stop-opacity=".9"/><stop offset="1" stop-color="#ffb347" stop-opacity="0"/></radialGradient>
+        <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b2312"/><stop offset="1" stop-color="#150b05"/></linearGradient>
+      </defs>
+      <rect width="1600" height="460" fill="url(#sky)"/>
+      <circle cx="1180" cy="262" r="150" fill="url(#sun)"/>
+      <circle cx="1180" cy="262" r="26" fill="#fff4c6"/>
+      <path d="M0 268 L260 262 L520 270 L840 264 L1120 270 L1600 262 L1600 460 L0 460 Z" fill="url(#ground)"/>
+      <path d="M0 268 Q200 252 360 266 T700 262 T1000 268 T1300 258 T1600 266 L1600 280 L0 280 Z" fill="#241408" opacity=".75"/>
+      <path d="M740 268 L860 268 L1280 460 L300 460 Z" fill="#2b1a0c"/>
+      <g stroke="#c9b38a" stroke-width="5" stroke-linecap="square">
+        <path d="M790 268 L560 460"/><path d="M810 268 L1040 460"/>
+      </g>
+      <g stroke="#6b4a2a" stroke-width="5">
+        <path d="M787 280 L813 280"/><path d="M783 298 L817 298"/><path d="M777 322 L823 322"/><path d="M768 352 L832 352"/><path d="M756 392 L844 392"/><path d="M740 442 L860 442"/>
+      </g>
+      <g fill="#0f0905"><rect x="150" y="150" width="6" height="130"/><rect x="144" y="170" width="18" height="4"/><rect x="1430" y="140" width="6" height="140"/><rect x="1424" y="162" width="18" height="4"/></g>
+    </svg>
+    <div class="inner"><h1>We resolve Legal and Built Environment challenges for a better future</h1></div>
+  </div>
+
+  <div class="sec"><div class="inner intro">
+    <div class="crest"><div class="mk2" aria-hidden="true"></div><b>Glenro Group</b><span>Measured by results</span></div>
     <div>
-      <p class="label eyebrow">Built environment disputes &middot; West Rand, Johannesburg</p>
-      <h1>Find out where your site dispute stands before you brief anyone.</h1>
-      <p class="lede">Five questions. You get a written read of your route, your deadline risk and the documents to pull together. A partner sees the same read when you book.</p>
+      <h2 class="h2">A leader in key advisory legal services for the built environment</h2>
+      <hr class="rule">
+      <p>The Glenro Group is a leader in the provision of key advisory Legal Services pertaining to challenges in the Built Environment Industry, Management of Construction Failures as well as offering a comprehensive Civil and Structural Engineering portfolio.</p>
+    </div>
+  </div></div>
 
-      <div class="ledger" aria-label="Example matter ledger">
-        <div class="ledger-h"><span class="label">Example matter</span><span class="label">Rand, excl. VAT</span></div>
-        <table>
-          <tr><td>Pay Cert 6</td><td>Paid</td><td>R 1 240 000</td></tr>
-          <tr><td>Pay Cert 7</td><td><span class="tag crit">41 days unpaid</span></td><td>R 2 310 500</td></tr>
-          <tr><td>EOT Claim 2</td><td><span class="tag warn">Notice window</span></td><td>R 684 000</td></tr>
-          <tr><td>Retention</td><td><span class="tag ok">Held</span></td><td>R 530 000</td></tr>
-        </table>
-        <p class="ledger-note">Illustrative figures. This is the picture the Dispute Read builds from your answers.</p>
+  <div class="sec" style="background:var(--surface-2)"><div class="inner">
+    <h2 class="h2">What we do</h2>
+    <div class="cards">
+      <div class="card"><h3>Contract Management &amp; Drafting</h3><p>Structural drafting of engineering and construction commercial contracts.</p><a class="more" href="#services">Service areas</a></div>
+      <div class="card"><h3>Dispute Resolution &amp; Claims</h3><p>Specialised handling of commercial and construction claims, Alternative Dispute Resolution (ADR), adjudication and arbitration proceedings.</p><a class="more" href="#services">Service areas</a></div>
+      <div class="card"><h3>Project Management</h3><p>End-to-end built environment advisory from procurement strategies to final execution.</p><a class="more" href="#services">Service areas</a></div>
+    </div>
+  </div></div>
+
+  <div class="cta"><div class="inner">
+    <div><h2>Not sure where your site dispute stands?</h2><p>Answer five questions and get a written read of your route, your deadline risk and the documents to gather.</p></div>
+    <a class="gobtn" href="#contact">Get your Dispute Read</a>
+  </div></div>
+</section>
+
+<!-- ABOUT -->
+<section id="p-about" class="page" hidden>
+  <div class="pagehead"><div class="inner"><h1>About Us</h1><p>Measured by results.</p></div></div>
+  <div class="sec"><div class="inner two">
+    <div class="prose">
+      <h2 class="h2">Who we are</h2><hr class="rule">
+      <p>Glenro is a leader in the provision of professional and comprehensive built environment and commercial services with specific focus on challenges in the engineering and built environment industry.</p>
+      <p>Glenro is your one stop shop for all your built environment and commercial services for any project. Our team of construction contract specialists, engineers and project managers will ensure that your next project is managed and executed from the procurement stage right through to final completion.</p>
+    </div>
+    <div class="prose">
+      <h2 class="h2">How we work</h2><hr class="rule">
+      <p>We start with the contract and the record. Every recommendation traces back to a clause, a certificate or a site document.</p>
+      <ul class="list">
+        <li>Contract specialists, engineers and project managers on one team.</li>
+        <li>Advice from procurement through to final completion.</li>
+        <li>Legal and engineering opinion produced together, not handed between firms.</li>
+      </ul>
+      <p class="mono" style="margin-top:18px;font-size:12.5px;color:var(--accent)">Sample wording for the demo. Glenro to confirm.</p>
+    </div>
+  </div></div>
+</section>
+
+<!-- SERVICES -->
+<section id="p-services" class="page" hidden>
+  <div class="pagehead"><div class="inner"><h1>Service Areas</h1><p>Legal, contractual and engineering advisory for the built environment.</p></div></div>
+  <div class="sec"><div class="inner">
+    <div class="svc"><span class="n">A</span><div><h3>Contract Management &amp; Drafting</h3><p>Structural drafting of engineering and construction commercial contracts. Review of standard forms, special conditions and employer amendments before you sign.</p><span class="mono">JBCC &middot; GCC &middot; NEC &middot; FIDIC &middot; Bespoke</span></div></div>
+    <div class="svc"><span class="n">B</span><div><h3>Dispute Resolution &amp; Claims</h3><p>Specialised handling of commercial and construction claims, Alternative Dispute Resolution (ADR), adjudication and arbitration proceedings.</p><span class="mono">Adjudication &middot; Arbitration &middot; ADR &middot; Claims</span></div></div>
+    <div class="svc"><span class="n">C</span><div><h3>Management of Construction Failures</h3><p>Assessment and management of failed works and defects, with legal and engineering opinion produced together.</p><span class="mono">Defects &middot; Failure investigation &middot; Expert evidence</span></div></div>
+    <div class="svc"><span class="n">D</span><div><h3>Civil and Structural Engineering</h3><p>A comprehensive civil and structural engineering portfolio supporting projects and the disputes that arise from them.</p><span class="mono">Civil &middot; Structural</span></div></div>
+    <div class="svc"><span class="n">E</span><div><h3>Project Management</h3><p>End-to-end built environment advisory from procurement strategies to final execution.</p><span class="mono">Procurement &middot; Execution &middot; Completion</span></div></div>
+  </div></div>
+  <div class="cta"><div class="inner">
+    <div><h2>Have a dispute on site right now?</h2><p>Start with a Dispute Read. It takes about two minutes.</p></div>
+    <a class="gobtn" href="#contact">Get your Dispute Read</a>
+  </div></div>
+</section>
+
+<!-- TRACK RECORD -->
+<section id="p-track" class="page" hidden>
+  <div class="pagehead"><div class="inner"><h1>Track Record</h1><p>Selected matters and projects.</p></div></div>
+  <div class="sec"><div class="inner">
+    <div class="note"><b>Sample content.</b> These rows are placeholders to show the layout. Replace them with Glenro's verified matters before this page goes anywhere public.</div>
+    <div class="tablewrap">
+      <table class="rec">
+        <thead><tr><th>Matter</th><th>Service</th><th>Sector</th><th>Outcome</th></tr></thead>
+        <tbody>
+          <tr><td>Sample entry 1</td><td>Adjudication</td><td>Commercial</td><td><span class="tag ok">Recovered</span></td></tr>
+          <tr><td>Sample entry 2</td><td>Contract drafting</td><td>Infrastructure</td><td><span class="tag ok">Concluded</span></td></tr>
+          <tr><td>Sample entry 3</td><td>Construction failure review</td><td>Residential</td><td><span class="tag warn">Settled</span></td></tr>
+          <tr><td>Sample entry 4</td><td>Arbitration</td><td>Industrial</td><td><span class="tag ok">Award obtained</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div></div>
+</section>
+
+<!-- SOCIAL -->
+<section id="p-social" class="page" hidden>
+  <div class="pagehead"><div class="inner"><h1>Social Responsibility</h1><p>How the Group gives back to the industry and the communities it works in.</p></div></div>
+  <div class="sec"><div class="inner prose">
+    <div class="note"><b>Sample content.</b> Glenro to supply its real programmes, partners and figures.</div>
+    <h2 class="h2">Our commitments</h2><hr class="rule">
+    <p>This page is where Glenro sets out its community, skills development and industry programmes in its own words.</p>
+    <ul class="list">
+      <li>Skills development and bursaries in the built environment.</li>
+      <li>Support for emerging contractors on contract and payment practice.</li>
+      <li>Community and local-supplier participation on the projects we advise.</li>
+    </ul>
+  </div></div>
+</section>
+
+<!-- CONTACT -->
+<section id="p-contact" class="page" hidden>
+  <div class="pagehead"><div class="inner"><h1>Contact Us</h1><p>Call us, write to us, or start with a Dispute Read.</p></div></div>
+  <div class="sec"><div class="inner contactgrid">
+    <div>
+      <h2 class="h2">Get in touch</h2><hr class="rule">
+      <div class="detail">
+        <div><b>Address</b><span>1 Lemonwood Village, 17 Jan Frederick Avenue<br>Randpark Ridge, Gauteng, 2156</span></div>
+        <div><b>Telephone</b><span>+27 (0)11 478 7452</span></div>
+        <div><b>Email</b><span>info@glenro.co.za</span></div>
+        <div><b>Website</b><span>glenro.co.za</span></div>
       </div>
+      <p style="margin-top:26px;color:var(--muted);max-width:44ch">The Dispute Read on the right gives you a written view of your route, your deadline risk and the documents to pull together. The same read goes to the person who takes your call.</p>
     </div>
+    <div class="funnel" id="funnel" aria-live="polite"><div id="stage"></div></div>
+  </div></div>
+</section>
 
-    <div class="funnel" id="funnel" aria-live="polite">
-      <div id="stage"></div>
-    </div>
-  </section>
+</main>
 
-  <section class="section" id="process">
-    <p class="label">After you submit</p>
-    <h2>A written route first, a conversation second.</h2>
-    <div class="steps">
-      <div><span class="n">Same business day</span><h3>Intake read</h3><p>A senior associate checks your answers against the contract form and flags any notice that is close to lapsing.</p></div>
-      <div><span class="n">20 minutes</span><h3>Partner triage</h3><p>A call with the partner who would run the matter. You leave knowing the forum, the exposure and the first move.</p></div>
-      <div><span class="n">Within 48 hours</span><h3>Route and fee estimate</h3><p>A short written note setting out the recommended route, a fee range and what you need to send us.</p></div>
-    </div>
-  </section>
-
-  <section class="section" id="areas">
-    <p class="label">Disputes we handle</p>
-    <h2>The matters that stall projects and cash flow.</h2>
-    <div class="areas">
-      <div><h3>Unpaid certificates and withheld retention</h3><p>Recovery of certified and claimed amounts, set-off challenges, payment guarantees.</p><span class="mono">Adjudication &middot; demand &middot; urgent relief</span></div>
-      <div><h3>Delay, disruption and extensions of time</h3><p>Critical path analysis, time-bar compliance, prolongation and standing-time claims.</p><span class="mono">JBCC &middot; GCC &middot; NEC &middot; FIDIC</span></div>
-      <div><h3>Defects and professional negligence</h3><p>Latent defects, failed works, claims against engineers and other consultants.</p><span class="mono">Expert determination &middot; arbitration</span></div>
-      <div><h3>Termination and repudiation</h3><p>Validity of default notices, cancellation rights, guarantees called early.</p><span class="mono">Notice review &middot; interdict</span></div>
-    </div>
-  </section>
-
-  <footer class="foot">
-    <p>Prospect demo prepared for Glenro Group. This is not their live site. The Dispute Read is indicative, is not legal advice and does not create a client relationship. Nothing entered here is stored or sent.</p>
-    <p class="mono">Glenro Group &middot; Demo &middot; info@glenro.co.za</p>
-  </footer>
-</div>
+<footer>
+  <div class="inner">
+    <div><b>Glenro Group</b>Measured by results.<br>We resolve Legal and Built Environment challenges for a better future.</div>
+    <div><b>Pages</b><a href="#home">Home</a><a href="#about">About Us</a><a href="#services">Service Areas</a><a href="#track">Track Record</a><a href="#social">Social Responsibility</a><a href="#contact">Contact Us</a></div>
+    <div><b>Contact</b>1 Lemonwood Village, 17 Jan Frederick Avenue<br>Randpark Ridge, Gauteng, 2156<br>+27 (0)11 478 7452<br>info@glenro.co.za</div>
+    <p class="legal">Prospect demo. This is not the live Glenro website. The Dispute Read is indicative, is not legal advice and does not create a client relationship. Nothing entered on this page is stored or sent.</p>
+  </div>
+</footer>
 
 <script>
+(function () {
+  var pages = ['home', 'about', 'services', 'track', 'social', 'contact'];
+  var titles = { home: 'Glenro Group', about: 'About Us | Glenro Group', services: 'Service Areas | Glenro Group', track: 'Track Record | Glenro Group', social: 'Social Responsibility | Glenro Group', contact: 'Contact Us | Glenro Group' };
+  function route() {
+    var h = (location.hash || '#home').slice(1);
+    if (pages.indexOf(h) < 0) h = 'home';
+    pages.forEach(function (p) { document.getElementById('p-' + p).hidden = (p !== h); });
+    document.querySelectorAll('.menu a').forEach(function (a) {
+      if (a.dataset.p === h) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    document.title = titles[h];
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener('hashchange', route);
+  route();
+})();
+</script>
+<script>
+
 (function () {
   var SIT = [
     { id: 'owed', t: 'I am owed money', d: 'Certified or claimed amounts unpaid or withheld', stage: 1,
@@ -440,6 +616,7 @@ a { color: inherit; }
   }
   render();
 })();
+
 </script>
 </body>
 </html>
