@@ -68,6 +68,7 @@
   const S = {
     cart: [],            // { id, pid, qty, size, grind, def }   def = grind was not spoken, so highlight it
     missed: [],          // phrases the parser could not match
+    recipes: [],         // { t, x } recipes the customer added from Specials; printed on the invoice so they keep them
     view: 'order',       // 'order' | 'invoice'
     sub: false, freq: 2,
     mode: 'deliver',     // 'deliver' | 'collect'
@@ -402,7 +403,7 @@
   function clearText() { stopMic(); $('orderText').value = ''; $('st').innerHTML = ''; }
 
   function newOrder() {
-    Object.assign(S, { cart: [], paid: false, no: '', sub: false, slot: null, eta: null, missed: [], view: 'order' });
+    Object.assign(S, { cart: [], paid: false, no: '', sub: false, slot: null, eta: null, missed: [], recipes: [], view: 'order' });
     $('st').innerHTML = '';
     renderReorder(); renderSheet();
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -470,7 +471,7 @@
   }
   function reorder() {
     const last = store.get('fabino_last'); if (!last) return toast('No previous order found');
-    Object.assign(S, { cart: [], paid: false, no: '' });
+    Object.assign(S, { cart: [], paid: false, no: '', recipes: [] });
     last.items.forEach(i => { if (P[i.pid]) addLine(i.pid, i.qty, i.size || CFG.defaultSize, i.grind).def = false; });
     renderSheet(); toast('Last order loaded');
     $('sheetWrap').scrollIntoView({ behavior: 'smooth' });
@@ -519,10 +520,20 @@
       ${S.sub ? `<div class="freq">${[2, 3, 4].map(w => `<button type="button" class="${S.freq === w ? 'sel' : ''}" data-act="freq" data-w="${w}">${w} weeks</button>`).join('')}</div>` : ''}</div>`;
   }
 
+  /* A recipe is free text with line breaks. The card shows its first line; "Read recipe" opens the rest. */
   function specialsHtml(readOnly) {
     if (readOnly || !CFG.specials.length) return '';
-    return `<div class="dsec"><div class="lab">Specials &amp; recipes for you</div>${CFG.specials.map((sp, i) =>
-      `<div class="spec"><div><b>${esc(sp.t)}</b><small>${esc(sp.x)}</small></div><button type="button" class="btn sm" data-act="special" data-i="${i}">Add</button></div>`).join('')}</div>`;
+    return `<div class="dsec"><div class="lab">Specials &amp; recipes for you</div>${CFG.specials.map((sp, i) => {
+      const full = String(sp.x || '').trim(), first = full.split('\n')[0], short = first.length > 90 ? first.slice(0, 87) + '...' : first;
+      const more = full.length > short.length ? `<details><summary>Read recipe</summary><div class="rtxt">${esc(full)}</div></details>` : '';
+      return `<div class="spec"><div><b>${esc(sp.t)}</b><small>${esc(short)}</small>${more}</div><button type="button" class="btn sm" data-act="special" data-i="${i}">Add</button></div>`;
+    }).join('')}</div>`;
+  }
+
+  function recipesHtml() {
+    if (!S.recipes.length) return '';
+    return `<div class="dsec"><div class="lab">Your recipes</div>${S.recipes.map(r =>
+      `<div class="spec"><div><b>${esc(r.t)}</b><div class="rtxt">${esc(r.x)}</div></div></div>`).join('')}</div>`;
   }
 
   function partiesHtml(invoiceView, readOnly) {
@@ -581,7 +592,7 @@
         ${b.vatReg ? `<div class="kv"><span>VAT ${b.vatRate}% (included)</span><span>${zarf(t.vat)}</span></div>` : ''}
         <div class="tot g"><span>Total</span><span>${zarf(t.total)}</span></div>
       </div>
-      ${deliveryHtml(readOnly, eta)}${subscriptionHtml(readOnly)}${specialsHtml(readOnly)}
+      ${deliveryHtml(readOnly, eta)}${subscriptionHtml(readOnly)}${recipesHtml()}${specialsHtml(readOnly)}
       ${readOnly ? '' : `<div class="notes">Order before ${CFG.rules.cutoffHour}:00 on a weekday: delivery on ${esc(early.date)}, ${esc(early.window)}. Prices include VAT.</div>`}
       ${demo}${bottomHtml(invoiceView, t, eta)}</article>`;
 
@@ -614,7 +625,14 @@
 
   async function invoiceCanvas() {
     const t = totals(), c = S.cust, b = CFG.business, W = 800, pad = 40;
-    const rowH = 84, H = 400 + S.cart.length * rowH + 220;
+    const rowH = 84, recLines = [];
+    const wrap = (txt, font, maxW) => { const m = document.createElement('canvas').getContext('2d'); m.font = font; const out = []; let line = '';
+      String(txt).split('\n').forEach(par => { line = ''; if (!par.trim()) { out.push(''); return; }
+        par.trim().split(/\s+/).forEach(w => { const tryL = line ? line + ' ' + w : w; if (m.measureText(tryL).width > maxW && line) { out.push(line); line = w; } else line = tryL; }); if (line) out.push(line); });
+      return out; };
+    S.recipes.forEach(r => { recLines.push({ h: r.t }); wrap(r.x, '16px sans-serif', W - pad * 2).forEach(l => recLines.push({ b: l })); });
+    const recH = S.recipes.length ? 50 + recLines.length * 26 : 0;
+    const H = 400 + S.cart.length * rowH + 220 + recH;
     const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
     const x = cv.getContext('2d');
     x.fillStyle = '#fff'; x.fillRect(0, 0, W, H);
@@ -652,6 +670,10 @@
     y += 10; x.fillStyle = '#6b5d48'; x.font = '15px sans-serif';
     if (S.paid && S.eta) x.fillText(S.mode === 'deliver' ? `Delivery: ${S.eta.date}, ${S.eta.window}` : `Collect: ${S.eta.date}`, pad, y);
     else { x.fillText('Unpaid. Pay in the app.', pad, y); if (b.vatReg && b.vatNo) { y += 24; x.fillText('VAT no. ' + b.vatNo, pad, y); } }
+    if (recLines.length) {
+      y += 40; x.fillStyle = '#6b5d48'; x.font = '600 14px sans-serif'; x.fillText('YOUR RECIPES', pad, y); y += 12;
+      recLines.forEach(l => { y += 26; if (l.h) { x.fillStyle = '#151008'; x.font = '700 18px Georgia,serif'; x.fillText(l.h, pad, y); } else { x.fillStyle = '#151008'; x.font = '16px sans-serif'; x.fillText(l.b, pad, y); } });
+    }
     return cv;
   }
 
@@ -765,7 +787,7 @@
     mode: el => { S.mode = el.dataset.mode; renderSheet(); },
     slot: el => { S.slot = el.dataset.slot; renderSheet(); },
     freq: el => { S.freq = +el.dataset.w; renderSheet(); },
-    special: el => { const sp = CFG.specials[+el.dataset.i]; addLine(sp.pid, 1, sp.size || CFG.defaultSize, sp.grind || null).def = false; toast(P[sp.pid].name + ' added'); renderSheet(); },
+    special: el => { const sp = CFG.specials[+el.dataset.i]; addLine(sp.pid, 1, sp.size || CFG.defaultSize, sp.grind || null).def = false; if (!S.recipes.some(r => r.t === sp.t)) S.recipes.push({ t: sp.t, x: sp.x }); toast(P[sp.pid].name + ' added'); renderSheet(); },
     reorder,
     newOrder,
     backToOrder: () => { S.view = 'order'; renderSheet(); },

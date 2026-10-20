@@ -177,3 +177,6 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--gold); outl
   .sheet { animation: rise .35s ease; }
   @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 }
+.rtxt { white-space: pre-line; font-size: 14px; line-height: 1.5; color: var(--ink); margin-top: 6px; }
+.spec details { margin-top: 4px; }
+.spec summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var(--gold-d, #8a6d12); text-decoration: underline; }
