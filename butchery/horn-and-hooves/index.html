@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0E0E0F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Horns &amp; Hooves">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Horns and Hooves</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&family=Allura&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="styles.css?v=3">
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top2">
+    <img id="brandImg" alt="Horns and Hooves Premium Butcher">
+    <div><div class="logo" id="bizName">Horns and Hooves</div><div class="tag" id="bizTag"></div></div>
+  </header>
+
+  <section class="talk" aria-labelledby="orderLabel">
+    <div class="tlabel" id="orderLabel">Describe your order</div>
+    <div class="hintbox">
+      🎤 <b>Tap the box below, then dictate</b>: say <b>your name, your email and your phone number</b>, then what you'd like (in kilos or how many) and where to deliver it. Tap <b>Done</b> when you've finished, then scroll the menu.
+      <small id="micHint"></small>
+      <small>Shortcut: use the menu numbers, e.g. “2 kilos of number 14, number 9 times 6, 1 of number 18”.</small>
+    </div>
+    <textarea id="orderText" rows="3" aria-label="Your name, email, phone and order" placeholder="Hi, it's Thandi Mokoena, thandi at gmail dot com, 082 123 4567. Two kilos of boerewors, one and a half kilos of rump cut into steaks, six lamb chops and a family braai pack. Deliver to 22 Main Road, Bedfordview."></textarea>
+    <div class="trow"><button type="button" class="btn ghost" id="micBtn" data-act="mic" hidden>🎤 Tap to speak</button></div>
+    <div class="trow">
+      <button type="button" class="btn" data-act="invoice">Get invoice</button>
+      <button type="button" class="btn ghost narrow" data-act="clear">Clear</button>
+    </div>
+    <div id="st" class="st" aria-live="polite"></div>
+  </section>
+
+  <div id="reorderCard"></div>
+
+  <h2 class="sec">The counter</h2>
+  <p class="msub">No need to talk for the order: tap an item to add it. Meat is priced per kg and cut to order.</p>
+  <div class="cats" id="cats" role="toolbar" aria-label="Filter the menu"></div>
+  <div class="menu" id="menu"></div>
+
+  <div class="box" id="svcCard">
+    <h3>Event or custom order</h3>
+    <p>Wedding, year-end function or a big braai? Tell us the date and how many guests, and our butchers will put an order together for you.</p>
+    <button type="button" class="btn ghost" data-act="openService">Send an enquiry</button>
+  </div>
+
+  <div id="sheetWrap"></div>
+
+</div>
+
+<div class="sticky" id="sticky"><div class="wrap"><button type="button" class="btn" id="stkMain" data-act="invoice">Get invoice</button></div></div>
+
+<!-- Asked only when name, email or phone are missing after "Get invoice" -->
+<div id="modal" class="modal" hidden><div class="mcard">
+  <h3>Where must we send your invoice?</h3>
+  <p class="rsub">Your WhatsApp number is your client number. We use it for your invoice, order updates, specials and recipes.</p>
+  <div class="f"><input id="rName" autocomplete="name" placeholder="Full name" aria-label="Full name"><div class="err">Enter your name</div></div>
+  <div class="f"><input id="rMail" type="email" autocomplete="email" placeholder="Email address" aria-label="Email address"><div class="err">Enter a valid email</div></div>
+  <div class="f"><input id="rPhone" type="tel" autocomplete="tel" placeholder="WhatsApp number, e.g. 082 123 4567" aria-label="WhatsApp number"><div class="err">Enter a valid SA mobile number</div></div>
+  <label class="cons"><input type="checkbox" id="rCons"> Send me specials and recipes on WhatsApp and email</label>
+  <button type="button" class="btn" data-act="modalSubmit">Get my invoice</button>
+  <button type="button" class="btn ghost" data-act="modalCancel">Cancel</button>
+</div></div>
+
+<div id="svcModal" class="modal" hidden><div class="mcard">
+  <div id="svcForm">
+    <h3>Event or custom order enquiry</h3>
+    <p class="rsub">We use these details to contact you about your order.</p>
+    <div class="f"><input id="sName" autocomplete="name" placeholder="Full name" aria-label="Full name"><div class="err">Enter your name</div></div>
+    <div class="f"><input id="sMail" type="email" autocomplete="email" placeholder="Email address" aria-label="Email address"><div class="err">Enter a valid email</div></div>
+    <div class="f"><input id="sPhone" type="tel" autocomplete="tel" placeholder="WhatsApp number" aria-label="WhatsApp number"><div class="err">Enter a valid SA mobile number</div></div>
+    <div class="f"><input id="sDate" placeholder="Date of the event, e.g. Sat 14 Dec" aria-label="Date of the event"></div>
+    <div class="f"><input id="sGuests" inputmode="numeric" placeholder="Number of guests" aria-label="Number of guests"></div>
+    <div class="f"><textarea id="sNotes" rows="3" placeholder="What are you planning? Braai, spit braai, platters, special cuts…" aria-label="Notes"></textarea></div>
+    <button type="button" class="btn" data-act="serviceSubmit">Send enquiry</button>
+    <button type="button" class="btn ghost" data-act="serviceClose">Cancel</button>
+  </div>
+  <div id="svcDone" hidden>
+    <h3>Enquiry sent</h3>
+    <p id="svcDoneText"></p>
+    <button type="button" class="btn" data-act="serviceClose">Done</button>
+  </div>
+</div></div>
+
+<div id="imgView" class="modal" hidden><div class="mcard center">
+  <b>Press and hold the image, then Save</b>
+  <img id="imgOut" alt="Invoice">
+  <a class="btn" id="imgDl" download="horns-and-hooves-invoice.png" href="#">Download image</a>
+  <button type="button" class="btn ghost" data-act="imageClose">Close</button>
+</div></div>
+
+<div id="toast" role="status"></div>
+
+<script src="config.js?v=3"></script>
+<script src="assets.js?v=3"></script>
+<script src="app.js?v=3"></script>
+</body>
+</html>
