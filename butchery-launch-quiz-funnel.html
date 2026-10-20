@@ -233,6 +233,19 @@
   body.intro-mode .banner{height:clamp(320px,52vh,520px);}
   .banner img{position:absolute;z-index:1;left:max(20px,calc(50% - 320px));top:24px;height:84px;border-radius:3px;background:#fff;}
   .stage{padding:0 20px;}
+
+  /* ---- Intro hero: headline sits on the photo ---- */
+  body{position:relative;}
+  body.intro-mode{padding-bottom:0;min-height:max(100vh,860px);}
+  body.intro-mode .banner{height:max(100vh,860px);margin-bottom:0;background-position:center 62%;}
+  body.intro-mode .banner::after{background:linear-gradient(90deg,rgba(14,14,15,.92) 0%,rgba(14,14,15,.6) 45%,rgba(14,14,15,.15) 100%),linear-gradient(180deg,rgba(14,14,15,0) 55%,#0E0E0F 100%);}
+  body.intro-mode .banner img{left:max(24px,calc(50% - 540px));top:28px;height:96px;}
+  body.intro-mode .stage{position:absolute;left:50%;transform:translateX(-50%);bottom:64px;max-width:1100px;padding:0 24px;}
+  #screen-intro h1{font-size:clamp(34px,5.2vw,68px);max-width:18ch;line-height:1;margin-bottom:22px;}
+  #screen-intro h1 .cu{color:var(--accent);}
+  #screen-intro .lede{font-size:clamp(16px,2vw,19px);color:#E6DFD5;max-width:44ch;}
+  #screen-intro .brand{margin-bottom:18px;}
+  @media (max-width:600px){body.intro-mode .stage{bottom:40px;} body.intro-mode .banner img{height:72px;}}
 </style>
 </head>
 <body class="intro-mode">
@@ -244,7 +257,7 @@
   <!-- ============ INTRO ============ -->
   <section class="screen active" id="screen-intro">
     <div class="brand">HORNS AND HOOVES · GRAND OPENING</div>
-    <h1>Which cut are you really? Find out and win your launch pack.</h1>
+    <h1>Which cut are you really?<br><span class="cu">Find out and win your launch pack.</span></h1>
     <p class="lede">Six quick questions on how you cook, braai and shop for meat. We'll match you to your meat personality, a cut to try first, and enter you into our opening-month prize draw.</p>
     <div class="meta">
       <span><i></i> Takes under 2 minutes</span>
