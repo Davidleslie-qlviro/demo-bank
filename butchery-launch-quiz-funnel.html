@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Butchery Launch Quiz — Find Your Cut</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#F4EDE4;
+    --ink-dim:#B3A79B;
+    --base:#1A0F0E;
+    --surface:#261614;
+    --surface-2:#321D1A;
+    --line:#4A2C28;
+    --accent:#C8352B;
+    --accent-dim:#7A2019;
+    --risk:#C8352B;
+    --ok:#C9A24B;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    background:var(--base);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px 20px;
+    line-height:1.55;
+  }
+  h1,h2,h3{
+    font-family:'Oswald',sans-serif;
+    font-weight:600;
+    letter-spacing:0.01em;
+    line-height:1.15;
+  }
+  .stage{width:100%;max-width:640px;}
+  .screen{display:none;}
+  .screen.active{display:block;animation:rise 0.4s ease;}
+  @keyframes rise{
+    from{opacity:0;transform:translateY(10px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .screen.active{animation:none;}
+  }
+
+  /* ---------- Intro ---------- */
+  .brand{
+    font-family:'Oswald',sans-serif;
+    font-weight:700;
+    font-size:14px;
+    letter-spacing:0.14em;
+    color:var(--accent);
+    margin-bottom:28px;
+  }
+  .intro h1{
+    font-size:clamp(30px,5vw,42px);
+    max-width:16ch;
+    margin-bottom:18px;
+  }
+  .intro .lede{
+    font-size:17px;
+    color:var(--ink-dim);
+    max-width:46ch;
+    margin-bottom:28px;
+  }
+  .intro .meta{
+    display:flex;
+    gap:20px;
+    font-size:13px;
+    color:var(--ink-dim);
+    margin-bottom:36px;
+    flex-wrap:wrap;
+  }
+  .intro .meta span{
+    display:flex;align-items:center;gap:7px;
+  }
+  .intro .meta i{
+    width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block;
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn{
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:15px;
+    background:var(--accent);
+    color:#fff;
+    border:none;
+    padding:15px 28px;
+    border-radius:2px;
+    cursor:pointer;
+    transition:background 0.15s ease;
+  }
+  .btn:hover{background:#E04A3F;}
+  .btn:focus-visible{outline:2px solid var(--ink);outline-offset:3px;}
+  .btn-ghost{
+    background:transparent;
+    color:var(--ink);
+    border:1px solid var(--line);
+  }
+  .btn-ghost:hover{border-color:var(--ink-dim);background:var(--surface-2);}
+
+  /* ---------- Quiz card ---------- */
+  .quiz-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    padding:36px 32px;
+  }
+  .tracker{
+    display:flex;
+    gap:6px;
+    margin-bottom:26px;
+  }
+  .tracker .crate{
+    flex:1;height:4px;background:var(--surface-2);position:relative;overflow:hidden;
+  }
+  .tracker .crate.done{background:var(--accent);}
+  .tracker .crate.current::after{
+    content:'';position:absolute;inset:0;background:var(--ink);opacity:0.25;
+  }
+  .q-index{
+    font-size:12px;
+    color:var(--ink-dim);
+    letter-spacing:0.06em;
+    margin-bottom:10px;
+  }
+  .q-title{
+    font-size:clamp(20px,3.4vw,25px);
+    margin-bottom:24px;
+    max-width:28ch;
+  }
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .option{
+    text-align:left;
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    font-size:15px;
+    padding:15px 18px;
+    cursor:pointer;
+    transition:border-color 0.15s ease, background 0.15s ease;
+    border-radius:2px;
+  }
+  .option:hover{border-color:var(--accent);}
+  .option:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  .option.selected{border-color:var(--accent);background:#3A1E1A;}
+
+  .nav-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:28px;
+  }
+  .back-link{
+    background:none;border:none;color:var(--ink-dim);
+    font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;
+    padding:6px 0;
+  }
+  .back-link:hover{color:var(--ink);}
+  .back-link:disabled{opacity:0;pointer-events:none;}
+
+  /* ---------- Modal (lead capture) ---------- */
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(10,12,15,0.75);
+    display:none;align-items:center;justify-content:center;
+    padding:20px;z-index:50;
+  }
+  .modal-overlay.active{display:flex;}
+  .modal{
+    background:var(--surface);
+    border:1px solid var(--line);
+    max-width:420px;width:100%;
+    padding:32px 28px;
+  }
+  .modal h2{font-size:22px;margin-bottom:10px;}
+  .modal p{color:var(--ink-dim);font-size:14px;margin-bottom:22px;}
+  .field{margin-bottom:14px;}
+  .field label{
+    display:block;font-size:12px;color:var(--ink-dim);margin-bottom:6px;
+    letter-spacing:0.03em;
+  }
+  .field input{
+    width:100%;background:var(--surface-2);border:1px solid var(--line);
+    color:var(--ink);padding:12px 14px;font-size:14px;border-radius:2px;
+    font-family:'Inter',sans-serif;
+  }
+  .field input:focus{outline:none;border-color:var(--accent);}
+  .modal .btn{width:100%;margin-top:6px;}
+  .demo-note{
+    font-size:11px;color:var(--ink-dim);margin-top:16px;line-height:1.5;
+    border-top:1px solid var(--line);padding-top:14px;
+  }
+
+  /* ---------- Results ---------- */
+  .result-tag{
+    display:inline-block;
+    font-family:'Oswald',sans-serif;
+    font-size:12px;font-weight:600;letter-spacing:0.08em;
+    padding:6px 12px;border:1px solid var(--accent);color:var(--accent);
+    margin-bottom:22px;
+  }
+  .result-tag.risk{border-color:var(--risk);color:var(--risk);}
+  .result-tag.ok{border-color:var(--ok);color:var(--ok);}
+  .result h2{font-size:clamp(26px,4.4vw,34px);max-width:16ch;margin-bottom:18px;}
+  .result .desc{color:var(--ink-dim);font-size:16px;max-width:52ch;margin-bottom:26px;}
+  .rec-box{
+    background:var(--surface);border:1px solid var(--line);
+    padding:22px 24px;margin-bottom:28px;
+  }
+  .rec-box .label{font-size:12px;color:var(--accent);letter-spacing:0.06em;margin-bottom:8px;font-weight:600;}
+  .rec-box p{font-size:15px;color:var(--ink);}
+  .result-cta{margin-top:6px;}
+  .restart{
+    display:block;margin-top:20px;background:none;border:none;
+    color:var(--ink-dim);font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;
+  }
+  .restart:hover{color:var(--ink);}
+</style>
+</head>
+<body>
+
+<div class="stage">
+
+  <!-- ============ INTRO ============ -->
+  <section class="screen active" id="screen-intro">
+    <div class="brand">[BUTCHERY NAME] · GRAND OPENING</div>
+    <h1>Which cut are you really? Find out and win your launch pack.</h1>
+    <p class="lede">Six quick questions on how you cook, braai and shop for meat. We'll match you to your meat personality, a cut to try first, and enter you into our opening-month prize draw.</p>
+    <div class="meta">
+      <span><i></i> Takes under 2 minutes</span>
+      <span><i></i> 6 questions</span>
+      <span><i></i> Prize draw entry included</span>
+    </div>
+    <button class="btn" onclick="goTo('q',0)">Find my cut</button>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="screen" id="screen-quiz">
+    <div class="quiz-card">
+      <div class="tracker" id="tracker"></div>
+      <div class="q-index" id="q-index"></div>
+      <h3 class="q-title" id="q-title"></h3>
+      <div class="options" id="q-options"></div>
+      <div class="nav-row">
+        <button class="back-link" id="back-btn" onclick="goBack()">Back</button>
+        <span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RESULTS ============ -->
+  <section class="screen" id="screen-result">
+    <div id="result-tag" class="result-tag"></div>
+    <h2 id="result-title"></h2>
+    <p class="desc" id="result-desc"></p>
+    <div class="rec-box">
+      <div class="label">Try this first</div>
+      <p id="result-rec"></p>
+    </div>
+    <a href="#" target="_blank" class="btn result-cta" id="result-cta"></a>
+    <button class="restart" onclick="goTo('intro')">Take it again</button>
+  </section>
+
+</div>
+
+<!-- ============ LEAD CAPTURE MODAL ============ -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h2>Get your match</h2>
+    <p>Enter your details to see your match and enter the draw. We'll WhatsApp your launch voucher.</p>
+    <form id="lead-form" onsubmit="submitLead(event)">
+      <div class="field">
+        <label for="fname">First name</label>
+        <input type="text" id="fname" required>
+      </div>
+      <div class="field">
+        <label for="email">Email address</label>
+        <input type="email" id="email" required>
+      </div>
+      <div class="field">
+        <label for="phone">Phone number</label>
+        <input type="tel" id="phone" required>
+      </div>
+      <button type="submit" class="btn">Show my match</button>
+    </form>
+    <p class="demo-note">Demo build - not wired to a CRM yet. On launch, swap for the real form embed so entries reach the butchery, keeping the same show-results-on-submit behaviour.</p>
+  </div>
+</div>
+
+<script>
+/* Segments: 0 Braai Master, 1 Weeknight Family Cook, 2 Freezer Stocker, 3 Premium Cut Connoisseur */
+const QUESTIONS=[
+{title:"What's the most common reason you buy meat?",options:[
+{text:"Weekend braai with friends and family",scores:[3,0,0,1]},
+{text:"Getting dinner on the table Monday to Friday",scores:[0,3,1,0]},
+{text:"Stocking the freezer for the month",scores:[0,1,3,0]},
+{text:"A proper special meal, quality over quantity",scores:[1,0,0,3]}]},
+{title:"How many people are you usually feeding?",options:[
+{text:"Just 1 or 2 of us",scores:[0,1,0,3]},
+{text:"A family of 3 to 5",scores:[0,3,1,0]},
+{text:"A big crowd, 6 or more",scores:[3,0,2,0]},
+{text:"It changes a lot week to week",scores:[1,1,1,1]}]},
+{title:"Where do you buy most of your meat today?",options:[
+{text:"Supermarket, pre-packed",scores:[0,3,1,0]},
+{text:"Another butchery, but it's not great",scores:[1,1,1,2]},
+{text:"Wholesale or bulk deals",scores:[0,0,3,0]},
+{text:"I'm still looking for a butcher I trust",scores:[2,1,0,2]}]},
+{title:"What matters most when you walk into a butchery?",options:[
+{text:"Freshness I can see and trust",scores:[1,2,0,2]},
+{text:"Fair prices and good specials",scores:[0,2,3,0]},
+{text:"Expert advice and cuts made to order",scores:[1,0,0,3]},
+{text:"Convenience: quick, close and easy",scores:[0,3,1,0]}]},
+{title:"Which of these is on your list this month?",options:[
+{text:"Boerewors, steaks and chops for the braai",scores:[3,0,0,1]},
+{text:"Mince, chicken and everyday cuts",scores:[0,3,1,0]},
+{text:"A bulk pack: half a lamb, a box of chicken, or a family bundle",scores:[0,0,3,0]},
+{text:"Dry-aged ribeye, T-bone, or a proper roast",scores:[1,0,0,3]}]},
+{title:"What would make you switch to a new butchery?",options:[
+{text:"An opening-month deal I can't ignore",scores:[1,1,3,0]},
+{text:"A free taste of something special",scores:[2,1,0,2]},
+{text:"Reliable quality every single visit",scores:[1,2,0,3]},
+{text:"Easy ordering, with collection or delivery",scores:[0,3,2,0]}]}
+];
+const RESULTS=[
+{tagClass:"risk",tag:"Your match",title:"The Braai Master",desc:"Your weekend is built around the fire. You want boerewors with the right fat ratio, steaks that cook evenly, and a butcher who knows how many to cut for a crowd.",rec:"Start with our Braai Pack: boerewors, sosaties and marinated chops, sized for 6 to 8 people. Enter your voucher at the counter on opening week.",ctaText:"Claim my Braai Pack voucher"},
+{tagClass:"risk",tag:"Your match",title:"The Weeknight Family Cook",desc:"You need dinner solved fast, with meat you trust and no stress at the checkout. Reliable everyday quality matters more than anything fancy.",rec:"Start with our Family Value Pack: mince, chicken pieces and chops, portioned and ready for the week. Order ahead for quick collection after work.",ctaText:"Claim my Family Pack voucher"},
+{tagClass:"ok",tag:"Your match",title:"The Freezer Stocker",desc:"You buy smart and buy in bulk. Price per kilo and portion size matter, and you want a butcher who will cut, pack and label to suit your freezer.",rec:"Start with our Bulk Bundle: a mixed box of beef, chicken and wors, vacuum-packed and labelled. The opening-month discount applies to bulk orders.",ctaText:"Claim my Bulk Bundle voucher"},
+{tagClass:"ok",tag:"Your match",title:"The Premium Cut Connoisseur",desc:"Quality over quantity, every time. You want proper aged beef, cuts made to order, and someone behind the counter who can tell you how to cook them.",rec:"Start with our Butcher's Selection: dry-aged ribeye or T-bone, cut to your thickness, with cooking notes from the butcher. Includes a free taste of the week's special cut.",ctaText:"Claim my Butcher's Selection voucher"}
+];
+const BOOKING_LINK="#";
+let current=0,answers=[];
+function goTo(screen,q){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+if(screen==='intro'){document.getElementById('screen-intro').classList.add('active');current=0;answers=[];}
+else if(screen==='q'){current=q;renderQuestion();document.getElementById('screen-quiz').classList.add('active');}
+else{document.getElementById('screen-result').classList.add('active');}}
+function renderQuestion(){const q=QUESTIONS[current];
+document.getElementById('q-index').textContent=`QUESTION ${current+1} OF ${QUESTIONS.length}`;
+document.getElementById('q-title').textContent=q.title;
+document.getElementById('back-btn').disabled=current===0;
+const t=document.getElementById('tracker');t.innerHTML='';
+QUESTIONS.forEach((_,i)=>{const c=document.createElement('div');c.className='crate'+(i<current?' done':i===current?' current':'');t.appendChild(c);});
+const w=document.getElementById('q-options');w.innerHTML='';
+q.options.forEach((o,i)=>{const b=document.createElement('button');b.className='option';b.textContent=o.text;b.onclick=()=>selectOption(i);w.appendChild(b);});}
+function selectOption(i){answers[current]=QUESTIONS[current].options[i].scores;
+if(current<QUESTIONS.length-1)goTo('q',current+1);else document.getElementById('modal').classList.add('active');}
+function goBack(){if(current>0)goTo('q',current-1);}
+function submitLead(e){e.preventDefault();document.getElementById('modal').classList.remove('active');showResult();}
+function showResult(){const t=[0,0,0,0];answers.forEach(sc=>sc.forEach((v,i)=>t[i]+=v));
+let b=0;t.forEach((v,i)=>{if(v>t[b])b=i;});const r=RESULTS[b];
+const tg=document.getElementById('result-tag');tg.textContent=r.tag;tg.className='result-tag '+r.tagClass;
+document.getElementById('result-title').textContent=r.title;
+document.getElementById('result-desc').textContent=r.desc;
+document.getElementById('result-rec').textContent=r.rec;
+const c=document.getElementById('result-cta');c.textContent=r.ctaText;c.href=BOOKING_LINK;goTo('result');}
+</script>
+</body>
+</html>
