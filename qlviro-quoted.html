@@ -175,7 +175,7 @@ td.amt{font-family:var(--mono);font-size:13.5px;white-space:nowrap}
 const $ = s => document.querySelector(s);
 const fmt = n => "R " + (Math.round(n*100)/100).toLocaleString("en-ZA",{minimumFractionDigits:2,maximumFractionDigits:2});
 
-const DEFAULTS = {biz:"KA Electrical",phone:"082 555 0142",rate:550,callout:450,markup:20,vat:15};
+const DEFAULTS = {biz:"Volt Pro Electrical",phone:"082 555 0142",rate:550,callout:450,markup:20,vat:15};
 const newQnum = () => "Q-" + new Date().getFullYear() + "-" + String(Math.floor(1000+Math.random()*9000));
 const invNum = () => qnum.replace(/^Q-/,"INV-");
 function load(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
@@ -203,7 +203,7 @@ const EXAMPLE_QUOTE = {
 };
 
 const TRADES={
- electrician:{name:"Electrician",biz:"KA Electrical",rate:550,callout:450,main:"Electrician",helper:"Assistant",hf:0.45,
+ electrician:{name:"Electrician",biz:"Volt Pro Electrical",rate:550,callout:450,main:"Electrician",helper:"Assistant",hf:0.45,
   rule:"If work on a DB board or new circuits is involved, note that a Certificate of Compliance (CoC) will be issued.",
   text:EXAMPLE_TEXT, quote:EXAMPLE_QUOTE},
  plumber:{name:"Plumber",biz:"Botha Plumbing",rate:520,callout:450,main:"Plumber",helper:"Helper",hf:0.45,
