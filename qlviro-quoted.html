@@ -550,10 +550,22 @@ async function copy(text){
 let tt; function toast(m){const t=$("#toast");t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,2200);}
 
 // ---------- AI quote building ----------
-let sample=null, ctl=null;
+// On the live site (no Claude app) quotes come from /api/quoted on Vercel.
+async function apiQuote(text, signal){
+  let r;
+  try{ r = await fetch("/api/quoted",{method:"POST",headers:{"Content-Type":"application/json"},signal,
+    body:JSON.stringify({text,trade:{name:T().name,main:T().main,helper:T().helper,hf:T().hf,rule:T().rule}})}); }
+  catch(e){ throw {code: e?.name==="AbortError" ? "cancelled" : "upstream_error"}; }
+  if(r.status===429) throw {code:"rate_limited"};
+  if(r.status===422) throw {code:"invalid_json"};
+  if(!r.ok) throw {code:"upstream_error"};
+  return r.json();
+}
+let sample=null, ctl=null, useApi=false;
 const status=(m,err)=>{const s=$("#status");s.textContent=m;s.classList.toggle("err",!!err);};
 (async()=>{
   try{ sample = await window.claude?.use?.("sample"); }catch(e){ sample=null; }
+  if(!sample && !window.claude){ useApi=true; return; }
   if(!sample){ $("#buildBtn").disabled=true; status("AI quoting works when this page is opened inside the Claude app. You can still edit the example quote below."); }
 })();
 
@@ -563,7 +575,7 @@ $("#stopBtn").onclick=()=>ctl?.abort();
 $("#buildBtn").onclick=async()=>{
   const text=$("#jobText").value.trim();
   if(text.length<15){status("Say a bit more about the job first: who, where, what needs doing.",true);return;}
-  if(!sample) return;
+  if(!sample && !useApi) return;
   ctl=new AbortController();
   $("#buildBtn").disabled=true; $("#stopBtn").hidden=false;
   status("Reading the job and pricing parts…");
@@ -578,7 +590,7 @@ Reply with only JSON in this shape:
 Job description:
 """${text.slice(0,4000)}"""`;
   try{
-    const r = await sample.json(prompt,{signal:ctl.signal,modelTier:"default"});
+    const r = sample ? await sample.json(prompt,{signal:ctl.signal,modelTier:"default"}) : await apiQuote(text, ctl.signal);
     if(!r || !Array.isArray(r.materials) || !Array.isArray(r.labour)) throw {code:"invalid_json"};
     Q={client:r.client||"",site:r.site||"",summary:r.summary||"",notes:r.notes||"",
        scope:(Array.isArray(r.scope)?r.scope:[]).map(a=>({area:String(a?.area||"Work"),steps:(Array.isArray(a?.steps)?a.steps:[]).map(String).filter(Boolean)})).filter(a=>a.steps.length),
@@ -593,13 +605,13 @@ Job description:
     status(msg ?? "Something went wrong reaching the quoting service. Try again.", e?.code!=="cancelled");
     if(e?.code==="not_granted"||e?.code==="sampling_disabled") sample=null;
   }finally{
-    $("#buildBtn").disabled = !sample;
+    $("#buildBtn").disabled = !(sample||useApi);
     $("#stopBtn").hidden=true;
   }
 };
 
 // ---------- start-up ----------
-try{ if(location.hash==="#paid"){ mode="invoice"; } else if(location.hash==="#quoted"){ mode="quote"; } }catch(e){}
+try{ mode = location.hash==="#paid" ? "invoice" : "quote"; }catch(e){ mode="quote"; }
 const EX_BIZ=Object.values(TRADES).map(t=>t.biz), EX_RATE=Object.values(TRADES).map(t=>t.rate), EX_CO=Object.values(TRADES).map(t=>t.callout);
 $("#tradeSel").value=trade;
 $("#tradeSel").addEventListener("change",e=>{
