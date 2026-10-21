@@ -1,0 +1,234 @@
+<title>Qlviro Booked</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: the artisan's phone feed — a status strip, then today's calls handled by the AI, newest first, then the day's bookings */
+:root{
+  --bg:#e9eaea; --sheet:#ffffff; --ink:#1d2328; --muted:#5c656d; --line:#cfd3d6;
+  --accent:#2f62d8; --accent-ink:#ffffff; --soft:#e3ebfb;
+  --urgent:#c81e1e; --urgent-soft:#fbe4e4; --ok:#1f7a4d; --ok-soft:#e1f2e8; --info:#2d5e9e; --info-soft:#e3ecf7;
+  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#14181b; --sheet:#1d2226; --ink:#e7eaec; --muted:#9aa3aa; --line:#323a40;
+  --accent:#6f9bf5; --accent-ink:#0b1324; --soft:#1b2a48;
+  --urgent:#f87171; --urgent-soft:#3d1717; --ok:#4fc28a; --ok-soft:#14301f; --info:#7fb0ef; --info-soft:#18263a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14181b; --sheet:#1d2226; --ink:#e7eaec; --muted:#9aa3aa; --line:#323a40;
+  --accent:#6f9bf5; --accent-ink:#0b1324; --soft:#1b2a48;
+  --urgent:#f87171; --urgent-soft:#3d1717; --ok:#4fc28a; --ok-soft:#14301f; --info:#7fb0ef; --info-soft:#18263a; color-scheme:dark}
+*{box-sizing:border-box}
+.trade{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px}
+.trade select{font:600 15px var(--body);color:var(--ink);background:var(--sheet);border:2px solid var(--accent);border-radius:8px;padding:9px 12px;max-width:100%}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--body);margin:0}
+.wrap{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:20px 48px;display:flex;flex-direction:column;gap:16px}
+header{display:flex;flex-direction:column;gap:4px}
+.brand{display:flex;align-items:center;gap:12px;font-family:var(--display);font-weight:800;font-size:34px;line-height:1;text-transform:uppercase;letter-spacing:.01em}
+.brand span{color:var(--accent)}
+.brand .mark{flex:none}
+.tag{color:var(--muted);font-size:14px}
+button{font:600 14px var(--body);border-radius:8px;border:1px solid var(--line);background:var(--sheet);color:var(--ink);padding:9px 13px;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button:disabled{opacity:.5;cursor:default}
+.label{font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+.status{background:var(--ink);color:var(--bg);border-radius:12px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.status .job{font-weight:600}
+.status .sub{font-size:13px;opacity:.75}
+.onair{display:inline-flex;align-items:center;gap:8px;font:700 13px var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.onair i{width:9px;height:9px;border-radius:50%;background:var(--accent)}
+@media (prefers-reduced-motion:no-preference){.onair i{animation:p 1.4s infinite}@keyframes p{50%{opacity:.25}}}
+
+.tally{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.t{background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.t .k{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.t .v{font:500 19px var(--mono);white-space:nowrap;font-variant-numeric:tabular-nums}
+.t.money .v{color:var(--ok)}
+
+.feedhead{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.feed{display:flex;flex-direction:column;gap:10px}
+.call{background:var(--sheet);border:1px solid var(--line);border-left:5px solid var(--line);border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.call.urgent{border-left-color:var(--urgent)} .call.booked{border-left-color:var(--ok)} .call.quote{border-left-color:var(--info)} .call.spam{border-left-color:var(--line);opacity:.8}
+.top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.who{font-weight:600}
+.when{font:12.5px var(--mono);color:var(--muted);white-space:nowrap}
+.pill{display:inline-block;font:600 11px var(--body);letter-spacing:.06em;text-transform:uppercase;border-radius:99px;padding:3px 9px}
+.pill.urgent{background:var(--urgent-soft);color:var(--urgent)} .pill.booked{background:var(--ok-soft);color:var(--ok)} .pill.quote{background:var(--info-soft);color:var(--info)} .pill.spam{background:var(--bg);color:var(--muted)}
+.sum{font-size:14.5px}
+.did{font-size:13px;color:var(--muted)}
+.acts{display:flex;gap:8px;flex-wrap:wrap}
+.acts a,.acts button{font:600 13px var(--body);border-radius:7px;padding:7px 11px;text-decoration:none;border:1px solid var(--line);color:var(--ink);background:var(--sheet)}
+.acts .hot{background:var(--urgent);border-color:var(--urgent);color:#fff}
+.acts .q{border-color:var(--accent);color:var(--accent)}
+.acts button[data-tx]{background:var(--accent);border-color:var(--accent);color:#fff}
+.call.urgent .acts button[data-tx]{background:var(--urgent);border-color:var(--urgent);color:#fff}
+.transcript{background:var(--bg);border-radius:6px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;font-size:13.5px}
+.transcript p{margin:0}
+.transcript b{font-family:var(--display);letter-spacing:.06em;text-transform:uppercase;font-size:12.5px}
+.transcript .ai b{color:var(--accent)}
+.num{font-family:var(--mono);font-size:13px;user-select:all}
+@media (prefers-reduced-motion:no-preference){.call.new{animation:in .45s ease-out}@keyframes in{from{transform:translateY(-8px);opacity:.3}to{transform:none;opacity:1}}}
+
+.day{background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column}
+.slot{display:grid;grid-template-columns:62px 1fr;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+.slot:last-child{border-bottom:none}
+.slot .tm{font:13px var(--mono);color:var(--muted)}
+.slot.newslot .what::after{content:"Booked by Qlviro Booked";margin-left:8px;font:600 10.5px var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--ok);background:var(--ok-soft);border-radius:99px;padding:2px 7px;white-space:nowrap}
+.foot{font-size:12.5px;color:var(--muted)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand"><svg class="mark" viewBox="0 0 64 64" width="44" height="44" aria-hidden="true"><circle cx="32" cy="32" r="31" fill="#152346"/><circle cx="32" cy="32" r="27" fill="#1b2a4e" stroke="#2f4f9a" stroke-width="1.5"/><polygon points="33.5,13 23,30 32,30 29.5,50 41.5,26 33,26" fill="#5b8cf0"/></svg><div>Qlviro <span>Booked</span></div></div>
+    <div class="tag" id="tagLine">You're up in a ceiling. It answers your phone, sorts the emergencies from the time-wasters, and books the work.</div>
+    <label class="trade" for="tradeSel"><span class="label">Your trade</span>
+      <select id="tradeSel"><option value="electrician">Electrician</option><option value="plumber">Plumber</option><option value="roofer">Roofer</option><option value="ceilings">Ceilings &amp; Partitions</option><option value="maintenance">Maintenance crew</option><option value="painter">Painter</option><option value="hvac">HVAC / Aircon</option></select></label>
+  </header>
+
+  <div class="status" aria-label="Current status">
+    <div><div class="job" id="jobNow">On a job · DB board upgrade, Randburg</div><div class="sub">08:30 – 12:30 · calls handled for you</div></div>
+    <div class="onair"><i></i>Answering</div>
+  </div>
+
+  <div class="tally">
+    <div class="t"><div class="k">Calls answered</div><div class="v" id="tCalls">0</div></div>
+    <div class="t"><div class="k">Jobs booked</div><div class="v" id="tBooked">0</div></div>
+    <div class="t money"><div class="k">Work caught</div><div class="v" id="tValue">R 0</div></div>
+  </div>
+
+  <div class="feedhead">
+    <div class="label">While you were working</div>
+    <button id="replay">Replay the morning</button>
+  </div>
+  <div class="feed" id="feed" aria-live="polite"></div>
+
+  <div class="label">Today</div>
+  <div class="day" id="day"></div>
+
+  <p class="foot">Demo with example callers. In the live version, Qlviro Booked answers on your business number in a South African voice, follows up every missed call on WhatsApp, and sends urgent jobs straight to your phone.</p>
+</div>
+
+<script>
+const QUOTE_URL="https://claude.ai/artifact/SkJhF9wzuZsdG6ucQVKYvs#quoted";
+const $=s=>document.querySelector(s);
+const R=n=>"R "+n.toLocaleString("en-ZA");
+const SPAM={t:"11:02",who:"Unknown · 010 number",type:"spam",tag:"Filtered",value:0,num:"010 500 8812",
+  sum:"Sales call offering business funding.",did:"Politely declined. You weren't disturbed.",
+  tx:[["Caller","Good day, I'm calling about pre-approved business funding."],["Qlviro Booked","Thanks, but we're not interested. Have a good day."]]};
+const bookTx=(line,when)=>[["Caller",line],["Qlviro Booked",`No problem. I have ${when} or tomorrow morning. Which suits you?`],["Caller",`${when[0].toUpperCase()+when.slice(1)} is great.`],["Qlviro Booked",`Booked for ${when}. I'll WhatsApp you the confirmation and call-out fee now.`]];
+const quoteTx=(line,ask)=>[["Caller",line],["Qlviro Booked","Happy to help. I can book a site visit on Monday at 11:00. Does that work?"],["Caller","Yes, perfect."],["Qlviro Booked",`Booked. ${ask} It helps get the quote right.`]];
+const mk=(t,who,type,value,num,sum,did,tx)=>({t,who,type,tag:{urgent:"Urgent",booked:"Booked",quote:"Quote request"}[type],value,num,sum,did,tx});
+const TRADES={
+ electrician:{name:"Electrician",where:"You're up in a ceiling.",job:"DB board upgrade, Randburg",calls:[
+  mk("08:52","Thandi M. · Northcliff","urgent",4800,"072 418 3390","No power in half the house and a burning smell at the DB board. Has small kids at home.","Told her to switch off the main breaker and stay away from the board. Flagged urgent, callback within 15 min.",
+   [["Caller","Hi, half our house has no power and there's a burning smell coming from the DB board!"],["Qlviro Booked","Please switch off the main switch on the DB board now if you can do it safely, and keep everyone away from it. Is there any smoke or flame?"],["Caller","No, just the smell. Main is off now."],["Qlviro Booked","Good. I'm marking this urgent and the electrician will call you back within 15 minutes. What's your address?"]]),
+  mk("09:37","Pieter V. · Randpark Ridge","booked",1450,"083 902 1176","Three plug points in the kitchen stopped working. Breaker keeps tripping.","Booked Friday 14:00. WhatsApp confirmation sent with your call-out fee.",bookTx("Hi, three of my kitchen plugs aren't working and the breaker keeps tripping.","Friday at 14:00")),
+  mk("10:15","Sarah K. · Fourways","quote",85000,"061 557 2203","Wants an inverter and battery backup installed for load shedding. 4-bedroom house.","Site visit booked Monday 11:00. Asked her to WhatsApp a photo of her DB board and her last electricity bill.",quoteTx("We're looking at getting an inverter and batteries put in. Can someone quote?","Could you WhatsApp a photo of your DB board and your last electricity bill beforehand?")),
+  SPAM,
+  mk("11:48","Johan B. · Honeydew","booked",2200,"082 311 7450","Geyser not heating, and wants two outside security lights installed.","Booked today 15:30, after your current job. WhatsApp confirmation sent.",bookTx("My geyser's not heating and I want two security lights put up outside.","this afternoon at 15:30"))],
+  day:[["08:30","DB board upgrade · Randburg"],["13:00","Lunch / buy parts"],["15:30","Geyser element + security lights · Honeydew (Johan B.)",1],["Fri 14:00","Kitchen plugs tripping · Randpark Ridge (Pieter V.)",1],["Mon 11:00","Inverter & battery quote visit · Fourways (Sarah K.)",1]]},
+ plumber:{name:"Plumber",where:"You're under a geyser.",job:"Geyser replacement, Randburg",calls:[
+  mk("08:52","Lerato S. · Northcliff","urgent",6500,"072 418 3390","Burst pipe in the roof. Water coming through the bedroom ceiling.","Told her to close the main water valve and switch the geyser off at the DB. Flagged urgent, callback within 15 min.",
+   [["Caller","Help, there's water pouring through my bedroom ceiling!"],["Qlviro Booked","Let's stop it first. Please close the main water valve at the meter, and switch the geyser off at the DB board. Can you do that safely?"],["Caller","Okay, it's closed."],["Qlviro Booked","Well done. I'm marking this urgent and the plumber will call you back within 15 minutes. What's your address?"]]),
+  mk("09:37","Pieter V. · Randpark Ridge","booked",1200,"083 902 1176","Blocked kitchen drain, water backing up into the sink.","Booked Friday 14:00. WhatsApp confirmation sent with your call-out fee.",bookTx("Hi, my kitchen drain is blocked and the water's backing up into the sink.","Friday at 14:00")),
+  mk("10:15","Sarah K. · Fourways","quote",18000,"061 557 2203","Bathroom renovation: move the shower, new basin and toilet.","Site visit booked Monday 11:00. Asked her to WhatsApp photos of the bathroom.",quoteTx("We're redoing our bathroom. Moving the shower, new basin and toilet. Can someone quote?","Could you WhatsApp a few photos of the bathroom beforehand?")),
+  SPAM,
+  mk("11:48","Johan B. · Honeydew","booked",1800,"082 311 7450","Toilet keeps running, and wants the outside tap replaced.","Booked today 15:30, after your current job. WhatsApp confirmation sent.",bookTx("My toilet keeps running and I need the outside tap replaced.","this afternoon at 15:30"))],
+  day:[["08:30","Geyser replacement · Randburg"],["13:00","Lunch / buy parts"],["15:30","Running toilet + outside tap · Honeydew (Johan B.)",1],["Fri 14:00","Blocked kitchen drain · Randpark Ridge (Pieter V.)",1],["Mon 11:00","Bathroom renovation quote visit · Fourways (Sarah K.)",1]]},
+ roofer:{name:"Roofer",where:"You're up on a roof.",job:"Re-roofing 40 m², Northcliff",calls:[
+  mk("08:52","Thandi M. · Linden","urgent",9500,"072 418 3390","Storm blew roof sheets loose. Rain coming into the lounge.","Told her to move valuables, put buckets down and stay clear of the damaged area. Flagged urgent, callback within 15 min.",
+   [["Caller","The storm lifted some of our roof sheets and rain is pouring into the lounge!"],["Qlviro Booked","I'm sorry. First, move valuables and electronics away, put buckets down, and keep everyone clear of that area. Is any water near plugs or lights?"],["Caller","No, it's by the window."],["Qlviro Booked","Good. I'm marking this urgent and the roofer will call you back within 15 minutes. What's your address?"]]),
+  mk("09:37","Pieter V. · Randpark Ridge","booked",2400,"083 902 1176","Gutters overflowing and a downpipe has come loose.","Booked Friday 14:00. WhatsApp confirmation sent with your call-out fee.",bookTx("Our gutters are overflowing and a downpipe has come loose.","Friday at 14:00")),
+  mk("10:15","Sarah K. · Fourways","quote",65000,"061 557 2203","Wants the whole roof waterproofed and broken tiles replaced before summer.","Site inspection booked Monday 11:00. Asked her to WhatsApp photos of any ceiling stains.",quoteTx("We want the roof waterproofed and the broken tiles replaced before the rains. Can you quote?","Could you WhatsApp photos of any ceiling stains beforehand?")),
+  SPAM,
+  mk("11:48","Johan B. · Honeydew","booked",3200,"082 311 7450","Ceiling stain in the passage after the rain. Wants the leak found.","Booked today 15:30, after your current job. WhatsApp confirmation sent.",bookTx("There's a brown stain on the passage ceiling after the rain. Can you find the leak?","this afternoon at 15:30"))],
+  day:[["08:30","Re-roofing 40 m² · Northcliff"],["13:00","Lunch / collect sheeting"],["15:30","Leak detection · Honeydew (Johan B.)",1],["Fri 14:00","Gutters + downpipe · Randpark Ridge (Pieter V.)",1],["Mon 11:00","Waterproofing quote inspection · Fourways (Sarah K.)",1]]},
+ ceilings:{name:"Ceilings & Partitions",where:"You're up on a scaffold.",job:"Suspended ceiling 60 m², Rivonia",calls:[
+  mk("08:52","Thandi M. · Northcliff","urgent",7800,"072 418 3390","Kitchen ceiling board collapsed after a leak. Rest of it is sagging.","Told her to keep everyone out of the kitchen and switch off that lighting circuit. Flagged urgent, callback within 15 min.",
+   [["Caller","Part of our kitchen ceiling just came down and the rest is sagging!"],["Qlviro Booked","Please keep everyone out of the kitchen and switch off the lights for that room at the DB board. Is anyone hurt?"],["Caller","No, everyone's fine."],["Qlviro Booked","Good. I'm marking this urgent and the installer will call you back within 15 minutes. What's your address?"]]),
+  mk("09:37","Pieter V. · Randpark Ridge","booked",2600,"083 902 1176","Cracked cornices and a sagging board in the lounge.","Booked Friday 14:00. WhatsApp confirmation sent with your call-out fee.",bookTx("We've got cracked cornices and a ceiling board sagging in the lounge.","Friday at 14:00")),
+  mk("10:15","Sarah K. · Fourways","quote",38000,"061 557 2203","New drywall partition and a bulkhead for a home office.","Site visit booked Monday 11:00. Asked her to WhatsApp room measurements and photos.",quoteTx("I need a drywall wall and a bulkhead put in for a home office. Can you quote?","Could you WhatsApp the room measurements and a couple of photos beforehand?")),
+  SPAM,
+  mk("11:48","Johan B. · Honeydew","booked",1900,"082 311 7450","Roof trapdoor needs fitting and a ceiling patch repaired.","Booked today 15:30, after your current job. WhatsApp confirmation sent.",bookTx("I need a trapdoor fitted to the roof and a hole in the ceiling patched.","this afternoon at 15:30"))],
+  day:[["08:30","Suspended ceiling 60 m² · Rivonia"],["13:00","Lunch / collect boards"],["15:30","Trapdoor + ceiling patch · Honeydew (Johan B.)",1],["Fri 14:00","Cornices + sagging board · Randpark Ridge (Pieter V.)",1],["Mon 11:00","Home office partition quote · Fourways (Sarah K.)",1]]},
+ maintenance:{name:"Maintenance crew",where:"You're on site with the team.",job:"Monthly maintenance, Edenvale estate",calls:[
+  mk("08:52","Body corporate · Bedfordview","urgent",5200,"072 418 3390","Main gate motor failed. Residents can't get in or out.","Told them how to release the gate manually with the key. Flagged urgent, callback within 15 min.",
+   [["Caller","Our complex gate motor has died and residents are stuck!"],["Qlviro Booked","Let's get people moving first. The motor has a manual release with a key, usually under a cover on the motor. Can you open it by hand?"],["Caller","Yes, we've got it open."],["Qlviro Booked","Great. I'm marking this urgent and the team leader will call you back within 15 minutes. Which complex is it?"]]),
+  mk("09:37","Pieter V. · Randpark Ridge","booked",1600,"083 902 1176","Leaking tap, two broken light fittings and a sticking door.","Booked Friday 14:00. WhatsApp confirmation sent with your call-out fee.",bookTx("I've got a leaking tap, two broken light fittings and a door that sticks.","Friday at 14:00")),
+  mk("10:15","Sarah K. · Sunninghill","quote",42000,"061 557 2203","Wants a monthly maintenance contract for three office buildings.","Site visit booked Monday 11:00. Asked her to WhatsApp a list of the buildings and current issues.",quoteTx("We need a monthly maintenance contract for three office buildings. Can you quote?","Could you WhatsApp a list of the buildings and any current issues beforehand?")),
+  SPAM,
+  mk("11:48","Johan B. · Honeydew","booked",2100,"082 311 7450","Paint touch-ups and a new security light before a tenant moves in.","Booked today 15:30, after your current job. WhatsApp confirmation sent.",bookTx("A tenant moves in next week. I need paint touch-ups and a new security light.","this afternoon at 15:30"))],
+  day:[["08:30","Monthly maintenance · Edenvale estate"],["13:00","Lunch / hardware run"],["15:30","Touch-ups + security light · Honeydew (Johan B.)",1],["Fri 14:00","Tap, lights + door · Randpark Ridge (Pieter V.)",1],["Mon 11:00","Maintenance contract site visit · Sunninghill (Sarah K.)",1]]},
+ painter:{name:"Painter",where:"You've got a roller in your hand.",job:"Exterior repaint, Fourways",calls:[
+  {...mk("08:52","Thandi M. · Estate agent, Northcliff","urgent",9500,"072 418 3390","House goes on show Saturday. Lounge and passage need repainting by Friday.","Booked a quick look tomorrow at 07:30 and flagged it for your callback today.",
+   [["Caller","I'm an estate agent. A house goes on show Saturday and the lounge and passage need painting by Friday. Can you help?"],["Qlviro Booked","We can try. Roughly how big are the rooms, and are the walls in good shape?"],["Caller","Normal size, just a few marks and nail holes."],["Qlviro Booked","Got it. I've booked a quick look tomorrow at 07:30 and flagged this so the painter calls you back today. What's the address?"]]),tag:"Rush job"},
+  mk("09:37","Pieter V. · Randpark Ridge","booked",2200,"083 902 1176","Damp patch and peeling paint on a bedroom wall.","Booked Friday 14:00. WhatsApp confirmation sent with your call-out fee.",bookTx("There's a damp patch and the paint is peeling on a bedroom wall.","Friday at 14:00")),
+  mk("10:15","Sarah K. · Fourways","quote",55000,"061 557 2203","Full exterior repaint of a double-storey house and boundary wall.","Site visit booked Monday 11:00. Asked her to WhatsApp photos of the walls.",quoteTx("We want the outside of our double-storey house and the boundary wall painted. Can you quote?","Could you WhatsApp a few photos of the walls beforehand?")),
+  SPAM,
+  mk("11:48","Johan B. · Honeydew","booked",2800,"082 311 7450","Front door and window frames to be sanded and varnished.","Booked today 15:30, after your current job. WhatsApp confirmation sent.",bookTx("I need my front door and window frames sanded and varnished.","this afternoon at 15:30"))],
+  day:[["08:30","Exterior repaint · Fourways"],["13:00","Lunch / collect paint"],["15:30","Door + window frames · Honeydew (Johan B.)",1],["Fri 14:00","Damp patch + bedroom wall · Randpark Ridge (Pieter V.)",1],["Mon 11:00","Exterior repaint quote · Fourways (Sarah K.)",1]]},
+ hvac:{name:"HVAC / Aircon",where:"You're up on a roof fitting a unit.",job:"Aircon install, Bedfordview",calls:[
+  mk("08:52","Dr Moodley · Bedfordview","urgent",4500,"072 418 3390","Server room aircon stopped. Room heating up fast.","Told them to shut down non-essential equipment and open the door for airflow. Flagged urgent, callback within 15 min.",
+   [["Caller","The aircon in our server room has stopped and it's getting really hot in there!"],["Qlviro Booked","Please switch off any equipment you can do without, and open the door to get some airflow. Is the unit showing an error light?"],["Caller","Yes, it's flashing red."],["Qlviro Booked","Thanks. I'm marking this urgent and the technician will call you back within 15 minutes. What's the address?"]]),
+  mk("09:37","Pieter V. · Randpark Ridge","booked",1500,"083 902 1176","Aircon dripping water inside and making a rattling noise.","Booked Friday 14:00. WhatsApp confirmation sent with your call-out fee.",bookTx("My aircon is dripping water inside and making a rattling noise.","Friday at 14:00")),
+  mk("10:15","Sarah K. · Fourways","quote",36000,"061 557 2203","Wants three inverter split units for the bedrooms.","Site visit booked Monday 11:00. Asked her to WhatsApp the room sizes.",quoteTx("We want aircons in our three bedrooms. Can you quote?","Could you WhatsApp the rough room sizes beforehand?")),
+  SPAM,
+  mk("11:48","Johan B. · Honeydew","booked",1300,"082 311 7450","Annual service on two units before summer.","Booked today 15:30, after your current job. WhatsApp confirmation sent.",bookTx("I need my two aircons serviced before summer.","this afternoon at 15:30"))],
+  day:[["08:30","Aircon install · Bedfordview"],["13:00","Lunch / collect units"],["15:30","Service 2 units · Honeydew (Johan B.)",1],["Fri 14:00","Dripping aircon · Randpark Ridge (Pieter V.)",1],["Mon 11:00","3 split units quote · Fourways (Sarah K.)",1]]}
+};
+let trade="electrician"; try{ const t=localStorage.getItem("qb_trade"); if(t&&TRADES[t]) trade=t; }catch(e){}
+let CALLS, DAY;
+function loadTrade(){
+  const T=TRADES[trade]; CALLS=T.calls; DAY=T.day.map(([tm,what,isNew])=>({tm,what,isNew:!!isNew}));
+  $("#tagLine").textContent=T.where+" It answers your phone, sorts the emergencies from the time-wasters, and books the work.";
+  $("#jobNow").textContent="On a job · "+T.job;
+}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function card(c,isNew){
+  const el=document.createElement("article"); el.className=`call ${c.type}${isNew?" new":""}`;
+  const quoteLink = c.type==="urgent"||c.type==="quote" ? `<a class="q" href="${QUOTE_URL}" target="_blank" rel="noopener">Quote it in Qlviro Quoted</a>`:"";
+  el.innerHTML=`
+    <div class="top"><div><div class="who">${esc(c.who)}</div><span class="pill ${c.type}">${c.tag}</span></div><div class="when">${c.t}</div></div>
+    <div class="sum">${esc(c.sum)}</div>
+    <div class="did"><b>Handled:</b> ${esc(c.did)}</div>
+    ${c.type!=="spam"?`<div class="acts">
+      ${c.type==="urgent"?`<button class="hot" data-call>Call back now</button>`:""}
+      <button data-tx aria-expanded="false">Hear the call</button>
+      ${quoteLink}
+    </div>`:`<div class="acts"><button data-tx aria-expanded="false">Hear the call</button></div>`}
+    <div data-num hidden>Number: <span class="num">${c.num}</span></div>
+    <div class="transcript" hidden>${c.tx.map(([w,t])=>`<p class="${w==="Caller"?"":"ai"}"><b>${w}:</b> ${esc(t)}</p>`).join("")}</div>`;
+  el.querySelector("[data-tx]").onclick=e=>{const tr=el.querySelector(".transcript");tr.hidden=!tr.hidden;e.target.setAttribute("aria-expanded",String(!tr.hidden));e.target.textContent=tr.hidden?"Hear the call":"Hide call";};
+  el.querySelector("[data-call]")?.addEventListener("click",()=>{el.querySelector("[data-num]").hidden=false;});
+  return el;
+}
+function tally(list){
+  $("#tCalls").textContent=list.length;
+  $("#tBooked").textContent=list.filter(c=>c.type==="booked"||c.type==="quote").length;
+  $("#tValue").textContent=R(list.reduce((a,c)=>a+c.value,0));
+}
+function renderDay(showNew){
+  $("#day").innerHTML=DAY.filter(s=>showNew||!s.isNew).map(s=>`<div class="slot ${s.isNew?"newslot":""}"><div class="tm">${s.tm}</div><div class="what">${esc(s.what)}</div></div>`).join("");
+}
+function renderAll(){
+  const f=$("#feed"); f.innerHTML="";
+  CALLS.slice().reverse().forEach(c=>f.append(card(c,false)));
+  tally(CALLS); renderDay(true);
+}
+let timers=[];
+$("#replay").onclick=()=>{
+  timers.forEach(clearTimeout); timers=[];
+  const f=$("#feed"); f.innerHTML=""; tally([]); renderDay(false);
+  $("#replay").disabled=true;
+  CALLS.forEach((c,i)=>timers.push(setTimeout(()=>{
+    f.prepend(card(c,true)); tally(CALLS.slice(0,i+1));
+    if(i===CALLS.length-1){renderDay(true); $("#replay").disabled=false;}
+  },900+i*1500)));
+};
+$("#tradeSel").value=trade;
+$("#tradeSel").addEventListener("change",e=>{ trade=e.target.value; try{localStorage.setItem("qb_trade",trade)}catch(err){} timers.forEach(clearTimeout); timers=[]; $("#replay").disabled=false; loadTrade(); renderAll(); });
+loadTrade();
+renderAll();
+</script>
