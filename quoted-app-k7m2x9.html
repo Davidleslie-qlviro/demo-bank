@@ -1,0 +1,648 @@
+<title>Qlviro Quoted</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: single-column job docket — talk box on top, quote sheet below, like a carbon-copy job card */
+:root{
+  --bg:#e9eaea; --sheet:#ffffff; --ink:#1d2328; --muted:#5c656d; --line:#cfd3d6;
+  --accent:#2f62d8; --go:#16834a; --wa:#1fa855; --accent-ink:#ffffff; --soft:#e3ebfb;
+  --urgent:#c81e1e; --urgent-soft:#fbe4e4; --ok:#1f7a4d; --ok-soft:#e1f2e8; --info:#2d5e9e; --info-soft:#e3ecf7;
+  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#14181b; --sheet:#1d2226; --ink:#e7eaec; --muted:#9aa3aa; --line:#323a40;
+  --accent:#6f9bf5; --go:#23944f; --accent-ink:#0b1324; --soft:#1b2a48;
+  --urgent:#f87171; --urgent-soft:#3d1717; --ok:#4fc28a; --ok-soft:#14301f; --info:#7fb0ef; --info-soft:#18263a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14181b; --sheet:#1d2226; --ink:#e7eaec; --muted:#9aa3aa; --line:#323a40;
+  --accent:#6f9bf5; --go:#23944f; --accent-ink:#0b1324; --soft:#1b2a48;
+  --urgent:#f87171; --urgent-soft:#3d1717; --ok:#4fc28a; --ok-soft:#14301f; --info:#7fb0ef; --info-soft:#18263a; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--body);margin:0}
+.wrap{max-width:720px;margin:0 auto;padding-inline:16px;padding-block:20px 48px;display:flex;flex-direction:column;gap:18px}
+header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;font-family:var(--display);font-weight:800;font-size:34px;line-height:1;text-transform:uppercase;letter-spacing:.01em}
+.brand span{color:var(--accent)}
+.brand .mark{flex:none}
+.tag{color:var(--muted);font-size:13px}
+button{font:600 14px var(--body);border-radius:8px;border:1px solid var(--line);background:var(--sheet);color:var(--ink);padding:10px 14px;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-family:var(--display);font-size:20px;letter-spacing:.04em;text-transform:uppercase;padding:12px 18px}
+button:disabled{opacity:.55;cursor:wait}
+.trade{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.trade select{font:600 15px var(--body);color:var(--ink);background:var(--sheet);border:2px solid var(--accent);border-radius:8px;padding:9px 12px;min-width:0;max-width:100%}
+.txt-btn{display:inline-flex;align-items:center;background:var(--accent);color:#fff;border-radius:8px;padding:9px 13px;font:600 14px var(--body);text-decoration:none}
+.wa-btn{display:inline-flex;align-items:center;gap:10px;background:var(--wa);color:#fff;border-radius:8px;padding:12px 18px;font:700 20px var(--display);letter-spacing:.04em;text-transform:uppercase;text-decoration:none}
+.wa-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.actions button,button.ghost{background:var(--accent);border-color:var(--accent);color:#fff}
+
+.talk{background:var(--sheet);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.label{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+#talkLabel{font-size:24px;color:var(--go);letter-spacing:.06em}
+.hint{display:flex;gap:10px;align-items:flex-start;background:var(--go);color:#fff;border-radius:8px;padding:10px 12px;font-size:14.5px;font-weight:500}
+.hint svg{flex:none;margin-top:2px;width:22px;height:22px}
+.hint b{font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.hint-where{margin-top:6px;font-size:12.5px;line-height:1.4;white-space:nowrap}
+.hint .hint-where b{text-decoration:none}
+textarea{width:100%;min-height:150px;resize:vertical;font:16px/1.5 var(--body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.status{font-size:13.5px;color:var(--muted);min-height:1.2em}
+.status.err{color:var(--accent)}
+.trial{margin-top:14px;padding:16px;border:2px solid var(--wa);border-radius:10px;background:#eefaf2;display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+.trial[hidden]{display:none}
+.trial p{margin:0;font-size:15px;line-height:1.45}
+
+details.settings{background:var(--sheet);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+details.settings summary{cursor:pointer;font-family:var(--display);font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:12px}
+.field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.field span{font-size:12px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+input{font:15px var(--body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;width:100%;min-width:0}
+
+/* the quote sheet */
+.sheet{background:var(--sheet);border:1px solid var(--line);border-top:6px solid var(--accent);border-radius:4px;padding:20px 18px;display:flex;flex-direction:column;gap:16px;box-shadow:0 1px 0 var(--line)}
+.sheet-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.bizname{margin-top:6px;font-weight:600}
+.doctype{font-family:var(--display);font-weight:800;font-size:30px;line-height:1;text-transform:uppercase;letter-spacing:.02em}
+.doctype.inv{color:var(--ok)}
+.meta{font-family:var(--mono);font-size:12.5px;color:var(--muted);text-align:right;display:flex;flex-direction:column;gap:2px}
+.badge{display:inline-block;font:600 11px var(--body);letter-spacing:.08em;text-transform:uppercase;background:var(--soft);color:var(--accent);border-radius:99px;padding:3px 9px;align-self:flex-start}
+.parties{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:480px){.parties{grid-template-columns:1fr}}
+.parties .v{font-weight:600}
+.summary{border-left:3px solid var(--line);padding-left:12px;color:var(--ink)}
+.scope{display:flex;flex-direction:column;gap:12px}
+.scope-h{font-family:var(--display);font-weight:700;font-size:16px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.sarea{display:flex;flex-direction:column;gap:6px}
+.srow{display:flex;align-items:flex-start;gap:8px}
+textarea.stext{resize:none;overflow:hidden;line-height:1.35;display:block;min-height:0;width:auto;font:15px/1.35 var(--body);padding:7px 9px}
+.sn{font:500 13px var(--mono);color:var(--muted);min-width:24px;text-align:right;padding-top:8px}
+.srow .del{padding-top:6px}
+.stext{flex:1;min-width:0;font:15px var(--body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:7px 9px}
+.sareaname{font-weight:700;background:transparent;border-color:transparent;padding-left:0}
+.sareaname:focus{background:var(--bg);border-color:var(--line);padding-left:9px}
+.tablewrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;min-width:440px}
+th{font:600 11px var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;padding:6px 6px;border-bottom:2px solid var(--ink)}
+th.n,td.n{text-align:right}
+td{padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+td.group{font-family:var(--display);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:14px;color:var(--accent);padding-top:14px;border-bottom:none}
+td input{padding:4px 6px;font-family:var(--mono);font-size:13.5px;text-align:right;width:76px}
+td.desc{min-width:0}
+td input.dtext{width:100%;min-width:150px;text-align:left;font-family:var(--body);font-size:14px}
+.addrow td{border-bottom:none;padding-top:8px}
+.addbtns{display:flex;gap:8px;flex-wrap:wrap}
+.addbtns button{background:var(--accent);border-color:var(--accent);color:#fff;font-size:13px;padding:6px 11px}
+td.amt{font-family:var(--mono);font-size:13.5px;white-space:nowrap}
+.del{border:none;background:none;color:var(--muted);padding:2px 4px;font-size:16px;line-height:1}
+@media (max-width:560px){
+  table{min-width:0}
+  thead{display:none}
+  tbody tr{display:grid;grid-template-columns:minmax(64px,.8fr) 1fr 1.15fr 28px;gap:6px 8px;align-items:end;padding:10px 0;border-bottom:1px solid var(--line)}
+  tbody td{border-bottom:none;padding:0;min-width:0}
+  td.desc,td.group,tr.addrow td{grid-column:1/-1}
+  td.desc{font-weight:600}
+  tbody tr:has(td.group),tbody tr.addrow{border-bottom:none;padding-bottom:0}
+  td input{width:100%}
+  td input.dtext{min-width:0}
+  td[data-l]::before{content:attr(data-l);display:block;font:600 10px var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+  td.amt{font-size:13px}
+}
+.imgprev{display:flex;flex-direction:column;gap:8px}
+.imgprev img{width:100%;max-width:420px;border:1px solid var(--line);border-radius:6px}
+.paybox{border:2px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.paybox.paid{border-color:var(--ok);background:var(--ok-soft)}
+.payhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pstat{font:700 12px var(--body);letter-spacing:.08em;text-transform:uppercase;border-radius:99px;padding:4px 10px}
+.pstat.due{background:var(--urgent-soft);color:var(--urgent)}
+.pstat.ok{background:var(--ok);color:#fff}
+.sheet .paynow{background:var(--wa);border-color:var(--wa);color:#fff;font:700 20px var(--display);letter-spacing:.04em;text-transform:uppercase;padding:12px 18px;align-self:flex-start}
+.paysub{font-size:13px;color:var(--muted)}
+.sheet .paytoggle{align-self:flex-start;background:var(--accent);border-color:var(--accent);color:#fff;font-size:13px;padding:6px 11px}
+.totals{display:flex;flex-direction:column;gap:4px;align-self:flex-end;min-width:240px;font-variant-numeric:tabular-nums}
+.totals div{display:flex;justify-content:space-between;gap:24px}
+.totals .grand{border-top:2px solid var(--ink);padding-top:6px;margin-top:4px;font-family:var(--display);font-weight:800;font-size:24px}
+.totals .grand b{font-family:var(--mono);font-size:20px;font-weight:500}
+.totals span:last-child{font-family:var(--mono)}
+.notes{font-size:13.5px;color:var(--muted)}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;font-size:14px}
+.copybox{width:100%;min-height:160px;font:13px/1.45 var(--mono)}
+@media (prefers-reduced-motion:no-preference){.sheet{transition:opacity .2s}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand"><svg class="mark" viewBox="0 0 64 64" width="44" height="44" aria-hidden="true"><circle cx="32" cy="32" r="31" fill="#152346"/><circle cx="32" cy="32" r="27" fill="#1b2a4e" stroke="#2f4f9a" stroke-width="1.5"/><polygon points="33.5,13 23,30 32,30 29.5,50 41.5,26 33,26" fill="#5b8cf0"/></svg><div>Qlviro <span>Quoted</span></div></div>
+    <div class="tag">Say the job. Send the quote before you reach the bakkie.</div>
+  </header>
+
+  <section class="talk" aria-labelledby="talkLabel">
+    <label class="trade" for="tradeSel"><span class="label">Your trade</span>
+      <select id="tradeSel">
+        <option value="electrician">Electrician</option><option value="plumber">Plumber</option><option value="roofer">Roofer</option><option value="ceilings">Ceilings &amp; Partitions</option><option value="maintenance">Maintenance crew</option><option value="painter">Painter</option><option value="handyman">Handyman / Builder</option><option value="hvac">HVAC / Aircon</option>
+      </select></label>
+    <div class="label" id="talkLabel">Describe the job</div>
+    <div class="hint">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></svg>
+      <div>Tap <b>Clear</b>, then tap the box below. Tap the <b>🎤 mic on your keyboard</b> and just talk: who it's for, where, what needs doing, roughly how long, and what parts you need.
+        <div class="hint-where"><b>iPhone</b> 🎤 bottom right · <b>Android</b> 🎤 top right</div></div>
+    </div>
+    <textarea id="jobText" aria-label="Job description"></textarea>
+    <div class="row">
+      <button class="primary" id="buildBtn">Build quote</button>
+      <button class="ghost" id="clearBtn">Clear</button>
+      <button class="ghost" id="stopBtn" hidden>Stop</button>
+    </div>
+    <div class="status" id="status" role="status"></div>
+    <div class="trial" id="trialBox" hidden>
+      <p><b>You've used your 3 free quotes.</b> Keep quoting every job with your own business name, rates and VAT, and turn quotes into invoices with Pay Now.</p>
+      <a class="wa-btn" id="trialBtn" target="_blank" rel="noopener">Start 14-day trial for R1</a>
+    </div>
+  </section>
+
+  <details class="settings" id="settings">
+    <summary>My business &amp; rates</summary>
+    <div class="grid">
+      <label class="field"><span>Business name</span><input id="s_biz" type="text"></label>
+      <label class="field"><span>Phone</span><input id="s_phone" type="text"></label>
+      <label class="field"><span>Labour rate (R / hour)</span><input id="s_rate" type="number" min="0" step="10"></label>
+      <label class="field"><span>Call-out fee (R)</span><input id="s_callout" type="number" min="0" step="10"></label>
+      <label class="field"><span>Material markup %</span><input id="s_markup" type="number" min="0" step="1"></label>
+      <label class="field"><span>VAT %  (0 if not registered)</span><input id="s_vat" type="number" min="0" step="0.5"></label>
+    </div>
+  </details>
+
+  <article class="sheet" id="sheet" aria-live="polite"></article>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const fmt = n => "R " + (Math.round(n*100)/100).toLocaleString("en-ZA",{minimumFractionDigits:2,maximumFractionDigits:2});
+
+const DEFAULTS = {biz:"Volt Pro Electrical",phone:"082 555 0142",rate:550,callout:450,markup:20,vat:15};
+const newQnum = () => "Q-" + new Date().getFullYear() + "-" + String(Math.floor(1000+Math.random()*9000));
+const invNum = () => qnum.replace(/^Q-/,"INV-");
+function load(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+let S = Object.assign({},DEFAULTS,load("tq_settings",{}));
+
+const EXAMPLE_TEXT = "Quote for Mrs Naidoo, 14 Jacaranda Street, Bryanston. Her DB board keeps tripping, it's an old one, needs a full replacement with a new 24-way board, earth leakage and surge protection. Also rewire the kitchen plugs, four double plugs, and add one isolator for the stove. About six hours for me and an assistant. She wants it done next week.";
+const EXAMPLE_QUOTE = {
+  example:true,
+  client:"Mrs Naidoo", site:"14 Jacaranda Street, Bryanston",
+  summary:"Replace old tripping distribution board with a new 24-way board including earth leakage and surge protection, rewire 4 kitchen double plug points and install a stove isolator.",
+  labour:[{desc:"Electrician: DB replacement, kitchen rewire, testing",hours:6},{desc:"Assistant",hours:6,rate_factor:0.45}],
+  materials:[
+    {desc:"24-way DB board (surface mount)",qty:1,unit:1650},
+    {desc:"Earth leakage unit 63A 30mA",qty:1,unit:780},
+    {desc:"Surge arrester Type 2",qty:1,unit:950},
+    {desc:"Circuit breakers (assorted)",qty:8,unit:95},
+    {desc:"Double switched socket outlet",qty:4,unit:110},
+    {desc:"Stove isolator 45A",qty:1,unit:240},
+    {desc:"2.5mm twin & earth cable (m)",qty:30,unit:28},
+    {desc:"Sundries (glands, lugs, trunking)",qty:1,unit:350}
+  ],
+  scope:[{"area":"DB board","steps":["Isolate supply and remove old distribution board","Install new 24-way DB board with earth leakage and surge protection","Label all circuits"]},{"area":"Kitchen","steps":["Rewire 4 double plug points","Install 45A stove isolator","Test all circuits and issue CoC"]},{"area":"Clean-up","steps":["Remove old board and offcuts from site"]}],
+  notes:"Certificate of Compliance (CoC) issued on completion. Work scheduled for next week, subject to deposit."
+};
+
+const TRADES={
+ electrician:{name:"Electrician",biz:"Volt Pro Electrical",rate:550,callout:450,main:"Electrician",helper:"Assistant",hf:0.45,
+  rule:"If work on a DB board or new circuits is involved, note that a Certificate of Compliance (CoC) will be issued.",
+  text:EXAMPLE_TEXT, quote:EXAMPLE_QUOTE},
+ plumber:{name:"Plumber",biz:"Botha Plumbing",rate:520,callout:450,main:"Plumber",helper:"Helper",hf:0.45,
+  rule:"For geyser replacements or new installations, note that a plumbing Certificate of Compliance will be issued.",
+  text:"Quote for Mr Botha, 7 Protea Road, Randburg. His 150 litre geyser burst in the roof. Replace it with a new 150 litre geyser, drip tray, vacuum breakers, pressure control valve and safety valve, and redo the copper pipes to the geyser. One ceiling board got wet and needs replacing. About four hours, me and my helper.",
+  quote:{client:"Mr Botha",site:"7 Protea Road, Randburg",summary:"Replace burst 150L geyser with new unit, drip tray, valves and copper pipework, and replace one water-damaged ceiling board.",
+   labour:[{desc:"Plumber: geyser replacement & pipework",hours:4},{desc:"Helper",hours:4,rate_factor:0.45}],
+   materials:[{desc:"150L geyser",qty:1,unit:4950},{desc:"Geyser drip tray",qty:1,unit:380},{desc:"Vacuum breakers",qty:2,unit:120},{desc:"Pressure control valve",qty:1,unit:950},{desc:"Safety valve",qty:1,unit:290},{desc:"22mm copper pipe (m)",qty:6,unit:145},{desc:"Ceiling board",qty:1,unit:280},{desc:"Fittings & sundries",qty:1,unit:450}],
+   scope:[{"area":"Geyser","steps":["Drain and remove burst 150L geyser","Install new 150L geyser with drip tray","Fit vacuum breakers, pressure control and safety valves","Replace copper pipework to geyser","Refill, test for leaks and set thermostat"]},{"area":"Ceiling","steps":["Remove water-damaged ceiling board","Fit and finish new ceiling board"]},{"area":"Clean-up","steps":["Remove old geyser and rubble from site"]}],
+   notes:"Plumbing Certificate of Compliance issued on completion, as required for geyser replacements and insurance claims."}},
+ roofer:{name:"Roofer",biz:"Khumalo Roofing",rate:450,callout:500,main:"Roofer",helper:"Labourer",hf:0.4,
+  rule:"Quote sheeting, waterproofing and ceilings in square metres (m²) and capping or gutters in metres (m), with the unit in the description. Mention the workmanship guarantee in notes.",
+  text:"Quote for Mrs Khumalo, 22 Acacia Avenue, Northcliff. Roof is leaking in three places after the storm. Replace 40 square metres of rusted IBR sheeting, new ridge capping 12 metres, and waterproof the parapet wall, about 15 square metres. Two days, me and two labourers.",
+  quote:{client:"Mrs Khumalo",site:"22 Acacia Avenue, Northcliff",summary:"Replace 40 m² of rusted IBR sheeting, fit 12 m of new ridge capping and waterproof 15 m² of parapet wall.",
+   labour:[{desc:"Roofer: sheeting, capping, waterproofing",hours:16},{desc:"Labourers (x2)",hours:32,rate_factor:0.4}],
+   materials:[{desc:"IBR sheeting 0.5mm (m²)",qty:40,unit:185},{desc:"Ridge capping (m)",qty:12,unit:95},{desc:"Roof screws & washers (box)",qty:2,unit:260},{desc:"Waterproofing membrane & sealer (m²)",qty:15,unit:120},{desc:"Sundries",qty:1,unit:400}],
+   scope:[{"area":"Roof sheeting","steps":["Remove 40 m² of rusted IBR sheeting","Check purlins and replace fixings","Install new 0.5mm IBR sheeting"]},{"area":"Ridge & parapet","steps":["Fit 12 m of new ridge capping","Clean and prime parapet wall","Apply waterproofing membrane and sealer (15 m²)"]},{"area":"Clean-up","steps":["Remove old sheeting and rubble from site"]}],
+   notes:"5-year workmanship guarantee on sheeting and waterproofing. Weather permitting."}},
+ ceilings:{name:"Ceilings & Partitions",biz:"Pillay Ceilings",rate:420,callout:450,main:"Installer",helper:"Assistant",hf:0.4,
+  rule:"Quote ceilings and drywall in square metres (m²) and studs or cornices in metres (m), with the unit in the description. Mention the workmanship guarantee in notes.",
+  text:"Quote for Mr Pillay, office at 3 Rivonia Boulevard. New suspended ceiling, 60 square metres with 600 by 600 tiles, plus a drywall partition 4 metres long and 2.7 metres high with a door opening. Three days, me and two assistants.",
+  quote:{client:"Mr Pillay",site:"3 Rivonia Boulevard, Rivonia",summary:"Install a 60 m² suspended ceiling with 600x600 tiles and a 4 m drywall partition with a door opening.",
+   labour:[{desc:"Installer: ceiling & partition",hours:24},{desc:"Assistants (x2)",hours:48,rate_factor:0.4}],
+   materials:[{desc:"Ceiling grid system (m²)",qty:60,unit:95},{desc:"Ceiling tiles 600x600 (m²)",qty:60,unit:110},{desc:"Drywall board 12mm (m²)",qty:22,unit:120},{desc:"Metal studs & track (m)",qty:30,unit:48},{desc:"Door frame",qty:1,unit:1200},{desc:"Tape, compound & screws",qty:1,unit:650}],
+   scope:[{"area":"Office ceiling","steps":["Protect floor and furniture","Install suspended grid system (60 m²)","Fit 600x600 ceiling tiles"]},{"area":"Partition","steps":["Install metal studs and track (4 m x 2.7 m)","Board both sides with 12mm drywall","Fit door frame","Tape, joint and sand ready for paint"]},{"area":"Clean-up","steps":["Remove offcuts and dust from site"]}],
+   notes:"12-month workmanship guarantee. Area to be cleared before we start."}},
+ maintenance:{name:"Maintenance crew",biz:"Greenstone Maintenance",rate:450,callout:400,main:"Team leader",helper:"Maintenance staff",hf:0.45,
+  rule:"Group small repairs into clear lines. Mention that a monthly maintenance contract is available in notes.",
+  text:"Quote for Greenstone Body Corporate, 15 units in Edenvale. Replace 20 passage light fittings with LED, fix three dripping taps, repair the gate motor rail and touch up the paint on the entrance wall. One day, me and two guys.",
+  quote:{client:"Greenstone Body Corporate",site:"Greenstone Estate, Edenvale",summary:"Replace 20 passage lights with LED fittings, fix 3 dripping taps, repair the gate rail and touch up the entrance wall.",
+   labour:[{desc:"Team leader",hours:8},{desc:"Maintenance staff (x2)",hours:16,rate_factor:0.45}],
+   materials:[{desc:"LED bulkhead fitting",qty:20,unit:165},{desc:"Tap washers & cartridges",qty:3,unit:85},{desc:"Gate rail section & brackets",qty:1,unit:780},{desc:"Exterior paint 5L",qty:1,unit:690},{desc:"Sundries",qty:1,unit:300}],
+   scope:[{"area":"Passages","steps":["Remove 20 old light fittings","Install new LED bulkhead fittings and test"]},{"area":"Taps","steps":["Replace washers and cartridges on 3 dripping taps"]},{"area":"Gate","steps":["Remove damaged rail section","Fit new rail and brackets, test gate motor"]},{"area":"Entrance wall","steps":["Clean and touch up paint"]}],
+   notes:"Available as a monthly maintenance contract with priority call-outs."}},
+ painter:{name:"Painter",biz:"Dlamini Painters",rate:380,callout:350,main:"Lead painter",helper:"Painter",hf:0.35,
+  rule:"Quote paint by container size (e.g. 20L) and wall areas in square metres (m²) where given. Mention the guarantee in notes.",
+  text:"Quote for Ms Dlamini, 9 Kiaat Road, Fourways. Paint the outside of a single storey house, about 180 square metres of wall, plus the boundary wall, 60 metres. Crack repairs, prime and two coats. Five days, me and three painters.",
+  quote:{client:"Ms Dlamini",site:"9 Kiaat Road, Fourways",summary:"Repair cracks, prime and apply two coats to 180 m² of exterior house walls and a 60 m boundary wall.",
+   labour:[{desc:"Lead painter",hours:40},{desc:"Painters (x3)",hours:120,rate_factor:0.35}],
+   materials:[{desc:"Exterior acrylic paint 20L",qty:6,unit:1350},{desc:"Primer 20L",qty:2,unit:1100},{desc:"Crack filler & mesh",qty:1,unit:650},{desc:"Brushes, rollers & masking",qty:1,unit:550},{desc:"Drop sheets & sundries",qty:1,unit:300}],
+   scope:[{"area":"House walls (180 m²)","steps":["Wash walls and scrape loose paint","Fill and mesh all cracks","Apply primer","Apply two coats of exterior acrylic"]},{"area":"Boundary wall (60 m)","steps":["Repair cracks","Prime and apply two coats"]},{"area":"Clean-up","steps":["Remove masking, drop sheets and waste from site"]}],
+   notes:"3-year guarantee on labour and materials. Weather permitting."}},
+ handyman:{name:"Handyman / Builder",biz:"Pretorius Handyman Services",rate:420,callout:400,main:"Handyman",helper:"Helper",hf:0.45,
+  rule:"Quote plastering and painting in m² where given and timber by length. Mention the workmanship guarantee and rubble removal in notes.",
+  text:"Quote for Mrs Pretorius, 5 Oak Street, Northcliff. Bathroom wall is damp and the plaster is falling off. Strip it, seal and re-plaster, remove the rubble, then paint. Also two roof trusses over the garage are rotten, take them out and replace. Two days, me and a helper.",
+  quote:{client:"Mrs Pretorius",site:"5 Oak Street, Northcliff",summary:"Repair damp bathroom wall (strip, seal, re-plaster, paint) and replace 2 rotten roof trusses over the garage.",
+   labour:[{desc:"Handyman: plastering & truss replacement",hours:16},{desc:"Helper",hours:16,rate_factor:0.45}],
+   materials:[{desc:"Bonding plaster 40kg",qty:3,unit:165},{desc:"Damp-proof sealer 5L",qty:1,unit:520},{desc:"Cement & plaster sand",qty:1,unit:380},{desc:"Treated pine 38x114 (6 m)",qty:4,unit:310},{desc:"Truss hangers, nails & bolts",qty:1,unit:260},{desc:"Bathroom paint 5L",qty:1,unit:690},{desc:"Rubble removal (bakkie load)",qty:1,unit:950}],
+   scope:[{"area":"Bathroom wall","steps":["Protect floor and fittings with drop sheets","Remove loose and damp plaster back to brick","Apply damp-proof sealer and allow to cure","Re-plaster and float to a smooth finish","Prime and paint wall (2 coats)"]},{"area":"Garage roof","steps":["Prop roof sheeting safely","Remove 2 rotten roof trusses","Install new treated timber trusses with hangers","Re-fix roof sheets and check for leaks"]},{"area":"Clean-up","steps":["Remove all rubble and old timber from site","Sweep and leave work areas clean"]}],
+   notes:"12-month workmanship guarantee. All rubble removed from site."}},
+ hvac:{name:"HVAC / Aircon",biz:"CoolAir Installations",rate:580,callout:500,main:"Technician",helper:"Assistant",hf:0.45,
+  rule:"Note that an installation certificate will be issued and that the manufacturer warranty applies to new units.",
+  text:"Quote for Dr Moodley, consulting rooms at 41 Main Road, Bedfordview. Supply and install two 12000 BTU inverter split aircons with about 5 metres of pipe each, and service the existing unit in reception. One day, me and an assistant.",
+  quote:{client:"Dr Moodley",site:"41 Main Road, Bedfordview",summary:"Supply and install two 12000 BTU inverter split units and service the existing reception unit.",
+   labour:[{desc:"Technician: install & service",hours:8},{desc:"Assistant",hours:8,rate_factor:0.45}],
+   materials:[{desc:"12000 BTU inverter split unit",qty:2,unit:8900},{desc:"Copper pipe kit (m)",qty:10,unit:160},{desc:"Wall brackets",qty:2,unit:350},{desc:"Isolator & cabling",qty:2,unit:420},{desc:"Service kit & gas top-up",qty:1,unit:650},{desc:"Sundries",qty:1,unit:300}],
+   scope:[{"area":"Consulting rooms","steps":["Mount 2 x 12000 BTU indoor and outdoor units","Run copper pipe, drain and cabling (approx. 5 m each)","Install isolators","Vacuum, gas and commission both units"]},{"area":"Reception","steps":["Service existing unit: clean filters and coil, check gas"]}],
+   notes:"Installation certificate issued on completion. Manufacturer warranty applies to new units."}}
+};
+let trade = load("tq_trade","electrician"); if(!TRADES[trade]) trade="electrician";
+const T = () => TRADES[trade];
+const exampleQuote = () => Object.assign({example:true}, JSON.parse(JSON.stringify(T().quote)));
+
+let Q = load("tq_quote",null) || exampleQuote();
+let mode = load("tq_mode","quote");
+let qnum = load("tq_num", newQnum());
+
+$("#jobText").value = load("tq_draft", T().text);
+$("#jobText").addEventListener("input", e=>save("tq_draft",e.target.value));
+
+// settings
+const map={s_biz:"biz",s_phone:"phone",s_rate:"rate",s_callout:"callout",s_markup:"markup",s_vat:"vat"};
+for(const [id,k] of Object.entries(map)){
+  const el=$("#"+id); el.value=S[k];
+  el.addEventListener("input",()=>{S[k]= el.type==="number" ? Number(el.value||0) : el.value; save("tq_settings",S); render();});
+}
+
+// ---------- pricing ----------
+function calc(){
+  const labour = Q.labour.map(l=>({...l, rate: S.rate*(l.rate_factor||1), amt: l.hours*S.rate*(l.rate_factor||1)}));
+  const mats = Q.materials.map(m=>({...m, sell:m.unit*(1+S.markup/100), amt:m.qty*m.unit*(1+S.markup/100)}));
+  const callout = Q.callout===false ? 0 : S.callout;
+  const sub = labour.reduce((a,b)=>a+b.amt,0)+mats.reduce((a,b)=>a+b.amt,0)+callout;
+  const vat = sub*S.vat/100;
+  return {labour,mats,callout,sub,vat,total:sub+vat};
+}
+
+function esc(s){return String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+
+// ---------- quote sheet ----------
+function render(){
+  const c=calc(); const inv = mode==="invoice";
+  const today=new Date(); const later=new Date(Date.now()+(inv?7:14)*864e5);
+  const d=x=>x.toLocaleDateString("en-ZA",{day:"numeric",month:"short",year:"numeric"});
+  const num = inv ? invNum() : qnum;
+  $(".brand span").textContent = inv ? "Paid" : "Quoted";
+  $("header .tag").textContent = inv ? "Job done. Now get paid." : "Say the job. Send the quote before you reach the bakkie.";
+  $("#sheet").innerHTML = `
+    ${Q.example?'<span class="badge">Example quote — describe your own job above</span>':''}
+    <div class="sheet-head">
+      <div><div class="doctype ${inv?'inv':''}">${inv?(S.vat>0?'Tax invoice':'Invoice'):'Quotation'}</div>
+        <div class="bizname">${esc(S.biz)}</div><div class="tag">${esc(S.phone)}</div></div>
+      <div class="meta"><div>${num}</div><div>Date ${d(today)}</div><div>${inv?'Due':'Valid until'} ${d(later)}</div></div>
+    </div>
+    <div class="parties">
+      <div><div class="label">For</div><div class="v">${esc(Q.client||"Client")}</div></div>
+      <div><div class="label">Site</div><div class="v">${esc(Q.site||"—")}</div></div>
+    </div>
+    <div class="summary">${esc(Q.summary)}</div>
+    ${scopeHTML()}
+    <div class="tablewrap"><table>
+      <thead><tr><th>Item</th><th class="n">Qty / hrs</th><th class="n">Rate</th><th class="n">Amount</th><th></th></tr></thead>
+      <tbody>
+        <tr><td class="group" colspan="5">Labour</td></tr>
+        ${c.labour.map((l,i)=>`<tr><td class="desc"><input class="dtext" id="ld${i}" type="text" value="${esc(l.desc)}" data-k="labour" data-i="${i}" data-f="desc" aria-label="Labour description"></td>
+          <td class="n" data-l="Hours"><input id="lh${i}" type="number" min="0" step="0.5" value="${l.hours}" data-k="labour" data-i="${i}" data-f="hours" aria-label="Hours"></td>
+          <td class="n amt" data-l="Rate">${fmt(l.rate)}</td><td class="n amt" data-l="Amount">${fmt(l.amt)}</td>
+          <td><button class="del" data-k="labour" data-i="${i}" aria-label="Remove line">×</button></td></tr>`).join("")}
+        <tr class="addrow"><td colspan="5"><div class="addbtns"><button data-add="elec">+ ${esc(T().main)} hours</button><button data-add="asst">+ ${esc(T().helper)} hours</button>${c.callout?'':'<button data-add="callout">+ Call-out fee</button>'}</div></td></tr>
+        ${c.callout?`<tr><td class="desc">Call-out fee</td><td class="n amt" data-l="Qty">1</td><td class="n amt" data-l="Rate">${fmt(c.callout)}</td><td class="n amt" data-l="Amount">${fmt(c.callout)}</td><td><button class="del" data-k="callout" aria-label="Remove call-out">×</button></td></tr>`:''}
+        <tr><td class="group" colspan="5">Materials</td></tr>
+        ${c.mats.map((m,i)=>`<tr><td class="desc"><input class="dtext" id="md${i}" type="text" value="${esc(m.desc)}" data-k="materials" data-i="${i}" data-f="desc" aria-label="Material description"></td>
+          <td class="n" data-l="Qty"><input id="mq${i}" type="number" min="0" step="1" value="${m.qty}" data-k="materials" data-i="${i}" data-f="qty" aria-label="Quantity"></td>
+          <td class="n" data-l="Price each"><input id="mu${i}" type="number" min="0" step="1" value="${Math.round(m.sell*100)/100}" data-k="materials" data-i="${i}" data-f="sell" aria-label="Price each"></td>
+          <td class="n amt" data-l="Amount">${fmt(m.amt)}</td>
+          <td><button class="del" data-k="materials" data-i="${i}" aria-label="Remove line">×</button></td></tr>`).join("")}
+        <tr class="addrow"><td colspan="5"><div class="addbtns"><button data-add="mat">+ Add material</button></div></td></tr>
+      </tbody></table></div>
+    <div class="totals">
+      <div><span>Subtotal</span><span>${fmt(c.sub)}</span></div>
+      ${S.vat>0?`<div><span>VAT ${S.vat}%</span><span>${fmt(c.vat)}</span></div>`:''}
+      <div class="grand"><span>Total</span><b>${fmt(c.total)}</b></div>
+    </div>
+    ${Q.notes?`<div class="notes">${esc(Q.notes)}</div>`:''}
+    ${inv?`<div class="paybox ${Q.paid?'paid':''}">
+      <div class="payhead"><span class="pstat ${Q.paid?'ok':'due'}">${Q.paid?'Paid':'Unpaid'}</span><b>${Q.paid?'Paid in full. Thank you!':'Amount due '+fmt(c.total)}</b></div>
+      ${Q.paid?'':`<button class="paynow" id="payNow">💳 Pay now</button><div class="paysub">This is the button your client taps. Card, EFT or Instant EFT through Yoco or PayFast in the live app. Tap it to see what happens.</div>`}
+      <button class="paytoggle" id="payToggle">${Q.paid?'Mark as unpaid':'Mark as paid'}</button>
+    </div>`:''}
+    <div class="actions">
+      <a class="wa-btn" id="waLink" href="https://wa.me/?text=${encodeURIComponent(waText())}" target="_blank" rel="noopener"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.4-.2z"/></svg>Send on WhatsApp</a>
+      <button id="imgBtn">${inv?"Save invoice as image":"Save quote as image"}</button>
+      <button id="modeBtn">${inv?'Back to quote':'Job done → Invoice'}</button>
+      <button id="fuBtn">${inv?(Q.paid?'Thank-you message':'Payment reminder'):'Follow-up message'}</button>
+    </div>
+    <div id="copyArea" hidden></div>`;
+  bind();
+}
+
+function scopeHTML(){
+  if(!Array.isArray(Q.scope)) Q.scope=[];
+  let n=1;
+  return `<div class="scope"><div class="scope-h">Scope of work</div>
+    ${Q.scope.map((a,ai)=>`<div class="sarea">
+      <div class="srow"><input class="stext sareaname" id="sa${ai}" data-sa="${ai}" value="${esc(a.area)}" aria-label="Area"><button class="del" data-sdelarea="${ai}" aria-label="Remove area">×</button></div>
+      ${a.steps.map((st,si)=>`<div class="srow"><span class="sn">${n++}.</span><textarea class="stext" rows="1" id="ss${ai}_${si}" data-sa="${ai}" data-ss="${si}" aria-label="Work step">${esc(st)}</textarea><button class="del" data-sdel="${ai}:${si}" aria-label="Remove step">×</button></div>`).join("")}
+      <div class="addbtns"><button data-saddstep="${ai}">+ Add step</button></div>
+    </div>`).join("")}
+    <div class="addbtns"><button id="sAddArea">+ Add area</button></div></div>`;
+}
+function bind(){
+  document.querySelectorAll("#sheet input[data-k]").forEach(el=>el.addEventListener("change",()=>{
+    const it=Q[el.dataset.k][+el.dataset.i];
+    if(el.dataset.f==="desc"){ it.desc=el.value.trim()||"Item"; persist(); render(); return; }
+    const v=Number(el.value||0);
+    if(el.dataset.f==="sell") it.unit = v/(1+S.markup/100); else it[el.dataset.f]=v;
+    persist(); render();
+  }));
+  document.querySelectorAll("#sheet .del[data-k]").forEach(b=>b.addEventListener("click",()=>{
+    if(b.dataset.k==="callout") Q.callout=false; else Q[b.dataset.k].splice(+b.dataset.i,1);
+    persist(); render();
+  }));
+  document.querySelectorAll("#sheet [data-add]").forEach(b=>b.addEventListener("click",()=>{
+    const k=b.dataset.add; let focus=null;
+    if(k==="elec"){ Q.labour.push({desc:T().main,hours:1,rate_factor:1}); focus="#lh"+(Q.labour.length-1); }
+    if(k==="asst"){ Q.labour.push({desc:T().helper,hours:1,rate_factor:T().hf}); focus="#lh"+(Q.labour.length-1); }
+    if(k==="callout"){ Q.callout=true; }
+    if(k==="mat"){ Q.materials.push({desc:"New item",qty:1,unit:0}); focus="#md"+(Q.materials.length-1); }
+    persist(); render();
+    if(focus){ const el=$(focus); if(el){ el.focus(); el.select?.(); } }
+  }));
+  $("#imgBtn").onclick=()=>sendImage();
+  document.querySelectorAll("#sheet textarea.stext").forEach(t=>{ const f=()=>{ t.style.height="auto"; t.style.height=t.scrollHeight+"px"; }; f(); t.addEventListener("input",f); t.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); t.blur(); } }); });
+  document.querySelectorAll("#sheet .stext").forEach(el=>el.addEventListener("change",()=>{ const a=+el.dataset.sa; if(el.dataset.ss!==undefined) Q.scope[a].steps[+el.dataset.ss]=el.value.trim()||"Step"; else Q.scope[a].area=el.value.trim()||"Area"; persist(); render(); }));
+  document.querySelectorAll("#sheet [data-sdel]").forEach(b=>b.onclick=()=>{ const [a,i]=b.dataset.sdel.split(":").map(Number); Q.scope[a].steps.splice(i,1); persist(); render(); });
+  document.querySelectorAll("#sheet [data-sdelarea]").forEach(b=>b.onclick=()=>{ Q.scope.splice(+b.dataset.sdelarea,1); persist(); render(); });
+  document.querySelectorAll("#sheet [data-saddstep]").forEach(b=>b.onclick=()=>{ const a=+b.dataset.saddstep; Q.scope[a].steps.push("New step"); persist(); render(); const el=$("#ss"+a+"_"+(Q.scope[a].steps.length-1)); if(el){el.focus(); el.select();} });
+  const sa=$("#sAddArea"); if(sa) sa.onclick=()=>{ Q.scope.push({area:"New area",steps:["New step"]}); persist(); render(); const el=$("#sa"+(Q.scope.length-1)); if(el){el.focus(); el.select();} };
+  const pn=$("#payNow"); if(pn) pn.onclick=()=>{ pn.disabled=true; pn.textContent="Client paying by card…"; setTimeout(()=>{ Q.paid=true; persist(); render(); toast("Payment received. Invoice marked Paid."); },1400); };
+  const pt=$("#payToggle"); if(pt) pt.onclick=()=>{ Q.paid=!Q.paid; persist(); render(); };
+  $("#modeBtn").onclick=()=>{mode = mode==="invoice"?"quote":"invoice"; save("tq_mode",mode); render(); toast(mode==="invoice"?"Converted to invoice":"Back to quote");};
+  $("#fuBtn").onclick=()=>copy(followUp());
+}
+
+function persist(){ if(Q.example){Q.example=false;} save("tq_quote",Q); }
+
+const docTitle = inv => inv ? (S.vat>0 ? "TAX INVOICE" : "INVOICE") : "QUOTATION";
+
+function waText(){
+  const c=calc(), inv=mode==="invoice";
+  const doc=docTitle(inv), num=inv?invNum():qnum;
+  const L=[`*${doc}* · ${num}`, `${S.biz} · ${S.phone}`, "",
+    `*For:* ${Q.client||"Client"}`, `*Site:* ${Q.site||"-"}`, `*Job:* ${Q.summary}`];
+  if(Q.scope&&Q.scope.length){ L.push("","*SCOPE OF WORK*"); let n=1; Q.scope.forEach(a=>{ L.push("_"+a.area+"_"); a.steps.forEach(st=>L.push(`${n++}. ${st}`)); }); }
+  L.push("","*LABOUR*");
+  c.labour.forEach(l=>L.push(`▪️ ${l.desc} (${l.hours} h)\n     ${fmt(l.amt)}`));
+  if(c.callout) L.push(`▪️ Call-out fee\n     ${fmt(c.callout)}`);
+  L.push("","*MATERIALS*");
+  c.mats.forEach(m=>L.push(`▪️ ${m.desc} ×${m.qty}\n     ${fmt(m.amt)}`));
+  L.push("","Subtotal: "+fmt(c.sub));
+  if(S.vat>0) L.push(`VAT ${S.vat}%: ${fmt(c.vat)}`);
+  L.push(`*TOTAL: ${fmt(c.total)}*`);
+  if(Q.notes) L.push("","_"+Q.notes+"_");
+  if(inv && Q.paid) L.push("", "✅ *PAID IN FULL.* Thank you for your business.");
+  else if(inv) L.push("", "💳 *Pay now:* (secure card payment link)", `Or EFT using reference *${num}*`, "Due within 7 days. Thank you!");
+  else L.push("", "✅ Valid for 14 days. Reply *YES* to book it in.");
+  return L.join("\n");
+}
+// ---------- quote image ----------
+let downloads=null;
+(async()=>{ try{ downloads = await window.claude?.use?.("downloads"); }catch(e){ downloads=null; } })();
+function wrapLines(ctx,text,maxW){
+  const words=String(text||"").split(/\s+/); const out=[]; let cur="";
+  for(const w of words){ const t=cur?cur+" "+w:w; if(ctx.measureText(t).width<=maxW||!cur) cur=t; else { out.push(cur); cur=w; } }
+  if(cur) out.push(cur); return out;
+}
+async function quoteCanvas(){
+  try{ await document.fonts.ready; }catch(e){}
+  const c=calc(), inv=mode==="invoice";
+  const W=1080, P=64, R=W-P;
+  const cv=document.createElement("canvas"); cv.width=W; cv.height=5000; const x=cv.getContext("2d");
+  const NAVY="#13203f", BLUE="#2f62d8", LBLUE="#9db7f2", INK="#1d2328", MUTED="#5c656d", LINE="#dfe3e6";
+  const DISP='"Barlow Condensed","Arial Narrow",Arial,sans-serif', BODY='"IBM Plex Sans",Arial,sans-serif', MONO='"IBM Plex Mono",Menlo,monospace';
+  const font=(w,sz,f)=>x.font=`${w} ${sz}px ${f}`;
+  x.fillStyle="#fff"; x.fillRect(0,0,W,5000);
+  // header band
+  x.fillStyle=NAVY; x.fillRect(0,0,W,220);
+  x.save(); x.translate(P+56,110); x.beginPath(); x.arc(0,0,52,0,Math.PI*2); x.fillStyle="#1b2a4e"; x.fill(); x.lineWidth=3; x.strokeStyle="#2f4f9a"; x.stroke();
+  x.beginPath(); const pts=[[1.5,-19],[-9,-2],[0,-2],[-2.5,18],[9.5,-6],[1,-6]]; pts.forEach(([a,b],i)=>{ i?x.lineTo(a*2.4,b*2.4):x.moveTo(a*2.4,b*2.4); }); x.closePath(); x.fillStyle="#5b8cf0"; x.fill(); x.restore();
+  x.textBaseline="alphabetic";
+  const doc=docTitle(inv), num=inv?invNum():qnum;
+  // business name shrinks (then trims) so it never runs into the document title
+  font(800,64,DISP); const avail=R-x.measureText(doc).width-40-(P+130);
+  let sz=44, nm=S.biz||"Your business"; font(700,sz,BODY);
+  while(x.measureText(nm).width>avail && sz>26){ sz-=2; font(700,sz,BODY); }
+  while(x.measureText(nm).width>avail && nm.length>4){ nm=nm.slice(0,-2).trimEnd()+"…"; }
+  x.fillStyle="#fff"; x.fillText(nm,P+130,100);
+  x.fillStyle=LBLUE; font(500,28,BODY); x.fillText(S.phone||"",P+130,145);
+  x.textAlign="right"; x.fillStyle="#fff"; font(800,64,DISP); x.fillText(doc,R,105);
+  x.fillStyle=LBLUE; font(500,26,MONO); x.fillText(num,R,148);
+  x.textAlign="left";
+  // client + dates
+  const d=dd=>dd.toLocaleDateString("en-ZA",{day:"numeric",month:"short",year:"numeric"});
+  let y=290;
+  font(600,22,BODY); x.fillStyle=MUTED; x.fillText("FOR",P,y); x.textAlign="right"; x.fillText(inv?"DUE":"VALID UNTIL",R,y); x.textAlign="left";
+  y+=42; font(700,34,BODY); x.fillStyle=INK; x.fillText(Q.client||"Client",P,y);
+  x.textAlign="right"; font(500,30,MONO); x.fillText(d(new Date(Date.now()+(inv?7:14)*864e5)),R,y); x.textAlign="left";
+  y+=40; font(400,28,BODY); x.fillStyle=MUTED; wrapLines(x,Q.site||"",640).forEach(l=>{ x.fillText(l,P,y); y+=36; });
+  x.textAlign="right"; font(400,24,BODY); x.fillText("Issued "+d(new Date()),R,y-36); x.textAlign="left";
+  // summary
+  y+=24; font(400,30,BODY); const sl=wrapLines(x,Q.summary,W-2*P-30);
+  x.fillStyle=BLUE; x.fillRect(P,y-4,6,sl.length*42+8); x.fillStyle=INK; sl.forEach(l=>{ x.fillText(l,P+30,y+30); y+=42; });
+  y+=50;
+  if(Q.scope&&Q.scope.length){
+    font(700,28,DISP); x.fillStyle=BLUE; x.fillText("SCOPE OF WORK",P,y); y+=8; let n=1;
+    Q.scope.forEach(a=>{ y+=44; font(700,28,BODY); x.fillStyle=INK; x.fillText(a.area,P,y);
+      a.steps.forEach(st=>{ font(400,27,BODY); const ls=wrapLines(x,st,W-2*P-56); y+=38;
+        font(500,25,MONO); x.fillStyle=MUTED; x.fillText(n+".",P,y); font(400,27,BODY); x.fillStyle=INK;
+        ls.forEach((l,i)=>{ if(i) y+=34; x.fillText(l,P+56,y); }); n++; }); });
+    y+=60;
+  }
+  // table header
+  font(600,20,BODY); x.fillStyle=MUTED; x.fillText("ITEM",P,y); x.textAlign="right"; x.fillText("QTY",760,y); x.fillText("AMOUNT",R,y); x.textAlign="left";
+  y+=16; x.fillStyle=INK; x.fillRect(P,y,W-2*P,3); y+=20;
+  const section=t=>{ y+=34; font(700,28,DISP); x.fillStyle=BLUE; x.fillText(t.toUpperCase(),P,y); y+=14; };
+  const row=(desc,qty,amt)=>{
+    font(400,28,BODY); const ls=wrapLines(x,desc,560); const top=y+38;
+    x.fillStyle=INK; ls.forEach((l,i)=>x.fillText(l,P,top+i*36));
+    font(500,26,MONO); x.textAlign="right"; x.fillStyle=MUTED; x.fillText(qty,760,top); x.fillStyle=INK; x.fillText(fmt(amt),R,top); x.textAlign="left";
+    y=top+(ls.length-1)*36+22; x.fillStyle=LINE; x.fillRect(P,y,W-2*P,2);
+  };
+  section("Labour");
+  c.labour.forEach(l=>row(l.desc,l.hours+" h",l.amt));
+  if(c.callout) row("Call-out fee","1",c.callout);
+  section("Materials");
+  c.mats.forEach(m=>row(m.desc,"×"+m.qty,m.amt));
+  // totals
+  y+=56; const tx=600;
+  const tline=(a,b)=>{ font(400,28,BODY); x.fillStyle=MUTED; x.fillText(a,tx,y); font(500,28,MONO); x.textAlign="right"; x.fillStyle=INK; x.fillText(b,R,y); x.textAlign="left"; y+=44; };
+  tline("Subtotal",fmt(c.sub)); if(S.vat>0) tline(`VAT ${S.vat}%`,fmt(c.vat));
+  y+=6; x.fillStyle=NAVY; x.fillRect(P,y,W-2*P,96);
+  font(800,40,DISP); x.fillStyle="#fff"; x.fillText("TOTAL",P+32,y+62);
+  font(600,44,MONO); x.textAlign="right"; x.fillText(fmt(c.total),R-32,y+64); x.textAlign="left";
+  y+=96;
+  if(Q.notes){ y+=50; font(400,24,BODY); x.fillStyle=MUTED; wrapLines(x,Q.notes,W-2*P).forEach(l=>{ x.fillText(l,P,y); y+=34; }); }
+  y+=40; x.fillStyle="#e3ebfb"; x.fillRect(P,y,W-2*P,84);
+  font(700,30,BODY); x.fillStyle=BLUE; x.textAlign="center";
+  x.fillText(inv?(Q.paid?"PAID IN FULL · Thank you!":"Pay now by card or EFT · Ref "+num):"Valid for 14 days. Reply YES to book it in.",W/2,y+53);
+  y+=84+50; font(400,20,BODY); x.fillStyle="#9aa3aa"; x.fillText("Made with Qlviro Quoted",W/2,y); x.textAlign="left";
+  y+=40;
+  const out=document.createElement("canvas"); out.width=W; out.height=y; out.getContext("2d").drawImage(cv,0,0);
+  return out;
+}
+async function sendImage(){
+  const btn=$("#imgBtn"); btn.disabled=true; const old=btn.innerHTML; btn.textContent="Making your quote…";
+  try{
+    const cv=await quoteCanvas();
+    const blob=await new Promise(r=>cv.toBlob(r,"image/png"));
+    const url=URL.createObjectURL(blob);
+    const a=$("#copyArea"); a.hidden=false;
+    a.innerHTML=`<div class="imgprev"><div class="label">Your quote image</div><img src="${url}" alt="Quote image"><div class="tag">Tap WhatsApp in the share menu and pick your client. If the menu didn't open, press and hold the image and choose Share.</div></div>`;
+    const fname=(mode==="invoice"?invNum():qnum)+"-"+(Q.client||"quote").replace(/[^a-z0-9]+/gi,"-")+".png";
+    try{
+      const file=new File([blob],fname,{type:"image/png"});
+      if(navigator.canShare && navigator.canShare({files:[file]})){ await navigator.share({files:[file]}); toast("Sent to the share menu"); return; }
+    }catch(e){ if(e?.name==="AbortError") return; }
+    if(downloads){
+      try{ const r=await downloads.save({filename:fname,data:blob}); if(r?.status==="saved") toast("Saved. Now attach it in WhatsApp."); }
+      catch(e){ if(e?.code!=="cancelled"&&e?.code!=="declined") toast("Couldn't save. Press and hold the image instead."); }
+    }
+    a.scrollIntoView({behavior:"smooth",block:"nearest"});
+  } finally { btn.disabled=false; btn.innerHTML=old; }
+}
+
+// ---------- messages ----------
+function followUp(){
+  const first=Q.client||"there";
+  const c=calc();
+  return mode==="invoice"
+    ? (Q.paid
+      ? `Hi ${first}, payment received, thank you! If you were happy with the work, a quick Google review would really help us. — ${S.biz}`
+      : `Hi ${first}, friendly reminder that invoice ${invNum()} for ${fmt(c.total)} is due this week. You can pay by card using the payment link, or EFT with reference ${invNum()}. Thanks! — ${S.biz}`)
+    : `Hi ${first}, just checking you got the quote for ${Q.summary.split(/[,.]/)[0].toLowerCase()}. I've got a gap next week if you'd like to lock it in. Any questions, shout. — ${S.biz}`;
+}
+
+async function copy(text){
+  try{ await navigator.clipboard.writeText(text); toast("Copied. Paste it into WhatsApp."); }
+  catch(e){
+    const a=$("#copyArea"); a.hidden=false;
+    a.innerHTML=`<div class="label">Select all and copy</div><textarea class="copybox" id="copyBox" readonly></textarea>`;
+    const t=$("#copyBox"); t.value=text; t.focus(); t.select();
+  }
+}
+let tt; function toast(m){const t=$("#toast");t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,2200);}
+
+// ---------- Free demo limit ----------
+// Public demo: 3 free AI quotes per device. The paid members' copy sets FREE_LIMIT to Infinity.
+const FREE_LIMIT = Infinity;
+const TRIAL_URL = "https://wa.me/27828574054?text=" + encodeURIComponent("Hi David, I want the 14-day Qlviro Quoted trial for R1.");
+const freeUsed = () => Number(load("tq_free", 0)) || 0;
+function showTrial(){ const b=$("#trialBox"); if(!b) return; $("#trialBtn").href=TRIAL_URL; b.hidden=false; }
+if(freeUsed() >= FREE_LIMIT) showTrial();
+
+// ---------- AI quote building ----------
+// On the live site (no Claude app) quotes come from /api/quoted on Vercel.
+async function apiQuote(text, signal){
+  let r;
+  try{ r = await fetch("/api/quoted",{method:"POST",headers:{"Content-Type":"application/json"},signal,
+    body:JSON.stringify({text,trade:{name:T().name,main:T().main,helper:T().helper,hf:T().hf,rule:T().rule}})}); }
+  catch(e){ throw {code: e?.name==="AbortError" ? "cancelled" : "upstream_error"}; }
+  if(r.status===429) throw {code:"rate_limited"};
+  if(r.status===422) throw {code:"invalid_json"};
+  if(!r.ok) throw {code:"upstream_error"};
+  return r.json();
+}
+let sample=null, ctl=null, useApi=false;
+const status=(m,err)=>{const s=$("#status");s.textContent=m;s.classList.toggle("err",!!err);};
+(async()=>{
+  try{ sample = await window.claude?.use?.("sample"); }catch(e){ sample=null; }
+  if(!sample && !window.claude){ useApi=true; return; }
+  if(!sample){ $("#buildBtn").disabled=true; status("AI quoting works when this page is opened inside the Claude app. You can still edit the example quote below."); }
+})();
+
+$("#clearBtn").onclick=()=>{$("#jobText").value="";save("tq_draft","");$("#jobText").focus();};
+$("#stopBtn").onclick=()=>ctl?.abort();
+
+$("#buildBtn").onclick=async()=>{
+  const text=$("#jobText").value.trim();
+  if(text.length<15){status("Say a bit more about the job first: who, where, what needs doing.",true);return;}
+  if(!sample && !useApi) return;
+  if(freeUsed() >= FREE_LIMIT){ status(""); showTrial(); $("#trialBox").scrollIntoView({behavior:"smooth",block:"center"}); return; }
+  ctl=new AbortController();
+  $("#buildBtn").disabled=true; $("#stopBtn").hidden=false;
+  status("Reading the job and pricing parts…");
+  const prompt=`You are a quoting assistant for a South African ${T().name.toLowerCase()} business.
+Turn the tradesperson's spoken job description into a structured quote. Prices in South African Rand (ZAR), realistic 2026 trade-counter cost prices EXCLUDING VAT and EXCLUDING markup (markup is added later).
+Labour rate is set by the business, so give only HOURS per labour line. The main worker is the "${T().main}". If a ${T().helper.toLowerCase()} or other helper is mentioned, add a separate labour line with "rate_factor": ${T().hf}. If no hours are given, estimate sensibly.
+Include sundries where a tradesperson normally would. ${T().rule} Keep descriptions short (under 50 chars). The job description comes from phone dictation, so silently fix obvious mishearings of trade terms and SA place names (for example "PA board" or "DVD board" means "DB board", "earth leak" means "earth leakage").
+Also write the SCOPE OF WORK: the itemised job description the client sees. Group it by area or room. Turn the tradesperson's shorthand into clear, professional work steps in the order they will be done, written so a homeowner understands (for example "strip, seal and replaster" becomes "Remove loose and damp plaster back to brick", "Apply damp-proof sealer", "Re-plaster and float to a smooth finish"). Add the prep, protection, disposal and clean-up steps a good tradesperson would do even if not mentioned (for example "Remove all rubble from site"). Keep each step under 80 characters.
+Reply with only JSON in this shape:
+{"client":"","site":"","summary":"one sentence of what will be done","scope":[{"area":"room or part of the job","steps":["work step"]}],"labour":[{"desc":"","hours":0,"rate_factor":1}],"materials":[{"desc":"","qty":0,"unit":0}],"notes":"timing, exclusions or conditions in one or two sentences"}
+
+Job description:
+"""${text.slice(0,4000)}"""`;
+  try{
+    const r = sample ? await sample.json(prompt,{signal:ctl.signal,modelTier:"default"}) : await apiQuote(text, ctl.signal);
+    if(!r || !Array.isArray(r.materials) || !Array.isArray(r.labour)) throw {code:"invalid_json"};
+    Q={client:r.client||"",site:r.site||"",summary:r.summary||"",notes:r.notes||"",
+       scope:(Array.isArray(r.scope)?r.scope:[]).map(a=>({area:String(a?.area||"Work"),steps:(Array.isArray(a?.steps)?a.steps:[]).map(String).filter(Boolean)})).filter(a=>a.steps.length),
+       labour:r.labour.map(l=>({desc:String(l.desc||"Labour"),hours:Number(l.hours)||0,rate_factor:Number(l.rate_factor)||1})),
+       materials:r.materials.map(m=>({desc:String(m.desc||"Item"),qty:Number(m.qty)||1,unit:Number(m.unit)||0}))};
+    qnum=newQnum();
+    mode="quote"; save("tq_mode",mode); save("tq_num",qnum); persist(); render();
+    save("tq_free", freeUsed()+1);
+    const left = FREE_LIMIT - freeUsed();
+    status("Quote ready. Check the scope and prices, tweak any line, then send it on WhatsApp." + (Number.isFinite(left) ? (left>0 ? ` (${left} free quote${left===1?"":"s"} left)` : " (That was your last free quote.)") : ""));
+    if(left<=0) showTrial();
+    $("#sheet").scrollIntoView({behavior:"smooth",block:"start"});
+  }catch(e){
+    const msg={cancelled:"",not_granted:"AI quoting was not allowed. You can still edit the quote by hand.",rate_limited:"Too many requests right now. Try again in a minute.",invalid_json:"Couldn't turn that into a quote. Try describing the job again, a bit more clearly.",refused:"Couldn't quote that description. Try rewording it.",session_expired:"Sign in to Claude again, then try."}[e?.code];
+    status(msg ?? "Something went wrong reaching the quoting service. Try again.", e?.code!=="cancelled");
+    if(e?.code==="not_granted"||e?.code==="sampling_disabled") sample=null;
+  }finally{
+    $("#buildBtn").disabled = !(sample||useApi);
+    $("#stopBtn").hidden=true;
+  }
+};
+
+// ---------- start-up ----------
+try{ mode = location.hash==="#paid" ? "invoice" : "quote"; }catch(e){ mode="quote"; }
+const EX_BIZ=Object.values(TRADES).map(t=>t.biz), EX_RATE=Object.values(TRADES).map(t=>t.rate), EX_CO=Object.values(TRADES).map(t=>t.callout);
+$("#tradeSel").value=trade;
+$("#tradeSel").addEventListener("change",e=>{
+  trade=e.target.value; save("tq_trade",trade);
+  if(EX_BIZ.includes(S.biz)) S.biz=T().biz;
+  if(EX_RATE.includes(S.rate)) S.rate=T().rate;
+  if(EX_CO.includes(S.callout)) S.callout=T().callout;
+  save("tq_settings",S); $("#s_biz").value=S.biz; $("#s_rate").value=S.rate; $("#s_callout").value=S.callout;
+  $("#jobText").value=T().text; save("tq_draft",T().text);
+  Q=exampleQuote(); save("tq_quote",Q); mode="quote"; save("tq_mode",mode);
+  qnum=newQnum(); save("tq_num",qnum);
+  render(); toast(T().name+" example loaded");
+});
+render();
+</script>

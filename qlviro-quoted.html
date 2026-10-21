@@ -49,6 +49,9 @@ textarea{width:100%;min-height:150px;resize:vertical;font:16px/1.5 var(--body);c
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .status{font-size:13.5px;color:var(--muted);min-height:1.2em}
 .status.err{color:var(--accent)}
+.trial{margin-top:14px;padding:16px;border:2px solid var(--wa);border-radius:10px;background:#eefaf2;display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+.trial[hidden]{display:none}
+.trial p{margin:0;font-size:15px;line-height:1.45}
 
 details.settings{background:var(--sheet);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
 details.settings summary{cursor:pointer;font-family:var(--display);font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
@@ -153,6 +156,10 @@ td.amt{font-family:var(--mono);font-size:13.5px;white-space:nowrap}
       <button class="ghost" id="stopBtn" hidden>Stop</button>
     </div>
     <div class="status" id="status" role="status"></div>
+    <div class="trial" id="trialBox" hidden>
+      <p><b>You've used your 3 free quotes.</b> Keep quoting every job with your own business name, rates and VAT, and turn quotes into invoices with Pay Now.</p>
+      <a class="wa-btn" id="trialBtn" target="_blank" rel="noopener">Start 14-day trial for R1</a>
+    </div>
   </section>
 
   <details class="settings" id="settings">
@@ -549,6 +556,14 @@ async function copy(text){
 }
 let tt; function toast(m){const t=$("#toast");t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,2200);}
 
+// ---------- Free demo limit ----------
+// Public demo: 3 free AI quotes per device. The paid members' copy sets FREE_LIMIT to Infinity.
+const FREE_LIMIT = 3;
+const TRIAL_URL = "https://wa.me/27828574054?text=" + encodeURIComponent("Hi David, I want the 14-day Qlviro Quoted trial for R1.");
+const freeUsed = () => Number(load("tq_free", 0)) || 0;
+function showTrial(){ const b=$("#trialBox"); if(!b) return; $("#trialBtn").href=TRIAL_URL; b.hidden=false; }
+if(freeUsed() >= FREE_LIMIT) showTrial();
+
 // ---------- AI quote building ----------
 // On the live site (no Claude app) quotes come from /api/quoted on Vercel.
 async function apiQuote(text, signal){
@@ -576,6 +591,7 @@ $("#buildBtn").onclick=async()=>{
   const text=$("#jobText").value.trim();
   if(text.length<15){status("Say a bit more about the job first: who, where, what needs doing.",true);return;}
   if(!sample && !useApi) return;
+  if(freeUsed() >= FREE_LIMIT){ status(""); showTrial(); $("#trialBox").scrollIntoView({behavior:"smooth",block:"center"}); return; }
   ctl=new AbortController();
   $("#buildBtn").disabled=true; $("#stopBtn").hidden=false;
   status("Reading the job and pricing parts…");
@@ -598,7 +614,10 @@ Job description:
        materials:r.materials.map(m=>({desc:String(m.desc||"Item"),qty:Number(m.qty)||1,unit:Number(m.unit)||0}))};
     qnum=newQnum();
     mode="quote"; save("tq_mode",mode); save("tq_num",qnum); persist(); render();
-    status("Quote ready. Check the scope and prices, tweak any line, then send it on WhatsApp.");
+    save("tq_free", freeUsed()+1);
+    const left = FREE_LIMIT - freeUsed();
+    status("Quote ready. Check the scope and prices, tweak any line, then send it on WhatsApp." + (Number.isFinite(left) ? (left>0 ? ` (${left} free quote${left===1?"":"s"} left)` : " (That was your last free quote.)") : ""));
+    if(left<=0) showTrial();
     $("#sheet").scrollIntoView({behavior:"smooth",block:"start"});
   }catch(e){
     const msg={cancelled:"",not_granted:"AI quoting was not allowed. You can still edit the quote by hand.",rate_limited:"Too many requests right now. Try again in a minute.",invalid_json:"Couldn't turn that into a quote. Try describing the job again, a bit more clearly.",refused:"Couldn't quote that description. Try rewording it.",session_expired:"Sign in to Claude again, then try."}[e?.code];
