@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Site Architect – Voice to Drawing (Concept Demo)</title>
+<style>
+:root{--bg:#0e151d;--panel:#16212d;--panel2:#1c2a39;--line:#2b3b4d;--text:#e8eef5;--mute:#8fa3b8;--accent:#ffb400;--ok:#2fbf71;--warn:#ff7a45;--blue:#4aa3ff;--red:#ff5a5f}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+header{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid var(--line);background:#0b1118;position:sticky;top:0;z-index:5}
+.logo{width:34px;height:34px;border-radius:8px;background:var(--accent);display:grid;place-items:center;color:#111;font-weight:800}
+header h1{font-size:17px;margin:0;letter-spacing:.2px}
+header small{color:var(--mute);display:block;font-size:12px}
+.chip{margin-left:auto;font-size:11px;border:1px solid var(--line);color:var(--accent);padding:4px 10px;border-radius:99px;white-space:nowrap}
+main{display:grid;gap:16px;padding:16px;max-width:1700px;margin:0 auto}
+@media(min-width:1000px){main{grid-template-columns:410px 1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
+.card h2{margin:0 0 10px;font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--mute);display:flex;align-items:center;gap:8px}
+.num{background:var(--accent);color:#111;border-radius:99px;width:20px;height:20px;display:inline-grid;place-items:center;font-size:12px;font-weight:800}
+.col{display:flex;flex-direction:column;gap:16px;min-width:0}
+textarea{width:100%;min-height:110px;background:#0e1620;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px;font:inherit;resize:vertical}
+.microw{display:flex;gap:10px;align-items:center;margin-bottom:10px}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:10px;padding:10px 14px;min-height:44px}
+button:active{transform:scale(.98)}
+.mic{width:64px;height:64px;border-radius:50%;background:var(--accent);color:#111;border:none;font-size:26px;flex:none;display:grid;place-items:center}
+.mic.on{background:var(--red);color:#fff;animation:pulse 1.2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,90,95,.6)}100%{box-shadow:0 0 0 18px rgba(255,90,95,0)}}
+.hint{color:var(--mute);font-size:12.5px}
+.primary{background:var(--accent);color:#111;border:none;font-weight:700}
+.samples{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.samples button{font-size:12.5px;padding:8px 10px;min-height:38px}
+.ask{background:rgba(255,90,95,.12);border:1px solid rgba(255,90,95,.5);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:14px;display:none}
+.ask.show{display:block}
+.ask button{margin-top:8px;min-height:38px;padding:6px 12px}
+.ok{background:rgba(47,191,113,.12);border:1px solid rgba(47,191,113,.45);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:14px;display:none}
+.ok.show{display:block}
+.row{display:grid;grid-template-columns:1fr;gap:6px;padding:10px 0;border-top:1px solid var(--line)}
+.row:first-of-type{border-top:none}
+.row.need .rl{color:var(--red)}
+.rl{font-size:13px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.badge{font-size:10.5px;padding:2px 8px;border-radius:99px;text-transform:uppercase;letter-spacing:.6px;font-weight:700}
+.b-voice{background:rgba(47,191,113,.18);color:var(--ok)}
+.b-default{background:#27384a;color:var(--mute)}
+.b-manual{background:rgba(74,163,255,.18);color:var(--blue)}
+.b-missing{background:rgba(255,90,95,.2);color:var(--red)}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{flex:1;min-width:58px;padding:8px 6px}
+.seg button.act{background:var(--accent);color:#111;border-color:var(--accent);font-weight:700}
+.numrow{display:flex;gap:10px;align-items:center}
+input[type=number],input[type=text],select{background:#0e1620;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px;font:inherit;min-height:44px;width:100%}
+.numrow input[type=number]{width:96px;flex:none}
+input[type=range]{flex:1;accent-color:var(--accent);min-height:30px}
+.tools{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;align-items:center}
+.tools .sp{flex:1}
+#sheetWrap{background:#fff;border-radius:10px;overflow:hidden;position:relative;min-height:240px}
+#sheetWrap svg{display:block;width:100%;height:auto}
+.ph{padding:50px 20px;text-align:center;color:#46586b;font-size:15px}
+.ph b{display:block;font-size:18px;color:#2b3b4d;margin-bottom:6px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{color:var(--mute);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.6px}
+td.q{white-space:nowrap;font-weight:700}
+.flag{display:flex;gap:10px;padding:9px 0;border-top:1px solid var(--line);font-size:13.5px}
+.flag:first-child{border-top:none}
+.dot{flex:none;width:10px;height:10px;border-radius:50%;margin-top:6px}
+.d-warn{background:var(--warn)}.d-check{background:var(--accent)}.d-info{background:var(--blue)}
+details{margin-top:12px}
+summary{cursor:pointer;color:var(--mute);font-size:13px;min-height:30px}
+pre{background:#0e1620;border:1px solid var(--line);border-radius:10px;padding:10px;overflow:auto;font-size:12px;color:#b8d4ee}
+.foot{color:var(--mute);font-size:12px;padding:6px 4px 24px;text-align:center;max-width:900px;margin:0 auto}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#000;color:#fff;border:1px solid var(--line);padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:20;max-width:90%}
+#toast.show{opacity:1}
+@media print{
+  @page{size:A3 landscape;margin:8mm}
+  body{background:#fff}
+  header,.col.left,.tools,.foot,#toast,.noprint{display:none!important}
+  main{display:block;padding:0}
+  .card{border:none;background:#fff;padding:0}
+  #sheetWrap{border-radius:0}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">SA</div>
+  <div><h1>Site Architect <span style="color:var(--mute);font-weight:400">· voice-to-drawing</span></h1><small>Say the spec. Get the drawing, parts list and engineering flags.</small></div>
+  <div class="chip">CONCEPT DEMO · DL CONSULTANTS</div>
+</header>
+
+<main>
+  <div class="col left">
+    <section class="card">
+      <h2><span class="num">1</span> Voice note</h2>
+      <div class="microw">
+        <button class="mic micbtn" id="mic" aria-label="Record voice note">🎙</button>
+        <div class="hint" id="micHint">Tap the mic and describe the site, e.g. bays, product, loading method, platform height, access.</div>
+      </div>
+      <textarea id="transcript" placeholder="Transcript appears here. You can also type or edit it, then tap Build drawing."></textarea>
+      <div class="samples" id="samples"></div>
+      <button class="primary" id="build" style="width:100%">Build drawing from note</button>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">2</span> Spec check &amp; edit</h2>
+      <div class="ask" id="ask"></div>
+      <div class="ok" id="okbox"></div>
+      <div style="margin-bottom:6px"><div class="rl" style="margin-bottom:6px"><span>Project / site name</span></div><input type="text" id="proj" value="Demo Site – Truck Loading Gantry"></div>
+      <div id="specRows"></div>
+      <details><summary>Structured spec the AI extracted (JSON)</summary><pre id="json"></pre></details>
+    </section>
+  </div>
+
+  <div class="col">
+    <section class="card">
+      <h2><span class="num">3</span> Drawing</h2>
+      <div class="tools noprint">
+        <button id="dlSvg">Download SVG</button>
+        <button id="prt">Print / Save PDF</button>
+        <button id="dlCsv">Parts list (CSV)</button>
+        <span class="sp"></span>
+        <span class="hint">Edits on the left redraw instantly.</span>
+      </div>
+      <div id="sheetWrap"><div class="ph"><b>No drawing yet</b>Tap a sample voice note or record your own.</div></div>
+    </section>
+
+    <section class="card">
+      <h2>Engineering flags</h2>
+      <div id="flags" class="hint">Flags appear once the drawing is built.</div>
+    </section>
+
+    <section class="card">
+      <h2>Parts list (indicative)</h2>
+      <div id="bom" class="hint">The bill of materials is generated from the drawing.</div>
+    </section>
+  </div>
+</main>
+
+<div class="foot">Concept demo only. Geometry and compliance rules shown are illustrative placeholders, not client engineering standards. Output must be reviewed and signed off by a qualified engineer before fabrication.</div>
+<div id="toast"></div>
+
+<script>
+/* =========================================================
+   SITE ARCHITECT – voice-to-drawing concept demo
+   Pipeline: voice → transcript → structured spec → gap check
+             → parametric drawing engine → flags + parts list
+   The language layer only fills a spec. Geometry is 100%
+   deterministic code (the part an engineer signs off on).
+   ========================================================= */
+
+const DEFAULTS={platL:12,platW:1.2,access:'stairs',side:'left',handrail:'fixed',canopy:'no'};
+const REQUIRED=['bays','product','loading','height'];
+const FIELD_LABEL={bays:'number of bays',product:'product',loading:'loading method (top or bottom)',height:'platform height'};
+
+const SAMPLES=[
+ {name:'Diesel · 2 bays (complete)',text:'New diesel loading site. Two bays, top loading, platform height four point two metres, platform length twelve metres, stairs at both ends, fold-down handrails, with a canopy.'},
+ {name:'Petrol · 1 bay (missing height)',text:'Single bay petrol gantry, bottom loading, stairs on the left, platform width one point two metres.'},
+ {name:'Chemical · 4 bays',text:'Four bay chemical loading facility, top loading, platform 4 metres high, 14 metres long, ladder access on the right, fixed handrails.'}
+];
+
+/* ---------- 1. Language → spec ---------- */
+const NUMW={zero:0,one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10,eleven:11,twelve:12,thirteen:13,fourteen:14,fifteen:15,sixteen:16,seventeen:17,eighteen:18,nineteen:19,twenty:20,thirty:30,forty:40};
+function normalise(t){
+  t=String(t||'').toLowerCase();
+  t=t.replace(/\b(zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty)\b/g,m=>NUMW[m]);
+  t=t.replace(/\b([234]0)\s+([1-9])\b/g,(m,a,b)=>String(+a+ +b));
+  t=t.replace(/(\d+)\s*(?:point|dot|comma)\s*(\d+)/g,'$1.$2');
+  return t;
+}
+const NUM='(\\d+(?:\\.\\d+)?)';
+const UNIT='(?:\\s*(mm|millimet(?:re|er)s?|met(?:re|er)s?|m)(?![a-z]))?';
+function toM(val,unit){let n=parseFloat(val);if(unit&&/^mm|^milli/.test(unit))n/=1000;else if(!unit&&n>=100)n/=1000;return n;}
+function firstMatch(t,res,lo,hi){
+  for(const re of res){
+    const m=t.match(re);
+    if(m){const v=toM(m[1],m[2]);if(v>=lo&&v<=hi)return Math.round(v*100)/100;}
+  }
+  return undefined;
+}
+function parseNote(raw){
+  const t=normalise(raw),out={};
+  let m;
+  // bays
+  if((m=t.match(/(?:^|[^\d.])(\d+)\s*(?:x\s*)?(?:loading\s+)?(?:bays?|lanes?|positions?|stations?|gantr(?:y|ies))/))){
+    const n=parseInt(m[1],10);if(n>=1&&n<=4)out.bays=n;
+  }else if((m=t.match(/\b(single|double|twin|triple|quad(?:ruple)?)\b/))){
+    out.bays={single:1,double:2,twin:2,triple:3}[m[1]]||4;
+  }
+  // height
+  const h=firstMatch(t,[
+    new RegExp(NUM+UNIT+'\\s*(?:high|tall|up|off the ground|above ground)\\b'),
+    new RegExp('(?:height|elevation|level)\\s*(?:of|is|at|to|=|:|about|around)?\\s*'+NUM+UNIT)
+  ],1.5,8);
+  if(h!==undefined)out.height=h;
+  // length
+  const L=firstMatch(t,[
+    new RegExp(NUM+UNIT+'\\s*(?:long|in length)\\b'),
+    new RegExp('length\\s*(?:of|is|at|to|=|:|about|around)?\\s*'+NUM+UNIT)
+  ],4,30);
+  if(L!==undefined)out.platL=L;
+  // width
+  const W=firstMatch(t,[
+    new RegExp(NUM+UNIT+'\\s*wide\\b'),
+    new RegExp('width\\s*(?:of|is|at|to|=|:|about|around)?\\s*'+NUM+UNIT)
+  ],0.6,3);
+  if(W!==undefined)out.platW=W;
+  // product
+  if(/\bdiesel\b/.test(t))out.product='diesel';
+  else if(/\b(petrol|gasoline|unleaded)\b/.test(t))out.product='petrol';
+  else if(/\b(lpg|propane|butane)\b/.test(t))out.product='lpg';
+  else if(/\b(chemical|chemicals|acid|caustic|solvent|ammonia|chlorine|methanol)\b/.test(t))out.product='chemical';
+  else if(/\b(bitumen|asphalt)\b/.test(t))out.product='bitumen';
+  else if(/\b(water|molasses|oil|edible|wine|milk|ethanol)\b/.test(t))out.product='other';
+  // loading
+  const ti=t.search(/top[- ]?(?:load|fill)|from the top|dome/),bi=t.search(/bottom[- ]?(?:load|fill)|from the bottom|api coupl/);
+  if(ti>=0&&(bi<0||ti<bi))out.loading='top';else if(bi>=0)out.loading='bottom';
+  // access
+  if(/stair|staircase|steps/.test(t))out.access='stairs';
+  else if(/ladder/.test(t))out.access='ladder';
+  if(out.access||/access/.test(t)){
+    const both=/both (?:sides|ends)|each end|either end|on both|at both|two sets/.test(t);
+    const l=/\bleft\b/.test(t),r=/\bright\b/.test(t);
+    if(both||(l&&r))out.side='both';else if(l)out.side='left';else if(r)out.side='right';
+  }
+  // handrail
+  if(/fold|drop[- ]?down|swing[- ]?down|hinged|retractable/.test(t))out.handrail='fold';
+  else if(/fixed (?:hand)?rail|fixed handrail|static (?:hand)?rail/.test(t))out.handrail='fixed';
+  // canopy
+  if(/(?:no|without)\s+(?:a\s+)?(?:canopy|roof|cover|shelter)/.test(t))out.canopy='no';
+  else if(/canopy|roof|shelter|covered/.test(t))out.canopy='yes';
+  return out;
+}
+
+/* ---------- 2. Geometry rules (illustrative) ---------- */
+const mm=v=>Math.round(v*1000);
+const px=n=>Math.round(n*100)/100;
+function esc(t){return String(t).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+
+function metrics(s){
+  const n=s.bays,H=s.height,L=s.platL,W=s.platW;
+  const laneW=3.6,truckW=2.5;
+  const P=Math.ceil(n/2);
+  const lanes=[],plats=[];
+  let y=0,left=n;
+  for(let p=0;p<P;p++){
+    const inPair=Math.min(2,left);left-=inPair;
+    lanes.push({y0:y,plat:p,i:lanes.length});y+=laneW;
+    plats.push({y0:y,y1:y+W,lower:inPair===2});y+=W;
+    if(inPair===2){lanes.push({y0:y,plat:p,i:lanes.length});y+=laneW;}
+  }
+  const rise=0.19,going=0.25;
+  const steps=Math.max(1,Math.ceil(H/rise));
+  const stairRun=s.access==='stairs'?(steps-1)*going:0.8;
+  const leftOn=s.side==='left'||s.side==='both',rightOn=s.side==='right'||s.side==='both';
+  return {n,H,L,W,laneW,truckW,P,lanes,plats,D:y,steps,rh:H/steps,going,
+    runL:leftOn?stairRun:0,runR:rightOn?stairRun:0,leftOn,rightOn,
+    roofZ:Math.max(H+2.5,6.0),truckL:Math.min(12,L-0.6),nc:Math.ceil(L/4)+1,
+    sets:(leftOn?1:0)+(rightOn?1:0)};
+}
+
+function flagsFor(s,m){
+  const f=[];
+  if(s.height<3.2||s.height>4.6)f.push(['warn',`Platform height ${mm(s.height)} mm is outside the typical tanker top-of-dome range (about 3,200–4,600 mm). Confirm the vehicle fleet this site serves.`]);
+  if(m.L<9)f.push(['warn',`Platform length ${mm(m.L)} mm is shorter than a typical tanker. Confirm which vehicles will be loaded.`]);
+  if(['diesel','petrol'].includes(s.product))f.push(['check','Flammable product: confirm hazardous-area classification, and earthing/bonding at each bay (included in parts list).']);
+  if(s.product==='lpg')f.push(['warn','Pressurised LPG: this layout is not suitable without pressure-rated equipment and vapour/gas detection. Specialist review needed.']);
+  if(s.product==='chemical')f.push(['check','Chemical product: spill containment, emergency shower/eyewash and vapour return to be specified for the site.']);
+  if(s.product==='bitumen')f.push(['check','Heated product: line tracing, insulation and burn protection to be specified.']);
+  if(s.access==='stairs'&&s.height>3.0)f.push(['check',`Stair rise of ${mm(s.height)} mm: intermediate landing added to the parts list (rise limit per flight assumed 3,000 mm, to be confirmed against the applicable standard).`]);
+  if(s.access==='ladder'&&s.height>3.0)f.push(['warn',`Ladder access at ${mm(s.height)} mm: stairs are normally preferred for regular access at this height. Safety cage included.`]);
+  if(s.handrail==='fold')f.push(['check','Fold-down handrails: confirm an interlock or procedure so the platform edge is protected when rails are lowered.']);
+  if(s.canopy==='no'&&['chemical','bitumen'].includes(s.product))f.push(['info','No canopy selected: consider rain ingress at open hatches for this product.']);
+  if(s.loading==='bottom')f.push(['info','Bottom loading: platform retained for hatch access and inspection; couplings drawn at ground level.']);
+  f.push(['info','Rules in this demo are illustrative placeholders. Replace with the client\'s own dimensional and compliance rules before use.']);
+  return f;
+}
+
+function bomFor(s,m){
+  const r=[];
+  const cols=m.nc*2*m.P;
+  const prodName={diesel:'Diesel',petrol:'Petrol',lpg:'LPG',chemical:'Chemical',bitumen:'Bitumen',other:'Product'}[s.product]||'Product';
+  r.push(['Support columns',cols,'no.',`Height ${mm(m.H-0.15)} mm, ${m.nc} per platform edge`]);
+  r.push(['Bracing panels',(m.nc-1)*m.P,'no.','Diagonal bracing, one per column bay']);
+  r.push(['Deck / grating',Math.round(m.L*m.W*m.P*10)/10,'m²',`${mm(m.L)} × ${mm(m.W)} mm × ${m.P} platform(s)`]);
+  r.push(['Handrail (top, mid rail, posts)',Math.round(m.L*2*m.P*10)/10,'m','Both long edges of each platform']);
+  r.push(['Toe plate',Math.round(m.L*2*m.P*10)/10,'m','Both long edges of each platform']);
+  const flights=m.sets*m.P;
+  if(flights>0){
+    if(s.access==='stairs'){
+      r.push(['Stair flights',flights,'no.',`${m.steps} risers at ${Math.round(m.rh*1000)} mm, going ${mm(m.going)} mm, with handrails`]);
+      if(m.H>3.0)r.push(['Intermediate landings',flights,'no.','Rise exceeds assumed 3,000 mm limit per flight']);
+    }else{
+      r.push(['Access ladders'+(m.H>2.5?' with safety cage':''),flights,'no.',`Rise ${mm(m.H)} mm`]);
+    }
+  }
+  if(s.handrail==='fold')r.push(['Fold-down handrail sections',Math.ceil(m.L/6)*m.n,'no.','Truck-facing edge, hinged']);
+  r.push([s.loading==='top'?`${prodName} top-loading arm`:`${prodName} bottom-loading coupling`,m.n,'no.','One per bay']);
+  if(['diesel','petrol','lpg'].includes(s.product))r.push(['Earthing / bonding point',m.n,'no.','One per bay']);
+  if(s.canopy==='yes')r.push(['Canopy roof',Math.round((m.L+0.8)*(m.D+0.6)*10)/10,'m²',`Roof level ${mm(m.roofZ)} mm`]);
+  return r;
+}
+
+/* ---------- 3. Drawing engine (SVG) ---------- */
+function mkView(reg,pad,wx0,wx1,wa0,wa1,up){
+  const ix=reg.x+pad.l,iy=reg.y+pad.t,iw=reg.w-pad.l-pad.r,ih=reg.h-pad.t-pad.b;
+  const sc=Math.min(iw/(wx1-wx0),ih/(wa1-wa0));
+  const ox=ix+(iw-(wx1-wx0)*sc)/2,oy=iy+(ih-(wa1-wa0)*sc)/2;
+  const X=x=>px(ox+(x-wx0)*sc);
+  const Y=a=>px(up?oy+(wa1-a)*sc:oy+(a-wa0)*sc);
+  const S=d=>px(d*sc);
+  const v={sc,X,Y,S,up,wx0,wx1};
+  v.rect=(x,a,w,h,cls,extra='')=>`<rect class="${cls}" x="${X(x)}" y="${up?Y(a+h):Y(a)}" width="${S(w)}" height="${S(h)}" ${extra}/>`;
+  v.line=(x1,a1,x2,a2,cls)=>`<line class="${cls}" x1="${X(x1)}" y1="${Y(a1)}" x2="${X(x2)}" y2="${Y(a2)}"/>`;
+  v.circle=(x,a,r,cls)=>`<circle class="${cls}" cx="${X(x)}" cy="${Y(a)}" r="${S(r)}"/>`;
+  v.text=(x,a,t,cls,anchor,dx,dy)=>`<text class="${cls}" x="${px(X(x)+(dx||0))}" y="${px(Y(a)+(dy||0))}" text-anchor="${anchor||'middle'}">${esc(t)}</text>`;
+  v.poly=(pts,cls)=>`<polyline class="${cls}" points="${pts.map(p=>X(p[0])+','+Y(p[1])).join(' ')}"/>`;
+  return v;
+}
+function tick(x,y){return `<line class="dim" x1="${px(x-4)}" y1="${px(y+4)}" x2="${px(x+4)}" y2="${px(y-4)}"/>`;}
+function dimH(x1,x2,yf,yd,txt){
+  const s=yd<yf?-1:1;
+  return `<g><line class="dim" x1="${x1}" y1="${yf}" x2="${x1}" y2="${px(yd+s*5)}"/><line class="dim" x1="${x2}" y1="${yf}" x2="${x2}" y2="${px(yd+s*5)}"/><line class="dim" x1="${x1}" y1="${yd}" x2="${x2}" y2="${yd}"/>${tick(x1,yd)}${tick(x2,yd)}<text class="dt" x="${px((x1+x2)/2)}" y="${px(yd-5)}" text-anchor="middle">${txt}</text></g>`;
+}
+function dimV(y1,y2,xf,xd,txt){
+  const s=xd<xf?-1:1,ym=px((y1+y2)/2);
+  return `<g><line class="dim" x1="${xf}" y1="${y1}" x2="${px(xd+s*5)}" y2="${y1}"/><line class="dim" x1="${xf}" y1="${y2}" x2="${px(xd+s*5)}" y2="${y2}"/><line class="dim" x1="${xd}" y1="${y1}" x2="${xd}" y2="${y2}"/>${tick(xd,y1)}${tick(xd,y2)}<text class="dt" transform="rotate(-90 ${px(xd-5)} ${ym})" x="${px(xd-5)}" y="${ym}" text-anchor="middle">${txt}</text></g>`;
+}
+
+function drawPlan(s,m,reg){
+  const wx0=-Math.max(m.runL,0.4),wx1=m.L+Math.max(m.runR,0.4);
+  const v=mkView(reg,{t:64,b:12,l:62,r:74},wx0,wx1,-0.4,m.D+0.4,false);
+  let o='';
+  if(s.canopy==='yes'){
+    o+=v.rect(-0.4,-0.3,m.L+0.8,m.D+0.6,'thin dash');
+    o+=v.text(m.L+0.4,-0.3,'CANOPY ABOVE (DASHED)','lbl9','end',0,-4);
+  }
+  m.lanes.forEach(ln=>{
+    o+=v.rect(-0.2,ln.y0,m.L+0.4,m.laneW,'lane');
+    o+=`<text class="lbl" x="${px(v.X(wx0)-6)}" y="${px(v.Y(ln.y0+m.laneW/2)+4)}" text-anchor="end">BAY ${ln.i+1}</text>`;
+    const ty=ln.y0+(m.laneW-m.truckW)/2,tx=0.3;
+    o+=v.rect(tx,ty,m.truckL,m.truckW,'tk',`rx="${v.S(0.5)}"`);
+    [0.2,0.5,0.8].forEach(f=>{o+=v.circle(tx+m.truckL*f,ty+m.truckW/2,0.3,'tk');});
+    if(ln.i===0)o+=v.text(tx+m.truckL*0.5,ty+m.truckW/2,'TANKER (TYP.)','lbl9','middle',0,v.S(0.85));
+  });
+  m.plats.forEach(pl=>{
+    o+=v.rect(0,pl.y0,m.L,m.W,'deck');
+    const fold=s.handrail==='fold';
+    o+=v.line(0,pl.y0+0.05,m.L,pl.y0+0.05,fold?'fold':'rail');
+    o+=v.line(0,pl.y1-0.05,m.L,pl.y1-0.05,fold&&pl.lower?'fold':'rail');
+    for(let k=0;k<m.nc;k++){
+      const x=k*m.L/(m.nc-1);
+      o+=v.rect(x-0.1,pl.y0,0.2,0.2,'st');
+      o+=v.rect(x-0.1,pl.y1-0.2,0.2,0.2,'st');
+    }
+    o+=v.text(m.L/2,(pl.y0+pl.y1)/2,`PLATFORM ${mm(m.L)} × ${mm(m.W)}`,'lbl9','middle',0,3);
+    const cy=(pl.y0+pl.y1)/2;
+    const stairs=(x0,dir)=>{ // dir -1 = left of platform, +1 = right
+      let q='';
+      if(s.access==='stairs'){
+        const run=dir<0?m.runL:m.runR,xs=dir<0?-run:m.L;
+        q+=v.rect(xs,cy-0.45,run,0.9,'stair');
+        for(let i=1;i<m.steps;i++){const xx=dir<0?-run+i*m.going:m.L+i*m.going;q+=v.line(xx,cy-0.45,xx,cy+0.45,'thin');}
+        q+=v.text(xs+run/2,cy,'UP','lbl9','middle',0,3);
+      }else{
+        const xs=dir<0?-0.6:m.L+0.1;
+        q+=v.rect(xs,cy-0.3,0.5,0.6,'stair');
+        q+=v.text(xs+0.25,cy,'L','lbl9','middle',0,3);
+      }
+      return q;
+    };
+    if(m.leftOn)o+=stairs(0,-1);
+    if(m.rightOn)o+=stairs(0,1);
+  });
+  m.lanes.forEach(ln=>{
+    const pl=m.plats[ln.plat],ty=ln.y0+(m.laneW-m.truckW)/2,tx=0.3,above=ln.y0<pl.y0;
+    if(s.loading==='top'){
+      const dx=tx+m.truckL*0.5,edge=above?pl.y0:pl.y1;
+      o+=v.line(dx,edge,dx,ty+m.truckW/2,'arm');
+      o+=v.rect(dx-0.2,edge-0.2,0.4,0.4,'armb');
+      o+=v.circle(dx,ty+m.truckW/2,0.18,'armb');
+    }else{
+      const cx=tx+m.truckL*0.7,face=above?ty+m.truckW:ty;
+      o+=v.rect(cx-0.25,face-0.18,0.5,0.36,'armb');
+      o+=v.text(cx,face,'BL','lbl9w','middle',0,3);
+    }
+  });
+  const yf=v.Y(-0.4)-2;
+  o+=dimH(v.X(0),v.X(m.L),yf,yf-24,String(mm(m.L)));
+  if(m.runL+m.runR>0)o+=dimH(v.X(-m.runL),v.X(m.L+m.runR),yf,yf-48,String(mm(m.L+m.runL+m.runR))+' overall');
+  const xr=v.X(wx1)+4;
+  o+=dimV(v.Y(0),v.Y(m.D),xr,xr+40,String(mm(m.D)));
+  if(s.handrail==='fold')o+=`<text class="lbl9" x="${px(reg.x+reg.w-2)}" y="${px(reg.y+reg.h-2)}" text-anchor="end" fill="#e8590c">ORANGE DASHED = FOLD-DOWN HANDRAIL (TRUCK-FACING EDGE)</text>`;
+  return o;
+}
+
+function drawSide(s,m,reg){
+  const top=s.canopy==='yes'?m.roofZ+0.25:m.H+2.0;
+  const v=mkView(reg,{t:10,b:58,l:12,r:90},-m.runL-0.3,m.L+m.runR+0.3,0,top,true);
+  const H=m.H,L=m.L;
+  let o=v.line(-m.runL-0.3,0,L+m.runR+0.3,0,'grd');
+  const tx=0.3,tl=m.truckL;
+  // tanker (typical)
+  o+=v.rect(tx,0.95,tl,0.2,'tk');
+  o+=v.rect(tx,1.15,tl,2.5,'tk',`rx="${v.S(1.0)}"`);
+  [0.2,0.5,0.8].forEach(f=>{o+=v.rect(tx+tl*f-0.3,3.65,0.6,0.18,'tk');});
+  [0.70,0.78,0.86].forEach(f=>{o+=v.circle(tx+tl*f,0.5,0.5,'tk');});
+  o+=v.line(tx+0.8,0,tx+0.8,0.95,'tk');
+  o+=v.text(tx+tl*0.38,2.4,'TANKER (TYPICAL)','lbl9');
+  // columns + bracing
+  const cx=[];for(let k=0;k<m.nc;k++)cx.push(k*L/(m.nc-1));
+  cx.forEach(x=>{o+=v.rect(x-0.1,0,0.2,H-0.15,'st');});
+  for(let k=0;k<m.nc-1;k++){
+    if(k%2)o+=v.line(cx[k]+0.1,H-0.4,cx[k+1]-0.1,0.3,'brace');
+    else o+=v.line(cx[k]+0.1,0.3,cx[k+1]-0.1,H-0.4,'brace');
+  }
+  o+=v.rect(0,H-0.15,L,0.15,'deck');
+  // handrail
+  const np=Math.max(1,Math.ceil(L/1.5));
+  for(let k=0;k<=np;k++){const x=k*L/np;o+=v.line(x,H,x,H+1.1,'rail');}
+  o+=v.line(0,H+1.1,L,H+1.1,s.handrail==='fold'?'fold':'rail');
+  o+=v.line(0,H+0.55,L,H+0.55,'rail');
+  o+=v.rect(0,H,L,0.1,'st');
+  // access
+  const stairSide=(dir)=>{
+    let q='';
+    const x0=dir<0?-m.runL:L+m.runR;
+    if(s.access==='stairs'){
+      let pts=[[x0,0]];
+      for(let i=1;i<=m.steps;i++){
+        const xi=dir<0?x0+(i-1)*m.going:x0-(i-1)*m.going,z=i*m.rh;
+        pts.push([xi,z]);
+        if(i<m.steps)pts.push([dir<0?xi+m.going:xi-m.going,z]);
+      }
+      q+=v.poly(pts,'stp');
+      const xe=dir<0?0:L;
+      q+=v.line(x0,0,xe,H,'thin');
+      q+=v.line(x0,1.0,xe,H+1.0,'rail');
+      q+=v.line(x0,0,x0,1.0,'rail');
+      if(m.H>3.0){const mx=(x0+xe)/2,mz=H/2;q+=v.rect(mx-0.35,mz-0.05,0.7,0.1,'deck');q+=v.text(mx,mz,'LANDING','lbl9','middle',0,-6);}
+    }else{
+      const xl=dir<0?-0.4:L+0.4;
+      q+=v.line(xl,0,xl,H+1.0,'st2');
+      for(let z=0.3;z<H+0.9;z+=0.3)q+=v.line(xl-0.12,z,xl+0.12,z,'thin');
+      if(H>2.5)q+=v.rect(xl-0.35,2.2,0.7,H-1.3,'thin dash');
+    }
+    return q;
+  };
+  if(m.leftOn)o+=stairSide(-1);
+  if(m.rightOn)o+=stairSide(1);
+  // loading arm
+  if(s.loading==='top'){
+    const ax=tx+tl*0.5;
+    o+=v.line(ax,H,ax,H+1.7,'arm');
+    o+=v.line(ax-0.8,H+1.7,ax+0.8,H+1.7,'arm');
+    o+=v.line(ax,H+1.7,ax,3.85,'arm dash');
+    o+=v.text(ax,H+1.7,'LOADING ARM','lbl9','middle',0,-7);
+  }else{
+    const ax=tx+tl*0.7;
+    o+=v.rect(ax-0.3,0.35,0.6,0.5,'armb');
+    o+=v.line(ax,0.85,ax,1.15,'arm');
+    o+=v.text(ax,0.35,'BOTTOM-LOAD COUPLING','lbl9','middle',0,v.S(0.35)+12);
+  }
+  if(s.canopy==='yes'){
+    o+=v.rect(-0.4,m.roofZ,L+0.8,0.18,'st');
+    const nr=Math.ceil(L/6)+1;
+    for(let k=0;k<nr;k++){const x=k*L/(nr-1);o+=v.rect(x-0.1,H,0.2,m.roofZ-H,'st');}
+    o+=v.text(L/2,m.roofZ+0.18,'CANOPY','lbl9','middle',0,-5);
+  }
+  // dims
+  const xf=v.X(L+m.runR)+6;
+  o+=dimV(v.Y(0),v.Y(H),xf,xf+48,String(mm(H))+' PLATFORM LEVEL');
+  const yg=v.Y(0);
+  o+=dimH(v.X(0),v.X(L),yg,yg+30,String(mm(L)));
+  if(m.runL>0)o+=dimH(v.X(-m.runL),v.X(0),yg,yg+30,String(mm(m.runL)));
+  if(m.runR>0)o+=dimH(v.X(L),v.X(L+m.runR),yg,yg+30,String(mm(m.runR)));
+  return o;
+}
+
+function drawEnd(s,m,reg){
+  const top=s.canopy==='yes'?m.roofZ+0.25:m.H+2.0;
+  const v=mkView(reg,{t:10,b:58,l:62,r:12},-0.5,m.D+0.5,0,top,true);
+  const H=m.H;
+  let o=v.line(-0.5,0,m.D+0.5,0,'grd');
+  m.lanes.forEach(ln=>{
+    const cx=ln.y0+m.laneW/2,tw=m.truckW;
+    o+=v.rect(cx-tw/2,1.0,tw,0.15,'tk');
+    o+=v.rect(cx-tw/2,0,0.32,1.0,'tk');
+    o+=v.rect(cx+tw/2-0.32,0,0.32,1.0,'tk');
+    o+=v.circle(cx,2.4,1.25,'tk');
+    o+=v.rect(cx-0.3,3.65,0.6,0.18,'tk');
+  });
+  m.plats.forEach(pl=>{
+    o+=v.rect(pl.y0+0.05,0,0.15,H-0.15,'st');
+    o+=v.rect(pl.y1-0.2,0,0.15,H-0.15,'st');
+    o+=v.rect(pl.y0,H-0.15,m.W,0.15,'deck');
+    [[pl.y0+0.04,-1,true],[pl.y1-0.04,1,pl.lower]].forEach(e=>{
+      const post=e[0],dir=e[1],faces=e[2];
+      o+=v.line(post,H,post,H+1.1,'rail');
+      o+=v.circle(post,H+0.55,0.04,'st');
+      o+=v.rect(post-0.02,H,0.04,0.1,'st');
+      if(s.handrail==='fold'&&faces){
+        o+=v.line(post,H+1.1,post+dir*0.7,H+1.1,'fold');
+        o+=v.circle(post,H+1.1,0.06,'st');
+      }else o+=v.circle(post,H+1.1,0.05,'st');
+    });
+  });
+  m.lanes.forEach(ln=>{
+    const pl=m.plats[ln.plat],pc=(pl.y0+pl.y1)/2,dc=ln.y0+m.laneW/2,above=ln.y0<pl.y0;
+    if(s.loading==='top'){
+      o+=v.poly([[pc,H],[pc,H+1.6],[dc,H+1.6],[dc,3.85]],'arm');
+      o+=v.circle(dc,3.85,0.1,'armb');
+    }else{
+      const face=above?dc+m.truckW/2:dc-m.truckW/2;
+      o+=v.rect(face-0.2,0.5,0.4,0.4,'armb');
+    }
+  });
+  if(s.canopy==='yes'){
+    o+=v.rect(-0.4,m.roofZ,m.D+0.8,0.18,'st');
+    o+=v.rect(-0.3,0,0.2,m.roofZ,'st');
+    o+=v.rect(m.D+0.1,0,0.2,m.roofZ,'st');
+  }
+  const xf=v.X(m.plats[0].y0)-4,xd=reg.x+26;
+  o+=dimV(v.Y(0),v.Y(H),xf,xd,String(mm(H)));
+  const yg=v.Y(0);
+  o+=dimH(v.X(0),v.X(m.D),yg,yg+30,String(mm(m.D)));
+  return o;
+}
+
+const SHEET_CSS=`
+.ln{stroke:#1b2733;fill:none;stroke-width:1.2}
+.thin{stroke:#1b2733;fill:none;stroke-width:.7}
+.dash{stroke-dasharray:7 5}
+.grd{stroke:#1b2733;stroke-width:2}
+.st{fill:#fff;stroke:#2d4256;stroke-width:1.5}
+.st2{stroke:#2d4256;stroke-width:2.2;fill:none}
+.deck{fill:#c9d3dc;stroke:#2d4256;stroke-width:1.2}
+.stair{fill:#e3e9ee;stroke:#2d4256;stroke-width:1.2}
+.stp{stroke:#2d4256;stroke-width:1.6;fill:none}
+.brace{stroke:#7a8da0;stroke-width:1;fill:none}
+.rail{stroke:#2d4256;stroke-width:1.6;fill:none}
+.fold{stroke:#e8590c;stroke-width:2.4;fill:none;stroke-dasharray:8 4}
+.tk{fill:#f1f4f7;stroke:#8da0b2;stroke-width:1.2}
+.lane{fill:#f8fafb;stroke:#d5dde4;stroke-width:1;stroke-dasharray:3 4}
+.arm{stroke:#c2410c;stroke-width:2.4;fill:none}
+.armb{fill:#c2410c;stroke:#7c2d12;stroke-width:1}
+.dim{stroke:#0b6bcb;stroke-width:.9;fill:none}
+.dt{fill:#0b6bcb;font:600 12px Arial,sans-serif}
+.lbl{fill:#1b2733;font:12px Arial,sans-serif}
+.lbl9{fill:#3d4f61;font:10px Arial,sans-serif}
+.lbl9w{fill:#fff;font:9px Arial,sans-serif}
+.ttl{fill:#1b2733;font:700 15px Arial,sans-serif;letter-spacing:1px}
+.tbh{fill:#6b7d8f;font:9px Arial,sans-serif;letter-spacing:.8px}
+.tbv{fill:#1b2733;font:700 14px Arial,sans-serif}
+.tbs{fill:#3d4f61;font:11px Arial,sans-serif}`;
+
+function sheet(s,m,project){
+  const dt=new Date();
+  const date=dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');
+  const prod={diesel:'Diesel',petrol:'Petrol',lpg:'LPG',chemical:'Chemical',bitumen:'Bitumen',other:'Product'}[s.product]||s.product;
+  const summary=`${m.n} bay${m.n>1?'s':''} · ${prod} · ${s.loading}-loading · platform +${mm(m.H)} mm · ${s.access}${s.access==='stairs'?'':''} (${s.side==='both'?'both ends':s.side+' end'}) · ${s.handrail==='fold'?'fold-down':'fixed'} rails${s.canopy==='yes'?' · canopy':''}`;
+  const P={x:40,y:64,w:1320,h:330},Sd={x:40,y:444,w:870,h:390},E={x:940,y:444,w:420,h:390};
+  let o=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1000" width="1400" height="1000" font-family="Arial, Helvetica, sans-serif"><style>${SHEET_CSS}</style>`;
+  o+=`<rect width="1400" height="1000" fill="#fff"/><rect class="ln" x="20" y="20" width="1360" height="960" style="stroke-width:2"/>`;
+  o+=`<text class="ttl" x="40" y="52">PLAN VIEW</text><text class="ttl" x="40" y="432">SIDE ELEVATION</text><text class="ttl" x="940" y="432">END SECTION</text>`;
+  o+=`<line class="thin" x1="20" y1="410" x2="1380" y2="410"/><line class="thin" x1="920" y1="410" x2="920" y2="840"/><line class="thin" x1="20" y1="846" x2="1380" y2="846"/>`;
+  o+=drawPlan(s,m,P)+drawSide(s,m,Sd)+drawEnd(s,m,E);
+  // title block
+  o+=`<rect class="ln" x="40" y="858" width="1320" height="104"/>`;
+  [640,820,960,1080].forEach(x=>{o+=`<line class="thin" x1="${x}" y1="858" x2="${x}" y2="962"/>`;});
+  o+=`<text class="tbh" x="52" y="876">PROJECT</text><text class="tbv" x="52" y="900">${esc(project)}</text><text class="tbs" x="52" y="930">${esc(summary)}</text>`;
+  o+=`<text class="tbh" x="652" y="876">DRAWING NO. / REV</text><text class="tbv" x="652" y="900">SD-001 / A</text><text class="tbs" x="652" y="930">Auto-generated from voice spec</text>`;
+  o+=`<text class="tbh" x="832" y="876">DATE</text><text class="tbv" x="832" y="900">${date}</text>`;
+  o+=`<text class="tbh" x="972" y="876">SCALE</text><text class="tbv" x="972" y="900">NTS</text><text class="tbs" x="972" y="930">Dims in mm</text>`;
+  o+=`<text class="tbh" x="1092" y="876">STATUS</text><text class="tbv" x="1092" y="900" fill="#c2410c" style="fill:#c2410c">DRAFT</text><text class="tbs" x="1092" y="920">Engineer review required.</text><text class="tbs" x="1092" y="936">Not for fabrication.</text>`;
+  o+='</svg>';
+  return o;
+}
+
+/* ---------- Node test hook ---------- */
+if(typeof module!=='undefined'&&module.exports){
+  module.exports={parseNote,normalise,metrics,flagsFor,bomFor,sheet,DEFAULTS,REQUIRED,SAMPLES};
+}
+
+/* ---------- 4. App (DOM) ---------- */
+if(typeof document!=='undefined'&&document.getElementById){
+(function(){
+const $=id=>document.getElementById(id);
+const FIELDS=[
+ {k:'bays',label:'Loading bays',num:true,type:'seg',opts:[[1,'1'],[2,'2'],[3,'3'],[4,'4']]},
+ {k:'product',label:'Product',type:'sel',opts:[['diesel','Diesel'],['petrol','Petrol'],['lpg','LPG'],['chemical','Chemical / acid'],['bitumen','Bitumen'],['other','Water / other']]},
+ {k:'loading',label:'Loading method',type:'seg',opts:[['top','Top'],['bottom','Bottom']]},
+ {k:'height',label:'Platform height (m)',type:'num',min:2,max:6,step:0.1},
+ {k:'platL',label:'Platform length (m)',type:'num',min:6,max:24,step:0.5},
+ {k:'platW',label:'Platform width (m)',type:'num',min:0.8,max:2,step:0.1},
+ {k:'access',label:'Access',type:'seg',opts:[['stairs','Stairs'],['ladder','Ladder']]},
+ {k:'side',label:'Access at',type:'seg',opts:[['left','Left end'],['right','Right end'],['both','Both ends']]},
+ {k:'handrail',label:'Handrail',type:'seg',opts:[['fixed','Fixed'],['fold','Fold-down']]},
+ {k:'canopy',label:'Canopy',type:'seg',opts:[['no','No'],['yes','Yes']]}
+];
+const state={spec:{},src:{},project:$('proj').value};
+let lastSvg='',lastBom=[];
+
+function resetSpec(){
+  state.spec={};state.src={};
+  Object.keys(DEFAULTS).forEach(k=>{state.spec[k]=DEFAULTS[k];state.src[k]='default';});
+  REQUIRED.forEach(k=>{state.src[k]='missing';});
+}
+function setField(k,v,src){
+  if(v===undefined||v===''||(typeof v==='number'&&isNaN(v))){state.spec[k]=undefined;state.src[k]=REQUIRED.includes(k)?'missing':'default';return;}
+  state.spec[k]=v;state.src[k]=src;
+}
+const missing=()=>REQUIRED.filter(k=>state.spec[k]===undefined);
+const badgeTxt={voice:'from voice',default:'assumed',manual:'set by you',missing:'needed'};
+
+function toast(t){const e=$('toast');e.textContent=t;e.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('show'),2600);}
+
+function rowHtml(f){
+  const val=state.spec[f.k],src=state.src[f.k]||'default';
+  let ctl='';
+  if(f.type==='seg'){
+    ctl='<div class="seg">'+f.opts.map(o=>`<button data-k="${f.k}" data-v="${o[0]}" class="${String(val)===String(o[0])?'act':''}">${o[1]}</button>`).join('')+'</div>';
+  }else if(f.type==='sel'){
+    ctl=`<select data-k="${f.k}"><option value="">Select…</option>`+f.opts.map(o=>`<option value="${o[0]}" ${val===o[0]?'selected':''}>${o[1]}</option>`).join('')+'</select>';
+  }else{
+    const sv=val===undefined?'':val;
+    ctl=`<div class="numrow"><input type="number" inputmode="decimal" data-k="${f.k}" min="${f.min}" max="${f.max}" step="${f.step}" value="${sv}" placeholder="?"><input type="range" data-r="${f.k}" min="${f.min}" max="${f.max}" step="${f.step}" value="${sv===''?(f.min+f.max)/2:sv}"></div>`;
+  }
+  return `<div class="row ${src==='missing'?'need':''}" data-row="${f.k}"><div class="rl"><span>${f.label}</span><span class="badge b-${src}">${badgeTxt[src]}</span></div>${ctl}</div>`;
+}
+function renderSpec(){$('specRows').innerHTML=FIELDS.map(rowHtml).join('');}
+function updateBadges(){
+  FIELDS.forEach(f=>{
+    const row=document.querySelector(`[data-row="${f.k}"]`);if(!row)return;
+    const src=state.src[f.k]||'default';
+    row.classList.toggle('need',src==='missing');
+    const b=row.querySelector('.badge');b.className='badge b-'+src;b.textContent=badgeTxt[src];
+  });
+}
+function renderAsk(){
+  const miss=missing(),ask=$('ask'),ok=$('okbox');
+  if(miss.length){
+    ask.innerHTML=`<b>I still need:</b> ${miss.map(k=>FIELD_LABEL[k]).join(', ')}.<br>Say it, or set it below. I won't guess.<br><button class="micbtn" data-ask="1">🎙 Answer by voice</button>`;
+    ask.classList.add('show');ok.classList.remove('show');
+  }else{
+    ask.classList.remove('show');
+    ok.textContent='Spec complete. Drawing built from the fields below. Anything marked “assumed” was not in the note, so confirm it.';
+    ok.classList.add('show');
+  }
+}
+function refreshOutputs(){
+  renderAsk();updateBadges();
+  const miss=missing();
+  $('json').textContent=JSON.stringify(Object.fromEntries(Object.entries(state.spec).filter(e=>e[1]!==undefined)),null,2);
+  if(miss.length){
+    lastSvg='';lastBom=[];
+    $('sheetWrap').innerHTML=`<div class="ph"><b>Waiting for: ${miss.map(k=>FIELD_LABEL[k]).join(', ')}</b>The drawing is only built once every required field is known.</div>`;
+    $('flags').innerHTML='<span class="hint">Flags appear once the drawing is built.</span>';
+    $('bom').innerHTML='<span class="hint">The parts list is generated from the drawing.</span>';
+    return;
+  }
+  const s=state.spec,m=metrics(s);
+  lastSvg=sheet(s,m,state.project);
+  $('sheetWrap').innerHTML=lastSvg;
+  $('flags').innerHTML=flagsFor(s,m).map(f=>`<div class="flag"><span class="dot d-${f[0]}"></span><span>${esc(f[1])}</span></div>`).join('');
+  lastBom=bomFor(s,m);
+  $('bom').innerHTML='<table><thead><tr><th>Item</th><th>Qty</th><th>Basis</th></tr></thead><tbody>'+lastBom.map(r=>`<tr><td>${esc(r[0])}</td><td class="q">${r[1]} ${r[2]}</td><td>${esc(r[3])}</td></tr>`).join('')+'</tbody></table>';
+}
+
+function applyParse(){
+  const txt=$('transcript').value.trim();
+  if(!txt){toast('Nothing to read yet. Record or type a note.');return;}
+  const r=parseNote(txt);
+  Object.entries(r).forEach(([k,v])=>setField(k,v,'voice'));
+  renderSpec();refreshOutputs();
+  const n=Object.keys(r).length;
+  toast(n?`Picked up ${n} field${n>1?'s':''} from the note.`:'Could not find any spec details in that note.');
+}
+
+/* events */
+$('specRows').addEventListener('click',e=>{
+  const b=e.target.closest('button[data-k]');if(!b)return;
+  const k=b.dataset.k;let v=b.dataset.v;if(k==='bays')v=Number(v);
+  setField(k,v,'manual');renderSpec();refreshOutputs();
+});
+$('specRows').addEventListener('change',e=>{
+  const t=e.target;if(t.tagName==='SELECT'){setField(t.dataset.k,t.value,'manual');refreshOutputs();}
+});
+$('specRows').addEventListener('input',e=>{
+  const t=e.target,k=t.dataset.k||t.dataset.r;if(!k)return;
+  if(t.type==='range'){
+    const n=document.querySelector(`input[type=number][data-k="${k}"]`);if(n)n.value=t.value;
+    setField(k,parseFloat(t.value),'manual');
+  }else if(t.type==='number'){
+    const rg=document.querySelector(`input[type=range][data-r="${k}"]`);if(rg&&t.value!=='')rg.value=t.value;
+    setField(k,t.value===''?undefined:parseFloat(t.value),'manual');
+  }
+  refreshOutputs();
+});
+$('proj').addEventListener('input',e=>{state.project=e.target.value||'Untitled site';if(lastSvg)refreshOutputs();});
+$('build').addEventListener('click',applyParse);
+$('samples').innerHTML=SAMPLES.map((s,i)=>`<button data-s="${i}">${esc(s.name)}</button>`).join('');
+$('samples').addEventListener('click',e=>{
+  const b=e.target.closest('button[data-s]');if(!b)return;
+  $('transcript').value=SAMPLES[+b.dataset.s].text;
+  resetSpec();applyParse();
+});
+
+/* voice */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+let rec=null,listening=false;
+function setMicUI(){document.querySelectorAll('.micbtn').forEach(b=>{if(b.id==='mic')b.classList.toggle('on',listening);});}
+function toggleMic(){
+  if(!SR){toast('Voice capture is not supported in this browser. Type the note or use a sample.');return;}
+  if(listening&&rec){rec.stop();return;}
+  const base=$('transcript').value.trim();
+  rec=new SR();rec.lang='en-ZA';rec.interimResults=true;rec.continuous=false;
+  rec.onresult=ev=>{
+    let fin='',tmp='';
+    for(let i=0;i<ev.results.length;i++){const r=ev.results[i];if(r.isFinal)fin+=r[0].transcript;else tmp+=r[0].transcript;}
+    $('transcript').value=(base?base+' ':'')+(fin+' '+tmp).trim();
+  };
+  rec.onerror=ev=>{toast('Mic: '+(ev.error==='not-allowed'?'permission denied. Allow microphone access for this site.':ev.error));};
+  rec.onend=()=>{listening=false;setMicUI();applyParse();};
+  try{rec.start();listening=true;setMicUI();toast('Listening… tap again when done.');}catch(err){toast('Could not start the microphone.');}
+}
+document.addEventListener('click',e=>{if(e.target.closest('.micbtn'))toggleMic();});
+if(!SR)$('micHint').textContent='Voice capture needs Safari or Chrome. You can still type a note or tap a sample below.';
+
+/* export */
+function download(name,mime,data){
+  const b=new Blob([data],{type:mime}),a=document.createElement('a');
+  a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},600);
+}
+$('dlSvg').addEventListener('click',()=>{if(!lastSvg)return toast('Build a drawing first.');download('site-drawing-SD-001.svg','image/svg+xml',lastSvg);});
+$('prt').addEventListener('click',()=>{if(!lastSvg)return toast('Build a drawing first.');window.print();});
+$('dlCsv').addEventListener('click',()=>{
+  if(!lastBom.length)return toast('Build a drawing first.');
+  const q=v=>'"'+String(v).replace(/"/g,'""')+'"';
+  download('parts-list.csv','text/csv',['Item,Qty,Unit,Basis'].concat(lastBom.map(r=>r.map(q).join(','))).join('\n'));
+});
+
+resetSpec();renderSpec();updateBadges();
+})();
+}
+</script>
+</body>
+</html>
