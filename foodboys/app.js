@@ -489,7 +489,9 @@
       n++;
       const head = cat === 'All' && !q && p.cat !== last ? `<div class="grp">${esc(p.cat)}</div>` : ''; last = p.cat;
       const pic = picture(p.im);
-      const tile = pic ? `<div class="im" style="background-image:url('${pic}')"></div>` : `<div class="im emo" aria-hidden="true">${icons[p.cat] || '🍽️'}</div>`;
+      const emo = icons[p.cat] || '🍽️';
+      const tile = p.photo ? `<div class="im pic"><img src="${esc(p.photo)}" alt="" loading="lazy" decoding="async" onerror="var t=this.parentNode;t.className='im emo';t.textContent='${emo}'"></div>`
+        : pic ? `<div class="im" style="background-image:url('${pic}')"></div>` : `<div class="im emo" aria-hidden="true">${emo}</div>`;
       return head + `
       <div class="mi" id="mi-${p.id}" data-act="add" data-pid="${p.id}">
         ${tile}
