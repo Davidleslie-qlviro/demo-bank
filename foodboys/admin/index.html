@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>Food Boys Admin</title>
+<meta name="theme-color" content="#101D2B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="FB Admin">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EEF1F5;--card:#fff;--ink:#101D2B;--mute:#5F6E80;--line:#D7DEE7;--gold:#DB6232;--bad:#b3402a;--ok:#2f7a3d}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,Inter,sans-serif}
+.w{max-width:640px;margin:0 auto;padding:16px}h1{font-family:'Roboto Slab',Georgia,serif;letter-spacing:.04em;text-transform:uppercase;font-size:24px;margin:8px 0}h2{font-family:'Roboto Slab',Georgia,serif;letter-spacing:.03em;font-size:18px;margin:0 0 8px;text-transform:uppercase}
+.c{background:var(--card);border:2px solid var(--ink);border-radius:16px;padding:14px;margin-top:14px}
+input,select,textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;font:inherit;font-size:16px;background:#fff;color:var(--ink)}
+label{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:10px 0 3px}
+button{font:inherit;border:0;border-radius:12px;padding:12px 16px;background:var(--ink);color:#fff;font-weight:600;cursor:pointer}button.g{background:#fff;color:var(--ink);border:2px solid var(--ink)}button.r{background:var(--bad)}button.ok{background:var(--ok)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.s{font-size:13px;color:var(--mute)}.pill{display:inline-block;border-radius:99px;padding:2px 10px;font-size:12px;font-weight:700;background:#fdeee6;border:1px solid var(--gold)}.pill.g{background:#e3f3e6;border-color:var(--ok);color:var(--ok)}.o{border-top:1px solid var(--line);padding:12px 0}.o select{padding:8px}.pill.h{background:#f9dcd5;border-color:var(--bad);color:var(--bad)}
+.p{border-top:1px solid var(--line);padding:10px 0}.err{color:var(--bad);font-size:13px;margin-top:6px;min-height:18px}.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.tabs button{padding:8px 12px;font-size:14px}.tabs .on{background:var(--gold);color:#fff}
+.hide{display:none}td,th{font-size:12.5px;text-align:left;padding:4px 6px;border-bottom:1px solid var(--line)}table{border-collapse:collapse;width:100%}.sc{overflow-x:auto}
+</style></head><body><div class="w">
+<h1>Food Boys admin</h1>
+<div id="login" class="c"><h2>Sign in</h2><p class="s">Enter your email. We send a 6-digit code.</p>
+ <label>Email</label><input id="em" type="email" autocomplete="email"><div id="codeBox" class="hide"><label>6-digit code</label><input id="cd" inputmode="numeric" maxlength="6" autocomplete="one-time-code"></div>
+ <p><button id="goBtn" onclick="login()">Send code</button></p><div class="err" id="lerr"></div></div>
+<div id="app" class="hide">
+ <div class="c" style="display:flex;justify-content:space-between;align-items:center"><div><b id="who"></b><div class="s" id="roleTxt"></div></div><button class="g" onclick="logout()">Log out</button></div>
+ <div class="tabs" id="tabs"></div>
+ <div id="t-pending"></div><div id="t-prices" class="hide"></div><div id="t-bank" class="hide"></div><div id="t-specials" class="hide"></div><div id="t-orders" class="hide"></div><div id="t-leads" class="hide"></div><div id="t-roles" class="hide"></div><div id="t-audit" class="hide"></div>
+</div></div>
+<script>
+const $=id=>document.getElementById(id);let ST=null,tab='pending';
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+async function api(a,body){const r=await fetch('/api/foodboys?a='+a,{method:body?'POST':'GET',headers:{'Content-Type':'application/json','x-fb':'1'},body:body?JSON.stringify(body):undefined,credentials:'same-origin'});
+ const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||'Error');return j}
+let step=0;
+async function login(){try{$('lerr').textContent='';
+ if(!step){const j=await api('otp_request',{email:$('em').value});step=1;$('codeBox').classList.remove('hide');$('goBtn').textContent='Sign in';$('lerr').textContent='If that email is allowed, a code is on its way.';if(j.dev)$('cd').value=j.dev}
+ else{await api('otp_verify',{email:$('em').value,code:$('cd').value});load()}}catch(e){$('lerr').textContent=e.message}}
+async function logout(){await api('logout',{});location.reload()}
+async function load(){try{ST=await api('state');}catch(e){$('login').classList.remove('hide');return}
+ $('login').classList.add('hide');$('app').classList.remove('hide');$('who').textContent=ST.me.email;$('roleTxt').textContent=ST.me.role==='owner'?'Owner':'Admin';render()}
+const TABS=[['pending','Approvals'],['prices','Prices & rules'],['bank','Bank & business'],['specials','Specials'],['orders','Orders'],['leads','Leads'],['roles','Roles'],['audit','Audit log']];
+function render(){$('tabs').innerHTML=TABS.map(([k,l])=>`<button class="${tab===k?'on':''}" onclick="tab='${k}';render()">${l}${k==='pending'&&ST.pending.filter(p=>p.status==='pending'||p.status==='holding').length?' ('+ST.pending.filter(p=>p.status==='pending'||p.status==='holding').length+')':''}</button>`).join('');
+ TABS.forEach(([k])=>$('t-'+k).classList.toggle('hide',k!==tab));({pending:rPending,prices:rPrices,bank:rBank,specials:rSpecials,orders:rOrders,leads:rLeads,roles:rRoles,audit:rAudit})[tab]()}
+const C=()=>ST.config;
+function rPending(){const L=ST.pending;$('t-pending').innerHTML=`<div class="c"><h2>Waiting for approval</h2><p class="s">You can't approve your own change. The other person does. Bank and role changes also need a code sent to your email.</p>${L.length?L.map(p=>`<div class="p"><span class="pill ${p.risk!=='normal'?'h':''}">${p.risk==='normal'?'Normal':p.risk==='high'?'High risk':'Highest security'}</span> <span class="pill">${esc(p.status)}</span><div><b>${esc(p.summary)}</b></div><div class="s">By ${esc(p.by)} · ${new Date(p.at).toLocaleString()}${p.applyAfter?' · takes effect '+new Date(p.applyAfter).toLocaleString():''}</div>
+ ${p.status==='pending'&&p.by!==ST.me.email?`<div id="ap-${p.id}" style="margin-top:8px">${p.risk!=='normal'?`<button class="g" onclick="stepup('${p.id}')">Email me an approval code</button> <input id="cd-${p.id}" placeholder="6-digit code" inputmode="numeric" maxlength="6" style="margin-top:6px">`:''}<p><button class="ok" onclick="approve('${p.id}')">Approve</button> <button class="r" onclick="rej('${p.id}')">Reject</button></p></div>`:''}
+ ${p.status==='pending'&&p.by===ST.me.email?`<p><button class="g" onclick="rej('${p.id}')">Withdraw</button></p>`:''}${p.status==='holding'?`<p><button class="r" onclick="rej('${p.id}')">Cancel this change</button></p>`:''}</div>`).join(''):'<p class="s">Nothing waiting.</p>'}<div class="err" id="perr"></div></div>`}
+async function stepup(id){try{const j=await api('stepup_request',{id});$('perr').textContent='Code sent to your email.';if(j.dev)$('cd-'+id).value=j.dev}catch(e){$('perr').textContent=e.message}}
+async function approve(id){try{const c=$('cd-'+id);await api('approve',{id,code:c?c.value:undefined});await load()}catch(e){$('perr').textContent=e.message}}
+async function rej(id){try{await api('reject',{id});await load()}catch(e){$('perr').textContent=e.message}}
+function fld(id,l,v,t){return `<div><label>${l}</label><input id="${id}" value="${esc(v)}" ${t?`type="${t}"`:''}></div>`}
+/* the price list is built from the products the server knows, so new products appear here automatically */
+const PN=()=>ST.catalog.map(p=>[p.id,p.name]);
+function rPrices(){const c=C(),cats=[...new Set(ST.catalog.map(p=>p.cat))];$('t-prices').innerHTML=`<div class="c"><h2>Prices &amp; rules</h2><p class="s">Prices include VAT. Every price is per item (pack, box, case or piece). Changes go to the other person for approval. Live prices stay the same until then.</p>
+ <label>Find a product (name or code)</label><input id="pq" placeholder="e.g. boerewors or 3289" oninput="filterPrices()">
+ ${cats.map(cat=>`<h2 class="pg" style="margin-top:16px">${esc(cat)}</h2><div class="row">${ST.catalog.filter(p=>p.cat===cat).map(p=>`<div class="pf" data-t="${esc((p.id+' '+p.name).toLowerCase())}"><label>${esc(p.name)} <span class="s">#${p.id}</span></label><input id="pr-${p.id}" value="${esc(c.prices[p.id])}" inputmode="decimal"></div>`).join('')}</div>`).join('')}
+ <h2 style="margin-top:18px">Delivery rules</h2><div class="row">${fld('ru-deliveryFee','Delivery fee (R)',c.rules.deliveryFee)}${fld('ru-freeOver','Free delivery over (R)',c.rules.freeOver)}${fld('ru-subDisc','Standing-order discount % (0 = off)',c.rules.subDisc)}${fld('ru-cutoffHour','Order cut-off hour',c.rules.cutoffHour)}${fld('ru-window','Delivery window (e.g. 09:00 - 17:00)',c.rules.window)}${fld('ru-deliveryNote','Delivery notice shown to customers',c.rules.deliveryNote)}</div>
+ <p><button onclick="submitPrices()">Submit for approval</button></p><div class="err" id="e1"></div></div>`}
+function filterPrices(){const q=$('pq').value.trim().toLowerCase();document.querySelectorAll('#t-prices .pf').forEach(e=>e.classList.toggle('hide',!!q&&!e.dataset.t.includes(q)));document.querySelectorAll('#t-prices .pg').forEach(g=>{const row=g.nextElementSibling,any=!!row.querySelector('.pf:not(.hide)');g.classList.toggle('hide',!any);row.classList.toggle('hide',!any)})}
+function diff(group,prefix,keys){const o={};keys.forEach(k=>{const v=$(prefix+k).value.trim(),cur=C()[group][k];if(group==='prices'?(v!==''&&Number(v)!==Number(cur)):String(cur==null?'':cur)!==v)o[k]=v});return o}
+async function submitPrices(){try{const patch={prices:diff('prices','pr-',PN().map(x=>x[0])),rules:diff('rules','ru-',['deliveryFee','freeOver','subDisc','cutoffHour','window','deliveryNote'])};
+ Object.keys(patch).forEach(g=>{if(!Object.keys(patch[g]).length)delete patch[g]});if(!Object.keys(patch).length)throw new Error('You have not changed anything');await api('propose',{kind:'config',patch});tab='pending';await load()}catch(e){$('e1').textContent=e.message}}
+function rBank(){const b=C().bank,u=C().business;$('t-bank').innerHTML=`<div class="c"><h2>Business details</h2><div class="row">${fld('bu-name','Business name',u.name)}${fld('bu-city','Address / city',u.city)}${fld('bu-phone','Phone',u.phone)}${fld('bu-email','Email',u.email)}${fld('bu-vatNo','VAT number',u.vatNo)}${fld('bu-vatRate','VAT %',u.vatRate)}</div><p><button onclick="submitBiz()">Submit for approval</button></p><div class="err" id="e2"></div></div>
+ <div class="c"><h2>Banking details <span class="pill h">High risk</span></h2><p class="s">Needs an email code from you, then the other person approves with their own code. Both of you get an alert.</p><div class="row">${fld('bk-bankName','Bank',b.bankName)}${fld('bk-accHolder','Account holder',b.accHolder)}${fld('bk-accNo','Account number',b.accNo)}${fld('bk-branch','Branch code',b.branch)}${fld('bk-accType','Account type',b.accType)}${fld('bk-payRef','Payment reference',b.payRef)}</div>
+ <p><button class="g" onclick="bankCode()">Email me a code</button></p>${fld('bk-code','Your 6-digit code','')}<p><button onclick="submitBank()">Submit for approval</button></p><div class="err" id="e3"></div></div>`}
+async function submitBiz(){try{const o=diff('business','bu-',['name','city','phone','email','vatNo','vatRate']);if(!Object.keys(o).length)throw new Error('You have not changed anything');await api('propose',{kind:'config',patch:{business:o}});tab='pending';await load()}catch(e){$('e2').textContent=e.message}}
+async function bankCode(){try{const j=await api('stepup_request',{id:'new'});$('e3').textContent='Code sent to your email.';if(j.dev)$('bk-code').value=j.dev}catch(e){$('e3').textContent=e.message}}
+async function submitBank(){try{const o=diff('bank','bk-',['bankName','accHolder','accNo','branch','accType','payRef']);if(!Object.keys(o).length)throw new Error('You have not changed anything');await api('propose',{kind:'config',patch:{bank:o},code:$('bk-code').value});tab='pending';await load()}catch(e){$('e3').textContent=e.message}}
+function rSpecials(){const L=C().specials;$('t-specials').innerHTML=`<div class="c"><h2>Specials &amp; recipes</h2><p class="s">Shown on the customer's invoice as upsell cards (up to 5). The customer adds the chosen product with one tap.</p>${[0,1,2,3,4].map(i=>{const s=L[i]||{t:'',x:'',pid:ST.catalog[0].id};return `<div class="p"><label>Title</label><input id="sp-t${i}" value="${esc(s.t)}"><label>Description</label><input id="sp-x${i}" value="${esc(s.x)}"><label>Adds product</label><select id="sp-p${i}">${ST.catalog.map(p=>`<option value="${p.id}" ${p.id===s.pid?'selected':''}>${esc(p.name)} (#${p.id})</option>`).join('')}</select></div>`}).join('')}<p><button onclick="submitSpecials()">Submit for approval</button></p><div class="err" id="e4"></div></div>`}
+async function submitSpecials(){try{const sp=[0,1,2,3,4].filter(i=>$('sp-t'+i).value.trim()).map(i=>({t:$('sp-t'+i).value,x:$('sp-x'+i).value,pid:$('sp-p'+i).value}));await api('propose',{kind:'config',patch:{specials:sp}});tab='pending';await load()}catch(e){$('e4').textContent=e.message}}
+/* ---- Orders: payment status and fulfilment status ---- */
+const FUL={new:'New',preparing:'Preparing',out:'Out for delivery',delivered:'Delivered',cancelled:'Cancelled'};let ofil='open';
+const fulOf=o=>o.fulfil||'new';
+function rOrders(){const ev=ST.enquiries||[],nm=id=>(ST.catalog.find(p=>p.id===id)||{name:id}).name;
+ const shown=ST.orders.filter(o=>ofil==='all'||(ofil==='open'?!['delivered','cancelled'].includes(fulOf(o)):fulOf(o)===ofil)),cnt=k=>ST.orders.filter(o=>k==='open'?!['delivered','cancelled'].includes(fulOf(o)):fulOf(o)===k).length;
+ $('t-orders').innerHTML=`<div class="c"><h2>Orders</h2><p class="s">Move each order along as you work on it. Either of you can do this, no approval needed. For an EFT order, tap <b>Mark payment received</b> when the money shows in the bank.</p>
+ <label>Show</label><select onchange="ofil=this.value;rOrders()"><option value="open" ${ofil==='open'?'selected':''}>Open orders (${cnt('open')})</option>${Object.entries(FUL).map(([k,v])=>`<option value="${k}" ${ofil===k?'selected':''}>${v} (${cnt(k)})</option>`).join('')}<option value="all" ${ofil==='all'?'selected':''}>All (${ST.orders.length})</option></select>
+ <p><a href="/api/foodboys?a=export"><button class="g">Download CSV (for the accountant)</button></a></p><div class="err" id="oerr"></div>
+ ${shown.map(o=>`<div class="o"><div><b>${esc(o.no)}</b> <span class="pill ${o.status==='paid'?'g':'h'}">${o.status==='paid'?'Paid':'Unpaid'}</span> <span class="pill">${o.payMethod==='eft'?'EFT':'Card (demo)'}</span> <span class="s">${new Date(o.at).toLocaleString()}</span></div>
+ <div>${esc(o.customer.name)} · ${esc(o.customer.phone)} · ${esc(o.customer.email)}</div><div class="s">${o.mode==='collect'?'Collect '+esc(o.slot||''):'Deliver to '+esc(o.addr)}</div>
+ <div class="s">${o.items.map(i=>esc(i.qty+'× '+nm(i.pid))).join('<br>')}</div><div><b>R${o.totals.total.toFixed(2)}</b> <span class="s">incl. VAT R${o.totals.vatIncluded.toFixed(2)}</span></div>
+ <div class="row"><div><label>Status</label><select onchange="setFul('${esc(o.no)}',this.value)">${Object.entries(FUL).map(([k,v])=>`<option value="${k}" ${fulOf(o)===k?'selected':''}>${v}</option>`).join('')}</select></div>${o.status!=='paid'?`<div><label>&nbsp;</label><button class="ok" onclick="markPaid('${esc(o.no)}')">Mark payment received</button></div>`:''}</div></div>`).join('')||'<p class="s">No orders here</p>'}</div>
+ <div class="c"><h2>Bulk &amp; custom order enquiries</h2>${ev.length?ev.map(x=>`<div class="p"><b>${esc(x.date)||'date not given'}</b> · ${esc(x.guests)||'size not given'} <span class="s">${esc(x.ref)}</span><div>${esc(x.name)} · ${esc(x.phone)} · ${esc(x.email)}</div><div class="s">${esc(x.notes)} · ${new Date(x.at).toLocaleString()}</div></div>`).join(''):'<p class="s">No enquiries yet</p>'}</div>`}
+async function setFul(no,v){try{await api('order_update',{no,fulfil:v});await load()}catch(e){$('oerr').textContent=e.message}}
+async function markPaid(no){try{await api('order_update',{no,markPaid:true});await load()}catch(e){$('oerr').textContent=e.message}}
+/* ---- Leads: customers captured when they got an invoice, with their marketing consent ---- */
+function rLeads(){const seen=new Set(),U=[];(ST.leads||[]).forEach(l=>{const k=l.whatsapp||l.email;if(!seen.has(k)){seen.add(k);U.push(l)}});const yes=U.filter(l=>l.marketingConsent).length;
+ $('t-leads').innerHTML=`<div class="c"><h2>Leads</h2><p class="s">Customers captured when they got an invoice. ${U.length} customer${U.length===1?'':'s'}, ${yes} agreed to specials and recipes on WhatsApp and email. Only message the ones marked Yes.</p><div class="sc"><table><tr><th>Name</th><th>WhatsApp</th><th>Email</th><th>Consent</th><th>Last seen</th></tr>${U.map(l=>`<tr><td>${esc(l.name)}${l.company?'<br><span class="s">'+esc(l.company)+'</span>':''}</td><td>${esc(l.whatsapp)}</td><td>${esc(l.email)}</td><td>${l.marketingConsent?'<span class="pill g">Yes</span>':'<span class="pill h">No</span>'}</td><td class="s">${new Date(l.at).toLocaleDateString()}</td></tr>`).join('')||'<tr><td colspan=5 class="s">No leads yet</td></tr>'}</table></div></div>`}
+function rRoles(){const r=ST.roles;$('t-roles').innerHTML=`<div class="c"><h2>Owner &amp; admin <span class="pill h">Highest security</span></h2><p class="s">Now: owner <b>${esc(r.owner)}</b>, admin <b>${esc(r.admin)}</b>.<br>Changing either person needs: a code from you, the other person's approval with their own code, then a 24-hour hold. Both of you are emailed and either can cancel during the hold.</p>${fld('rl-owner','New owner email','')}${fld('rl-admin','New admin email','')}<p><button class="g" onclick="roleCode()">Email me a code</button></p>${fld('rl-code','Your 6-digit code','')}<p><button onclick="submitRoles()">Start role change</button></p><div class="err" id="e5"></div></div>`}
+async function roleCode(){try{const j=await api('stepup_request',{id:'new'});$('e5').textContent='Code sent to your email.';if(j.dev)$('rl-code').value=j.dev}catch(e){$('e5').textContent=e.message}}
+async function submitRoles(){try{await api('propose',{kind:'roles',owner:$('rl-owner').value.trim()||undefined,admin:$('rl-admin').value.trim()||undefined,code:$('rl-code').value});tab='pending';await load()}catch(e){$('e5').textContent=e.message}}
+function rAudit(){$('t-audit').innerHTML=`<div class="c"><h2>Audit log</h2>${ST.audit.map(a=>`<div class="p"><b>${esc(a.action)}</b> · ${esc(a.who)}<div class="s">${new Date(a.at).toLocaleString()}</div><div class="s">${esc(a.summary)}</div></div>`).join('')||'<p class="s">Empty</p>'}</div>`}
+load();
+</script></body></html>

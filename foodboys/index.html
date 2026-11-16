@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101D2B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Food Boys">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Food Boys</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="styles.css?v=4">
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top2">
+    <img id="brandImg" alt="Food Boys">
+    <div><div class="logo" id="bizName">Food Boys</div><div class="tag" id="bizTag"></div></div>
+  </header>
+
+  <section class="talk" aria-labelledby="orderLabel">
+    <div class="tlabel" id="orderLabel">Describe your order</div>
+    <div class="hintbox">
+      🎤 <b>Tap the box below, then dictate</b>: say <b>your name, your email and your phone number</b>, then what you'd like (by name or product code) and where to deliver it. Tap <b>Done</b> when you've finished, then scroll the menu.
+      <small id="micHint"></small>
+      <small>Shortcut: use the product codes on the menu, e.g. <span class="codes">“3 bags of 5649, 2 of number 3289, 4365 times 6”</span>.</small>
+    </div>
+    <textarea id="orderText" rows="3" aria-label="Your name, email, phone and order" placeholder="Hi, it's Thandi Mokoena, thandi at gmail dot com, 082 123 4567. Three bags of 5649, two beef boerewors, a cheese loaf cheddar and 2 of number 4365. Deliver to 22 Main Road, Bedfordview."></textarea>
+    <div class="trow"><button type="button" class="btn ghost" id="micBtn" data-act="mic" hidden>🎤 Tap to speak</button></div>
+    <div class="trow">
+      <button type="button" class="btn" data-act="invoice">Get invoice</button>
+      <button type="button" class="btn ghost narrow" data-act="clear">Clear</button>
+    </div>
+    <div id="st" class="st" aria-live="polite"></div>
+  </section>
+
+  <div id="reorderCard"></div>
+
+  <h2 class="sec">The shop</h2>
+  <p class="msub">No need to talk for the order: tap an item to add it. Every item shows its product code. All prices include VAT.</p>
+  <div class="search"><input id="q" type="search" placeholder="Search by name or product code" aria-label="Search products" autocomplete="off"></div>
+  <div class="cats" id="cats" role="toolbar" aria-label="Filter the menu"></div>
+  <div class="menu" id="menu"></div>
+
+  <div class="box" id="svcCard">
+    <h3>Bulk or custom order</h3>
+    <p>Catering for an event, stocking a restaurant or need something that is not on the list? Tell us what you need and when, and our team will put an order together for you.</p>
+    <button type="button" class="btn ghost" data-act="openService">Send an enquiry</button>
+  </div>
+
+  <div id="sheetWrap"></div>
+
+</div>
+
+<div class="sticky" id="sticky"><div class="wrap"><button type="button" class="btn" id="stkMain" data-act="invoice">Get invoice</button></div></div>
+
+<!-- Asked only when name, email or phone are missing after "Get invoice" -->
+<div id="modal" class="modal" hidden><div class="mcard">
+  <h3>Where must we send your invoice?</h3>
+  <p class="rsub">Your WhatsApp number is your client number. We use it for your invoice, order updates, specials and recipes.</p>
+  <div class="f"><input id="rName" autocomplete="name" placeholder="Full name" aria-label="Full name"><div class="err">Enter your name</div></div>
+  <div class="f"><input id="rMail" type="email" autocomplete="email" placeholder="Email address" aria-label="Email address"><div class="err">Enter a valid email</div></div>
+  <div class="f"><input id="rPhone" type="tel" autocomplete="tel" placeholder="WhatsApp number, e.g. 082 123 4567" aria-label="WhatsApp number"><div class="err">Enter a valid SA mobile number</div></div>
+  <label class="cons"><input type="checkbox" id="rCons"> Send me specials and recipes on WhatsApp and email</label>
+  <button type="button" class="btn" data-act="modalSubmit">Get my invoice</button>
+  <button type="button" class="btn ghost" data-act="modalCancel">Cancel</button>
+</div></div>
+
+<div id="svcModal" class="modal" hidden><div class="mcard">
+  <div id="svcForm">
+    <h3>Bulk or custom order enquiry</h3>
+    <p class="rsub">We use these details to contact you about your order.</p>
+    <div class="f"><input id="sName" autocomplete="name" placeholder="Full name" aria-label="Full name"><div class="err">Enter your name</div></div>
+    <div class="f"><input id="sMail" type="email" autocomplete="email" placeholder="Email address" aria-label="Email address"><div class="err">Enter a valid email</div></div>
+    <div class="f"><input id="sPhone" type="tel" autocomplete="tel" placeholder="WhatsApp number" aria-label="WhatsApp number"><div class="err">Enter a valid SA mobile number</div></div>
+    <div class="f"><input id="sDate" placeholder="Date needed, e.g. Sat 14 Dec" aria-label="Date needed"></div>
+    <div class="f"><input id="sGuests" placeholder="How many people or how much, e.g. 120 guests" aria-label="Quantity or number of people"></div>
+    <div class="f"><textarea id="sNotes" rows="3" placeholder="What do you need? Products, quantities, delivery details…" aria-label="Notes"></textarea></div>
+    <button type="button" class="btn" data-act="serviceSubmit">Send enquiry</button>
+    <button type="button" class="btn ghost" data-act="serviceClose">Cancel</button>
+  </div>
+  <div id="svcDone" hidden>
+    <h3>Enquiry sent</h3>
+    <p id="svcDoneText"></p>
+    <button type="button" class="btn" data-act="serviceClose">Done</button>
+  </div>
+</div></div>
+
+<div id="imgView" class="modal" hidden><div class="mcard center">
+  <b>Press and hold the image, then Save</b>
+  <img id="imgOut" alt="Invoice">
+  <a class="btn" id="imgDl" download="food-boys-invoice.png" href="#">Download image</a>
+  <button type="button" class="btn ghost" data-act="imageClose">Close</button>
+</div></div>
+
+<div id="toast" role="status"></div>
+
+<script src="config.js?v=4"></script>
+<script src="assets.js?v=1"></script>
+<script src="app.js?v=4"></script>
+</body>
+</html>
