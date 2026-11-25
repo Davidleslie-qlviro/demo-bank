@@ -211,7 +211,7 @@ button.btn:disabled{opacity:.5;cursor:not-allowed}
   <div class="panel">
     <h3>Backup</h3>
     <p class="hint" style="margin-bottom:10px">Everything is kept in this browser on this device. Download a backup regularly, and restore it to move to another device.</p>
-    <div class="row"><button type="button" class="btn ghost" id="bkSave">Download backup</button><label style="width:auto"><input type="file" id="bkLoad" accept="application/json"></label></div>
+    <div class="row"><button type="button" class="btn ghost" id="bkSave">Download backup</button><button type="button" class="btn ghost" id="bkClear">Clear all test data</button><label style="width:auto"><input type="file" id="bkLoad" accept="application/json"></label></div>
   </div>
 </section>
 </main>
@@ -260,6 +260,7 @@ function makeDb(){
         delete:async()=>{ delete data[col][id]; save(); notify(col); }}),
       onSnapshot:fn=>{ (subs[col]=subs[col]||[]).push(fn); fn(snap(col)); }}),
     exportJson:()=>JSON.stringify(data),
+    clearActivity:()=>{ data.lots={}; data.moves={}; save(); notify("lots"); notify("moves"); },
     importJson:txt=>{ const d=JSON.parse(txt); if(!d||!d.products||!d.templates||!d.lots||!d.moves) throw new Error("bad"); data=d; save(); ["products","templates","lots","moves"].forEach(notify); }
   };
 }
@@ -534,6 +535,9 @@ $("addProd").addEventListener("submit", async e=>{ e.preventDefault();
     toast(`${name} added`); e.target.reset(); }catch(err){ toast("Could not add."); }
 });
 $("bkSave").addEventListener("click",()=>download(`food-boys-butchers-block-backup-${today()}.json`,db.exportJson(),"application/json"));
+$("bkClear").addEventListener("click",()=>{
+  if(!confirm("Clear all carcasses, breakdowns, sales and stock takes so the app is blank? Your cuts, prices and yields are kept. This cannot be undone, so download a backup first if you need one.")) return;
+  db.clearActivity(); for(const k in countDraft) delete countDraft[k]; bDraft={}; toast("Cleared. The app is blank."); });
 $("bkLoad").addEventListener("change", async e=>{ const f=e.target.files[0]; if(!f) return;
   if(!confirm("Restore this backup? It replaces everything currently in the app.")){ e.target.value=""; return; }
   try{ db.importJson(await f.text()); toast("Backup restored"); }catch(err){ toast("That file is not a Butchers Block backup."); } e.target.value=""; });
