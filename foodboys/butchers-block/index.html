@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Food Boys Butchers Block</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{
+  --bg:#EDEAE3; --surface:#ffffff; --sunk:#E4E0D8; --ink:#12161C; --muted:#59606A; --line:#D3CEC4;
+  --accent:#B4501F; --accent-ink:#ffffff; --accent-soft:#F6E3D8;
+  --ok:#2c7448; --warn:#9a6200; --bad:#b0261d;
+  --f-display:"Oswald","Arial Narrow",Impact,sans-serif;
+  --f-body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#12161C; --surface:#1C232B; --sunk:#242C35; --ink:#EDEAE3; --muted:#9CA3AA; --line:#333B45;
+  --accent:#D9622A; --accent-ink:#12161C; --accent-soft:#2A2118;
+  --ok:#62c088; --warn:#e2a63c; --bad:#ff7b70; color-scheme:dark}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;padding:0 16px 48px}
+.wrap{max-width:1080px;margin:0 auto}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);margin:0 -16px;padding:12px 16px 0;border-bottom:1px solid var(--line)}
+.brandrow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{font-family:var(--f-display);font-weight:700;font-size:28px;letter-spacing:.02em;text-transform:uppercase;line-height:1}
+.brand small{display:block;font-family:var(--f-body);font-weight:500;font-size:12px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;margin-top:4px}
+.status{font-size:12px;color:var(--muted);display:flex;gap:8px;align-items:center}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.dot.on{background:var(--ok)}
+nav.tabs{display:flex;gap:2px;overflow-x:auto;margin-top:10px;scrollbar-width:none}
+nav.tabs button{flex:0 0 auto;border:0;background:none;font:600 14px var(--f-body);color:var(--muted);padding:10px 12px;border-bottom:3px solid transparent;cursor:pointer}
+nav.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+main{padding-block:20px}
+section.tab{display:grid;gap:20px}
+h2{font-family:var(--f-display);font-weight:700;font-size:26px;text-transform:uppercase;letter-spacing:.02em;margin:0;line-height:1.05}
+h3{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;font-weight:600}
+p{margin:0}
+.lede{color:var(--muted);max-width:62ch}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;min-width:0}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.kpi{background:var(--surface);padding:14px 16px}
+.kpi .v{font-family:var(--f-mono);font-size:22px;font-variant-numeric:tabular-nums;margin-top:2px}
+.kpi .l{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.kpi .s{font-size:12px;color:var(--muted)}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tablewrap{overflow-x:auto;margin:0 -4px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:600}
+td.r,th.r{text-align:right}
+tfoot td{font-weight:600;border-bottom:0}
+label{display:grid;gap:4px;font-size:13px;color:var(--muted);font-weight:500}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--sunk);border:1px solid var(--line);border-radius:6px;padding:9px 10px;width:100%;min-width:0}
+textarea{min-height:110px;resize:vertical}
+td input{padding:6px 8px;width:96px;text-align:right;font-family:var(--f-mono)}
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+button.btn{font:600 14px var(--f-body);border-radius:6px;padding:10px 14px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);cursor:pointer}
+button.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+button.btn.small{padding:6px 10px;font-size:13px}
+button.btn:disabled{opacity:.5;cursor:not-allowed}
+.ai{border-color:var(--accent);background:linear-gradient(var(--accent-soft),var(--accent-soft)) top/100% 3px no-repeat,var(--surface)}
+.ai h3{color:var(--accent)}
+.tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.tag.ok{color:var(--ok);border-color:currentColor}.tag.warn{color:var(--warn);border-color:currentColor}.tag.bad{color:var(--bad);border-color:currentColor}
+.alerts{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.alerts li{display:grid;grid-template-columns:4px 1fr;gap:12px;background:var(--sunk);border-radius:6px;overflow:hidden}
+.alerts li::before{content:"";background:var(--muted)}
+.alerts li.warn::before{background:var(--warn)}.alerts li.bad::before{background:var(--bad)}.alerts li.ok::before{background:var(--ok)}
+.alerts li div{padding:10px 12px 10px 0;min-width:0}
+.alerts b{display:block;font-weight:600}
+.alerts span{font-size:13px;color:var(--muted)}
+.hint{font-size:13px;color:var(--muted)}
+.banner{font-size:13px;padding:10px 12px;border-radius:6px;background:var(--accent-soft);color:var(--ink)}
+.sellgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+.sellgrid button{text-align:left;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:10px;cursor:pointer;font:inherit}
+.sellgrid button[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.sellgrid b{display:block;font-weight:600;font-size:14px}
+.sellgrid span{font-size:12px;color:var(--muted);font-family:var(--f-mono)}
+.toast{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;font-size:14px;z-index:20;max-width:calc(100% - 32px)}
+.muted{color:var(--muted)}
+.empty{padding:20px;text-align:center;color:var(--muted);font-size:14px}
+</style>
+</head><body>
+<div class="wrap">
+<header class="top">
+  <div class="brandrow">
+    <div class="brand">Food Boys Butchers Block<small>Stock &amp; costing</small></div>
+    <div class="status"><span class="dot on"></span><span id="dbText">Saved on this device</span></div>
+  </div>
+  <nav class="tabs" role="tablist">
+    <button role="tab" data-tab="today" aria-selected="true">Today</button>
+    <button role="tab" data-tab="receive" aria-selected="false">Receive</button>
+    <button role="tab" data-tab="break" aria-selected="false">Break down</button>
+    <button role="tab" data-tab="sell" aria-selected="false">Sell</button>
+    <button role="tab" data-tab="count" aria-selected="false">Count</button>
+    <button role="tab" data-tab="books" aria-selected="false">Books</button>
+    <button role="tab" data-tab="setup" aria-selected="false">Setup</button>
+  </nav>
+</header>
+<main>
+<section class="tab" id="tab-today">
+  <h2>Today in the shop</h2>
+  <div class="kpis" id="kpis"></div>
+  <div class="panel"><h3>Needs attention</h3><ul class="alerts" id="alerts"></ul></div>
+  <div class="panel"><h3>Margin by cut</h3><div class="tablewrap"><table id="marginTbl"></table></div></div>
+</section>
+
+<section class="tab" id="tab-receive" hidden>
+  <h2>Receive from the abattoir</h2>
+  <p class="lede">Book each carcass or side in as it arrives. Enter prices excluding VAT, as on the abattoir invoice.</p>
+  <form class="panel" id="recvForm">
+    <h3>Carcass details</h3>
+    <div class="form">
+      <label>Date<input type="date" id="rDate" required></label>
+      <label>Supplier<input id="rSupp" placeholder="Abattoir name" required></label>
+      <label>Invoice no.<input id="rInv"></label>
+      <label>Species<select id="rSpecies"></select></label>
+      <label>Mass (kg)<input id="rKg" type="number" step="0.1" min="0" required></label>
+      <label>Price R/kg excl VAT<input id="rPpk" type="number" step="0.01" min="0" required></label>
+    </div>
+    <p class="hint" id="rTotal" style="margin-block:12px"></p>
+    <button class="btn">Book in carcass</button>
+  </form>
+  <div class="panel"><h3>Carcasses on hand</h3><div class="tablewrap"><table id="lotsTbl"></table></div></div>
+</section>
+
+<section class="tab" id="tab-break" hidden>
+  <h2>Break down a carcass</h2>
+  <p class="lede">Choose a carcass, weigh each cut and post it. The carcass cost is split across the cuts by sales value, so fillet carries more of the cost per kg than mince.</p>
+  <div class="panel ai" id="talkPanel">
+    <h3>Talk it in</h3>
+    <p class="hint" style="margin-bottom:10px">Say or type it the way you would at the block, for example: "carcass of 330 kg beef, 20 kg loin, 20 kg rib, 15 kg rump". The weights fill in below for you to check. Cuts you do not mention stay at 0, and nothing is posted until you tap Post breakdown. On a phone you can use the microphone on your keyboard.</p>
+    <textarea id="talkText" style="min-height:80px" placeholder="We have a carcass of 330 kg beef, 20 kg of loin, 20 kg of rump…"></textarea>
+    <div class="row" style="margin-top:10px"><button type="button" class="btn ghost" id="talkMic" hidden>🎤 Speak</button><button type="button" class="btn" id="talkBtn">Fill the weights</button></div>
+    <div id="talkOut" style="margin-top:12px"></div>
+  </div>
+  <div class="panel">
+    <label style="max-width:420px">Carcass<select id="bLot"></select></label>
+    <div id="bBody" style="margin-top:16px"></div>
+  </div>
+</section>
+
+<section class="tab" id="tab-sell" hidden>
+  <h2>Record sales</h2>
+  <div class="grid2">
+    <form class="panel" id="sellForm">
+      <h3>Weighed sale</h3>
+      <div class="sellgrid" id="sellGrid"></div>
+      <div class="form" style="margin-top:12px">
+        <label>Mass (kg)<input id="sKg" type="number" step="0.001" min="0" required></label>
+        <label>Price R/kg incl VAT<input id="sPrice" type="number" step="0.01" min="0"></label>
+        <label>Date<input type="date" id="sDate"></label>
+      </div>
+      <p class="hint" id="sInfo" style="margin-block:12px">Pick a cut.</p>
+      <button class="btn">Record sale</button>
+    </form>
+    <div class="panel">
+      <h3>Import a till report</h3>
+      <p class="hint" style="margin-bottom:10px">Paste the end-of-day sales export from the till or scale, one line per cut with the mass in kg. Each line is matched to a cut and you check it before recording.</p>
+      <textarea id="tillText" placeholder="e.g.&#10;RUMP STEAK   4.820kg   R1 151.98&#10;MINCE   12.4kg"></textarea>
+      <div class="row" style="margin-top:10px"><button class="btn" id="tillBtn">Match lines</button></div>
+      <div id="tillOut" style="margin-top:12px"></div>
+    </div>
+  </div>
+  <div class="panel"><h3>Recent sales</h3><div class="tablewrap"><table id="salesTbl"></table></div></div>
+</section>
+
+<section class="tab" id="tab-count" hidden>
+  <h2>Stock take</h2>
+  <p class="lede">Weigh what is in the display and cold room. Any difference is posted to stock losses, so drip, trim and waste show up in the books.</p>
+  <div class="panel">
+    <div class="tablewrap"><table id="countTbl"></table></div>
+    <div class="row" style="margin-top:14px;justify-content:space-between"><span class="hint" id="countSum"></span><button class="btn" id="countBtn">Post stock take</button></div>
+  </div>
+</section>
+
+<section class="tab" id="tab-books" hidden>
+  <div class="row" style="justify-content:space-between"><h2>Journals for the accountant</h2>
+    <label style="width:180px">Period<select id="period"></select></label></div>
+  <p class="lede">Ready-made double entries for the period. Rename the accounts to match your chart of accounts in Pastel, Xero or Sage.</p>
+  <div class="kpis" id="pl"></div>
+  <div class="panel">
+    <div class="tablewrap"><table id="jnlTbl"></table></div>
+    <div class="row" style="margin-top:14px"><button class="btn" id="csvCopy">Copy as CSV</button><button class="btn ghost" id="csvSave">Download CSV</button></div>
+  </div>
+</section>
+
+<section class="tab" id="tab-setup" hidden>
+  <h2>Cuts &amp; yields</h2>
+  <p class="lede">Set your selling prices and the expected yield of each cut from a carcass. Update the yields after your first few cutting tests.</p>
+  <div class="panel">
+    <div class="row" style="margin-bottom:12px"><label style="width:200px">Species<select id="setSpecies"></select></label><span class="hint" id="yieldSum"></span></div>
+    <div class="tablewrap"><table id="setupTbl"></table></div>
+    <div class="row" style="margin-top:14px"><button class="btn" id="setupSave">Save changes</button></div>
+  </div>
+  <form class="panel" id="addProd">
+    <h3>Add a cut or product</h3>
+    <div class="form">
+      <label>Name<input id="apName" required></label>
+      <label>Species<input id="apSpecies" list="speciesList" required></label>
+      <label>Price R/kg incl VAT<input id="apPrice" type="number" step="0.01" min="0" required></label>
+      <label>Yield %<input id="apYield" type="number" step="0.1" min="0" value="0"></label>
+      <label>Reorder below (kg)<input id="apMin" type="number" step="0.1" min="0" value="5"></label>
+    </div>
+    <datalist id="speciesList"></datalist>
+    <div class="row" style="margin-top:12px"><button class="btn">Add</button></div>
+  </form>
+  <div class="panel">
+    <h3>Backup</h3>
+    <p class="hint" style="margin-bottom:10px">Everything is kept in this browser on this device. Download a backup regularly, and restore it to move to another device.</p>
+    <div class="row"><button type="button" class="btn ghost" id="bkSave">Download backup</button><label style="width:auto"><input type="file" id="bkLoad" accept="application/json"></label></div>
+  </div>
+</section>
+</main>
+</div>
+<div class="toast" id="toast" hidden></div>
+<script>
+const VAT = 0.15;
+const S = { products:{}, templates:{}, lots:{}, moves:{} };
+let db = null;
+
+const $ = id => document.getElementById(id);
+const fmtR = n => "R " + (Number(n)||0).toLocaleString("en-ZA",{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtKg = n => (Number(n)||0).toLocaleString("en-ZA",{minimumFractionDigits:1,maximumFractionDigits:1}) + " kg";
+const pct = n => (isFinite(n)? (n*100).toFixed(1):"–") + "%";
+const today = () => { const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); };
+const esc = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const uid = p => p + "_" + Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+const slug = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,40) || "x";
+function toast(t){ const el=$("toast"); el.textContent=t; el.hidden=false; clearTimeout(toast._t); toast._t=setTimeout(()=>el.hidden=true,2600); }
+const exclVat = p => p/(1+VAT);
+function download(filename, text, type){ const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([text],{type:type||"text/plain"})); a.download=filename; document.body.append(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500); }
+
+/* ---------- local store (browser localStorage). Replace makeDb() with a server API to share data between devices. ---------- */
+const SEED = {
+  products:{"beef-brisket":{min:5,name:"Brisket",price:129,species:"Beef"},"beef-chuck":{min:8,name:"Chuck",price:139,species:"Beef"},"beef-fillet":{min:3,name:"Fillet",price:389,species:"Beef"},"beef-mince":{min:10,name:"Mince",price:119,species:"Beef"},"beef-rib-eye":{min:4,name:"Rib-eye",price:279,species:"Beef"},"beef-rump":{min:5,name:"Rump",price:239,species:"Beef"},"beef-shin":{min:3,name:"Shin",price:119,species:"Beef"},"beef-silverside":{min:5,name:"Silverside",price:149,species:"Beef"},"beef-sirloin":{min:5,name:"Sirloin",price:249,species:"Beef"},"beef-soup-bones":{min:5,name:"Soup bones",price:39,species:"Beef"},"beef-stewing-beef":{min:8,name:"Stewing beef",price:129,species:"Beef"},"beef-t-bone":{min:4,name:"T-bone",price:199,species:"Beef"},"beef-topside":{min:5,name:"Topside",price:159,species:"Beef"},
+    "lamb-leg":{min:5,name:"Leg",price:229,species:"Lamb"},"lamb-loin-chops":{min:4,name:"Loin chops",price:259,species:"Lamb"},"lamb-neck":{min:2,name:"Neck",price:169,species:"Lamb"},"lamb-rib-chops":{min:3,name:"Rib chops",price:249,species:"Lamb"},"lamb-riblets":{min:2,name:"Riblets",price:129,species:"Lamb"},"lamb-shoulder":{min:4,name:"Shoulder",price:189,species:"Lamb"},
+    "pork-belly":{min:3,name:"Belly",price:129,species:"Pork"},"pork-leg":{min:4,name:"Leg",price:109,species:"Pork"},"pork-loin-chops":{min:4,name:"Loin chops",price:139,species:"Pork"},"pork-ribs":{min:3,name:"Ribs",price:149,species:"Pork"},"pork-shoulder":{min:4,name:"Shoulder",price:99,species:"Pork"}},
+  templates:{beef:{species:"Beef",yields:{"beef-brisket":6,"beef-chuck":12,"beef-fillet":2,"beef-mince":12,"beef-rib-eye":4,"beef-rump":5,"beef-shin":4,"beef-silverside":6,"beef-sirloin":5,"beef-soup-bones":15,"beef-stewing-beef":8,"beef-t-bone":4,"beef-topside":7}},
+    lamb:{species:"Lamb",yields:{"lamb-leg":30,"lamb-loin-chops":15,"lamb-neck":6,"lamb-rib-chops":10,"lamb-riblets":9,"lamb-shoulder":20}},
+    pork:{species:"Pork",yields:{"pork-belly":14,"pork-leg":25,"pork-loin-chops":18,"pork-ribs":8,"pork-shoulder":20}}},
+  lots:{}, moves:{}
+};
+function makeDb(){
+  const KEY="foodboys-butchers-block-v1"; let data=null;
+  try{ data=JSON.parse(localStorage.getItem(KEY)); }catch(e){}
+  if(!data||!data.products) data=JSON.parse(JSON.stringify(SEED));
+  const subs={};
+  const save=()=>{ try{ localStorage.setItem(KEY,JSON.stringify(data)); }catch(e){ toast("This browser is blocking storage. Nothing will be kept."); } };
+  const snap=col=>({docs:Object.entries(data[col]).map(([id,d])=>({id,data:()=>d}))});
+  const notify=col=>(subs[col]||[]).forEach(f=>f(snap(col)));
+  return {
+    collection:col=>({
+      doc:id=>({
+        set:async d=>{ data[col][id]=JSON.parse(JSON.stringify(d)); save(); notify(col); },
+        update:async d=>{ Object.assign(data[col][id],d); save(); notify(col); },
+        delete:async()=>{ delete data[col][id]; save(); notify(col); }}),
+      onSnapshot:fn=>{ (subs[col]=subs[col]||[]).push(fn); fn(snap(col)); }}),
+    exportJson:()=>JSON.stringify(data),
+    importJson:txt=>{ const d=JSON.parse(txt); if(!d||!d.products||!d.templates||!d.lots||!d.moves) throw new Error("bad"); data=d; save(); ["products","templates","lots","moves"].forEach(notify); }
+  };
+}
+async function put(col, id, data){ await db.collection(col).doc(id).set(data); }
+async function patch(col, id, data){ await db.collection(col).doc(id).update(data); }
+
+/* ---------- derived numbers ---------- */
+const products = () => Object.entries(S.products).map(([id,p])=>({id,...p})).sort((a,b)=>(a.species||"").localeCompare(b.species||"")||(b.price||0)-(a.price||0));
+const species = () => [...new Set([...Object.keys(S.templates), ...products().map(p=>p.species)])].filter(Boolean).sort();
+const movesSorted = () => Object.entries(S.moves).map(([id,m])=>({id,...m})).sort((a,b)=>(a.ts||0)-(b.ts||0));
+function stock(){
+  const st = {}; for(const p of products()) st[p.id]={kg:0,cost:0};
+  for(const m of movesSorted()){ if(!st[m.pid]) st[m.pid]={kg:0,cost:0}; st[m.pid].kg+=m.kg||0; st[m.pid].cost+=m.cost||0; }
+  for(const k in st){ st[k].avg = st[k].kg>0.0005 ? st[k].cost/st[k].kg : 0; }
+  return st;
+}
+function avgCost(pid){ const s=stock()[pid]; if(s && s.kg>0.0005) return s.avg; const last=movesSorted().filter(m=>m.pid===pid&&m.type==="breakdown").pop(); return last? last.cost/last.kg : 0; }
+const openLots = () => Object.entries(S.lots).map(([id,l])=>({id,...l})).filter(l=>l.status!=="broken").sort((a,b)=>(a.date||"").localeCompare(b.date||""));
+const allLots = () => Object.entries(S.lots).map(([id,l])=>({id,...l})).sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+function periodOf(d){ return (d||"").slice(0,7); }
+function salesIn(per){ return movesSorted().filter(m=>m.type==="sale" && (!per || periodOf(m.date)===per)); }
+
+/* ---------- TODAY ---------- */
+function renderToday(){
+  const st = stock(); const ps = products();
+  const cutVal = Object.values(st).reduce((a,s)=>a+s.cost,0);
+  const cutKg = Object.values(st).reduce((a,s)=>a+s.kg,0);
+  const carc = openLots(); const carcVal = carc.reduce((a,l)=>a+(l.cost||0),0); const carcKg=carc.reduce((a,l)=>a+(l.kg||0),0);
+  const per = periodOf(today()); const sales = salesIn(per);
+  const rev = sales.reduce((a,m)=>a+exclVat(m.rev||0),0), cogs = sales.reduce((a,m)=>a-(m.cost||0),0);
+  const broken = allLots().filter(l=>l.status==="broken"); const lossAvg = broken.length? broken.reduce((a,l)=>a+(l.lossKg||0)/(l.kg||1),0)/broken.length : NaN;
+  $("kpis").innerHTML = [
+    ["Stock value", fmtR(cutVal+carcVal), `${fmtKg(cutKg)} cut · ${fmtKg(carcKg)} hanging`],
+    ["Sales this month", fmtR(rev), "excl VAT"],
+    ["Gross margin", rev? pct((rev-cogs)/rev):"–", rev? fmtR(rev-cogs)+" profit":"No sales yet"],
+    ["Avg carcass loss", isFinite(lossAvg)? pct(lossAvg):"–", `${broken.length} carcass${broken.length===1?"":"es"} cut`]
+  ].map(([l,v,s])=>`<div class="kpi"><div class="l">${l}</div><div class="v">${v}</div><div class="s">${s}</div></div>`).join("");
+  const al = [];
+  for(const l of carc){ const days = Math.round((Date.now()-new Date(l.date))/864e5); if(days>=4) al.push(["warn",`${l.species} from ${l.supplier} not cut yet`,`Received ${days} days ago. ${fmtKg(l.kg)} worth ${fmtR(l.cost)} is still hanging.`]); }
+  for(const l of broken.slice(0,10)){ const t=S.templates[l.species]; if(!t) continue; const exp=1-Object.values(t.yields||{}).reduce((a,b)=>a+b,0)/100; const act=(l.lossKg||0)/(l.kg||1);
+    if(act-exp>0.03) al.push(["bad",`High loss on ${l.species} from ${l.supplier}`,`${pct(act)} lost against ${pct(exp)} expected. That is about ${fmtR((act-exp)*l.cost)} gone. Check trimming, or speak to the abattoir.`]); }
+  for(const p of ps){ const s=st[p.id]; if(p.min && s.kg < p.min && s.kg>-0.001 && (s.kg>0 || movesSorted().some(m=>m.pid===p.id))) al.push(["warn",`${p.name} (${p.species}) is low`,`${fmtKg(s.kg)} left. Reorder level is ${fmtKg(p.min)}.`]);
+    if(s.kg<-0.05) al.push(["bad",`${p.name} (${p.species}) shows negative stock`,`${fmtKg(s.kg)}. A breakdown or delivery has probably not been booked.`]);
+    const c=avgCost(p.id); if(c && exclVat(p.price)<c) al.push(["bad",`${p.name} (${p.species}) sells below cost`,`Cost ${fmtR(c)}/kg, selling at ${fmtR(exclVat(p.price))}/kg excl VAT.`]); }
+  $("alerts").innerHTML = al.length? al.slice(0,8).map(([c,b,s])=>`<li class="${c}"><div><b>${esc(b)}</b><span>${esc(s)}</span></div></li>`).join("") : `<li class="ok"><div><b>All clear</b><span>No low stock, slow carcasses or poor yields right now.</span></div></li>`;
+  const rows = ps.map(p=>{ const c=avgCost(p.id), ex=exclVat(p.price||0); const gp = ex? (ex-c)/ex : NaN; return {p,c,ex,gp,kg:st[p.id].kg}; }).filter(r=>r.c>0);
+  rows.sort((a,b)=>a.gp-b.gp);
+  $("marginTbl").innerHTML = rows.length? `<thead><tr><th>Cut</th><th class="r">Cost/kg</th><th class="r">Sell/kg ex VAT</th><th class="r">GP</th><th>On hand</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.p.name)} <span class="muted">· ${esc(r.p.species)}</span></td><td class="r num">${fmtR(r.c)}</td><td class="r num">${fmtR(r.ex)}</td><td class="r"><span class="tag ${r.gp<0.2?"bad":r.gp<0.35?"warn":"ok"}">${pct(r.gp)}</span></td><td class="num">${fmtKg(r.kg)}</td></tr>`).join("")}</tbody>` : `<tbody><tr><td class="empty">Margins appear once a carcass has been broken down.</td></tr></tbody>`;
+}
+
+/* ---------- RECEIVE ---------- */
+function fillSpeciesSelects(){
+  const sp = species(); const opts = sp.map(s=>`<option>${esc(s)}</option>`).join("");
+  for(const id of ["rSpecies","setSpecies"]){ const el=$(id), v=el.value; el.innerHTML=opts; if(sp.includes(v)) el.value=v; }
+  $("speciesList").innerHTML = opts;
+}
+function recvTotal(){ const kg=+$("rKg").value||0, p=+$("rPpk").value||0; $("rTotal").textContent = kg&&p? `${fmtR(kg*p)} excl VAT · ${fmtR(kg*p*(1+VAT))} incl VAT` : "Enter mass and price to see the invoice total."; }
+["rKg","rPpk"].forEach(i=>$(i).addEventListener("input",recvTotal));
+$("recvForm").addEventListener("submit", async e=>{
+  e.preventDefault(); const kg=+$("rKg").value, ppk=+$("rPpk").value;
+  const lot={date:$("rDate").value||today(),supplier:$("rSupp").value.trim(),inv:$("rInv").value.trim(),species:$("rSpecies").value,kg,ppk,cost:+(kg*ppk).toFixed(2),status:"open",ts:Date.now()};
+  try{ await put("lots", uid("lot"), lot); toast(`${lot.species} booked in: ${fmtKg(kg)}`); $("rKg").value=""; $("rPpk").value=""; $("rInv").value=""; recvTotal(); }catch(err){ toast("Could not save."); }
+});
+function renderLots(){
+  const ls = allLots().slice(0,30);
+  $("lotsTbl").innerHTML = ls.length? `<thead><tr><th>Date</th><th>Species</th><th>Supplier</th><th class="r">Mass</th><th class="r">Cost ex VAT</th><th>Status</th></tr></thead><tbody>${ls.map(l=>`<tr><td class="num">${esc(l.date)}</td><td>${esc(l.species)}</td><td>${esc(l.supplier)}${l.inv?` <span class="muted">#${esc(l.inv)}</span>`:""}</td><td class="r num">${fmtKg(l.kg)}</td><td class="r num">${fmtR(l.cost)}</td><td>${l.status==="broken"?`<span class="tag">Cut</span>`:`<span class="tag warn">Hanging</span>`}</td></tr>`).join("")}</tbody>` : `<tbody><tr><td class="empty">No carcasses yet. Book the first delivery above.</td></tr></tbody>`;
+}
+
+/* ---------- BREAK DOWN ---------- */
+let bDraft = {};
+function renderBreakSelect(){
+  const el=$("bLot"), v=el.value, ol=openLots();
+  el.innerHTML = ol.length? ol.map(l=>`<option value="${l.id}">${esc(l.date)} · ${esc(l.species)} · ${fmtKg(l.kg)} · ${esc(l.supplier)}</option>`).join("") : `<option value="">No carcasses waiting</option>`;
+  if(ol.some(l=>l.id===v)) el.value=v;
+  renderBreakBody();
+}
+$("bLot").addEventListener("change",()=>{bDraft={};renderBreakBody();});
+function breakCalc(lot){
+  const t=S.templates[lot.species]?.yields||{};
+  const ps=products().filter(p=>p.species===lot.species);
+  const rows=ps.map(p=>{ const exp=+(lot.kg*(t[p.id]||0)/100).toFixed(1); const kg = bDraft[p.id]!=null? bDraft[p.id] : exp; return {p,exp,kg:+kg||0,yieldPct:t[p.id]||0}; });
+  const rsv = rows.reduce((a,r)=>a+r.kg*exclVat(r.p.price||0),0);
+  rows.forEach(r=>{ r.cpk = rsv? lot.cost*exclVat(r.p.price||0)/rsv : 0; r.alloc=r.cpk*r.kg; });
+  const outKg=rows.reduce((a,r)=>a+r.kg,0);
+  return {rows, outKg, loss: lot.kg-outKg};
+}
+function renderBreakBody(){
+  const lot = S.lots[$("bLot").value] && {id:$("bLot").value,...S.lots[$("bLot").value]};
+  if(!lot){ $("bBody").innerHTML=`<p class="empty">Every carcass has been cut. New deliveries booked under Receive appear here.</p>`; return; }
+  const {rows,outKg,loss}=breakCalc(lot);
+  const t=S.templates[lot.species]?.yields||{}; const expLoss = 1-Object.values(t).reduce((a,b)=>a+b,0)/100; const lossPct=loss/lot.kg;
+  $("bBody").innerHTML = `<div class="tablewrap"><table><thead><tr><th>Cut</th><th class="r">Expected</th><th class="r">Weighed kg</th><th class="r">Cost/kg</th><th class="r">Cost</th></tr></thead><tbody>
+    ${rows.map(r=>`<tr><td>${esc(r.p.name)}</td><td class="r num muted">${fmtKg(r.exp)}</td><td class="r"><input type="number" step="0.1" min="0" data-pid="${r.p.id}" id="bk-${r.p.id}" value="${r.kg}"></td><td class="r num">${fmtR(r.cpk)}</td><td class="r num">${fmtR(r.alloc)}</td></tr>`).join("")}
+    </tbody><tfoot><tr><td>Bone, fat &amp; loss</td><td class="r num muted">${fmtKg(lot.kg*expLoss)}</td><td class="r num">${fmtKg(loss)}</td><td></td><td class="r"><span class="tag ${lossPct-expLoss>0.03?"bad":lossPct<0?"bad":"ok"}">${pct(lossPct)}</span></td></tr>
+    <tr><td>Carcass</td><td></td><td class="r num">${fmtKg(lot.kg)}</td><td class="r num">${fmtR(lot.ppk)}</td><td class="r num">${fmtR(lot.cost)}</td></tr></tfoot></table></div>
+    ${loss<0?`<p class="banner" style="margin-top:12px">The cuts weigh more than the carcass. Check the scale readings.</p>`: lossPct-expLoss>0.03?`<p class="banner" style="margin-top:12px">Loss is ${pct(lossPct-expLoss)} higher than expected. Check for missed cuts before posting.</p>`:""}
+    <div class="row" style="margin-top:14px"><button class="btn" id="bPost" ${loss<0?"disabled":""}>Post breakdown</button><span class="hint">${fmtKg(outKg)} of saleable product</span></div>`;
+  $("bBody").querySelectorAll("input[data-pid]").forEach(inp=>inp.addEventListener("change",()=>{ bDraft[inp.dataset.pid]=+inp.value; renderBreakBody(); }));
+  $("bPost").onclick = async ()=>{
+    $("bPost").disabled=true; const now=Date.now(); const outputs={};
+    try{
+      for(const r of rows){ if(r.kg<=0) continue; outputs[r.p.id]=r.kg;
+        await put("moves",uid("mv"),{date:today(),type:"breakdown",pid:r.p.id,kg:r.kg,cost:+r.alloc.toFixed(2),lot:lot.id,ts:now}); }
+      await patch("lots",lot.id,{status:"broken",outputs,lossKg:+loss.toFixed(2),brokenOn:today()});
+      bDraft={}; toast(`${lot.species} posted to stock`);
+    }catch(e){ toast("Could not post. Try again."); $("bPost").disabled=false; }
+  };
+}
+
+/* ---------- BREAK DOWN: talk it in ---------- */
+const TALK_STOP=new Set(["the","a","an","of","some","and","then","we","have","now","got","kg","carcass","side","from","also","plus","with","is","are","to"]);
+const stem=w=>w.replace(/(es|s)$/,"");
+const toks=s=>String(s).toLowerCase().replace(/[^a-z0-9 ]+/g," ").split(/\s+/).filter(w=>w&&!TALK_STOP.has(w)).map(stem);
+function matchCut(name,ps){
+  const q=toks(name); if(!q.length) return null;
+  let best=null,bs=0,tie=false;
+  for(const p of ps){ const pt=toks(p.name); if(!pt.length) continue;
+    const hit=q.filter(w=>pt.includes(w)).length; if(!hit) continue;
+    const score=hit/q.length+hit/pt.length+(q.join(" ")===pt.join(" ")?2:0);
+    if(score>bs+1e-9){best=p;bs=score;tie=false;} else if(Math.abs(score-bs)<1e-9) tie=true; }
+  return tie?null:best;
+}
+function parseTalk(text){
+  const t=String(text).toLowerCase().replace(/(\d),(\d{3})\b/g,"$1$2").replace(/(\d),(\d)/g,"$1.$2").replace(/\b(kilograms?|kilos?|kgs?)\b/g,"kg").replace(/(\d)kg/g,"$1 kg");
+  const re=/(\d+(?:\.\d+)?)\s*kg\s*(?:of\s*)?([a-z][a-z \-']*?)(?=\s*(?:,|;|\.|\band\b|\bthen\b|\d|\n|$))/g;
+  const out=[]; let m;
+  while((m=re.exec(t))){ const before=t.slice(Math.max(0,m.index-18),m.index); out.push({kg:+m[1],name:m[2].trim(),carc:/\b(carcass|side|whole|animal)\b[^,;.]*$/.test(before)}); }
+  return out;
+}
+$("talkBtn").addEventListener("click", ()=>{
+  const out=$("talkOut"); const items=parseTalk($("talkText").value);
+  if(!items.length){ out.innerHTML=`<p class="hint">No weights found. Say it like "20 kg loin, 20 kg rib".</p>`; return; }
+  const spl=species(); const isSp=(n,s)=>toks(n).join(" ")===stem(s.toLowerCase());
+  const carcLine=items.find(i=>i.carc||spl.some(s=>isSp(i.name,s)));
+  const cutLines=items.filter(i=>i!==carcLine);
+  const cur=S.lots[$("bLot").value];
+  let sp=carcLine? spl.find(s=>toks(carcLine.name).includes(stem(s.toLowerCase()))) : null;
+  if(!sp) sp=cur&&cur.species;
+  if(!sp){ out.innerHTML=`<p class="hint">No carcass is waiting. Book it in under Receive first.</p>`; return; }
+  let cands=openLots().filter(l=>l.species===sp), lot=null;
+  if(carcLine){ cands.sort((a,b)=>Math.abs(a.kg-carcLine.kg)-Math.abs(b.kg-carcLine.kg)); lot=cands[0]||null; if(lot&&Math.abs(lot.kg-carcLine.kg)/carcLine.kg>0.15) lot=null;
+    if(!lot){ out.innerHTML=`<p class="banner">No ${esc(sp)} carcass of about ${carcLine.kg} kg is waiting. Book it in under Receive first (it needs the supplier and the price), then come back here.</p>`; return; } }
+  else lot = cur&&cur.species===sp ? {id:$("bLot").value,...cur} : cands[0];
+  if(!lot){ out.innerHTML=`<p class="banner">No ${esc(sp)} carcass is waiting. Book it in under Receive first.</p>`; return; }
+  if($("bLot").value!==lot.id){ $("bLot").value=lot.id; bDraft={}; }
+  const ps=products().filter(p=>p.species===lot.species);
+  ps.forEach(p=>{ if(bDraft[p.id]==null) bDraft[p.id]=0; });
+  const acc={}, unm=[];
+  for(const it of cutLines){ const p=matchCut(it.name,ps); if(p) acc[p.id]=(acc[p.id]||0)+it.kg; else unm.push(it); }
+  for(const [pid,kg] of Object.entries(acc)) bDraft[pid]=+kg.toFixed(2);
+  renderBreakBody();
+  const filled=Object.entries(acc).map(([pid,kg])=>`${esc(S.products[pid].name)} ${fmtKg(kg)}`);
+  out.innerHTML = `<p class="hint"><b>${esc(lot.species)}</b> ${fmtKg(lot.kg)} from ${esc(lot.supplier)}. Filled in: ${filled.join(", ")||"nothing yet"}.</p>`+(unm.length?`<p class="hint" style="margin-top:8px">Not sure which cut these are. Pick one and tap Add:</p><div class="tablewrap"><table><tbody>${unm.map((u,i)=>`<tr><td>${fmtKg(u.kg)} ${esc(u.name)}</td><td><select id="tu-${i}"><option value="">Skip</option>${ps.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join("")}</select></td></tr>`).join("")}</tbody></table></div><div class="row" style="margin-top:10px"><button type="button" class="btn small" id="talkAdd">Add</button></div>`:"");
+  if(unm.length) $("talkAdd").onclick=()=>{ unm.forEach((u,i)=>{ const pid=$("tu-"+i).value; if(pid) bDraft[pid]=+((bDraft[pid]||0)+u.kg).toFixed(2); }); $("talkOut").innerHTML=""; renderBreakBody(); };
+});
+{ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(SR){ $("talkMic").hidden=false; let rec=null;
+    $("talkMic").onclick=()=>{ if(rec){ rec.stop(); return; } rec=new SR(); rec.lang="en-ZA"; rec.continuous=true; rec.interimResults=false;
+      rec.onresult=e=>{ let s=""; for(let i=e.resultIndex;i<e.results.length;i++) s+=e.results[i][0].transcript+" "; $("talkText").value=($("talkText").value+" "+s).trim(); };
+      rec.onend=()=>{ rec=null; $("talkMic").textContent="🎤 Speak"; };
+      rec.onerror=()=>toast("The microphone is not available here. Use the microphone on your phone keyboard instead.");
+      rec.start(); $("talkMic").textContent="⏹ Stop"; }; } }
+
+/* ---------- SELL ---------- */
+let sellPid = null;
+function renderSell(){
+  const st=stock(); const ps=products();
+  $("sellGrid").innerHTML = ps.map(p=>`<button type="button" data-pid="${p.id}" aria-pressed="${p.id===sellPid}"><b>${esc(p.name)}</b><span>${esc(p.species)} · ${fmtR(p.price)}/kg · ${(st[p.id]?.kg||0).toFixed(1)} kg</span></button>`).join("") || `<p class="empty">Add cuts under Setup first.</p>`;
+  $("sellGrid").querySelectorAll("button").forEach(b=>b.onclick=()=>{ sellPid=b.dataset.pid; $("sPrice").value=S.products[sellPid].price; renderSell(); sellInfo(); });
+  const rec = movesSorted().filter(m=>m.type==="sale").slice(-15).reverse();
+  $("salesTbl").innerHTML = rec.length? `<thead><tr><th>Date</th><th>Cut</th><th class="r">Mass</th><th class="r">Takings</th><th class="r">Cost</th><th class="r">GP</th></tr></thead><tbody>${rec.map(m=>{const ex=exclVat(m.rev||0); return `<tr><td class="num">${esc(m.date)}</td><td>${esc(S.products[m.pid]?.name||"?")}</td><td class="r num">${fmtKg(-m.kg)}</td><td class="r num">${fmtR(m.rev)}</td><td class="r num">${fmtR(-m.cost)}</td><td class="r num">${pct((ex+m.cost)/ex)}</td></tr>`}).join("")}</tbody>` : `<tbody><tr><td class="empty">No sales recorded yet.</td></tr></tbody>`;
+}
+function sellInfo(){ if(!sellPid){ $("sInfo").textContent="Pick a cut."; return; } const kg=+$("sKg").value||0, pr=+$("sPrice").value||0, c=avgCost(sellPid), have=stock()[sellPid]?.kg||0;
+  $("sInfo").textContent = kg? `${fmtR(kg*pr)} incl VAT · cost ${fmtR(kg*c)} · GP ${pct((exclVat(kg*pr)-kg*c)/exclVat(kg*pr||1))}${kg>have+0.001?` · only ${fmtKg(have)} in stock`:""}` : `${S.products[sellPid].name}: ${fmtKg(have)} on hand at ${fmtR(c)}/kg cost.`; }
+["sKg","sPrice"].forEach(i=>$(i).addEventListener("input",sellInfo));
+async function recordSale(pid,kg,price,date){ const c=avgCost(pid); await put("moves",uid("mv"),{date:date||today(),type:"sale",pid,kg:-kg,cost:-(+(kg*c).toFixed(2)),rev:+(kg*price).toFixed(2),ts:Date.now()}); }
+$("sellForm").addEventListener("submit", async e=>{ e.preventDefault(); if(!sellPid){toast("Pick a cut first.");return;}
+  const kg=+$("sKg").value; if(!kg) return; try{ await recordSale(sellPid,kg,+$("sPrice").value||S.products[sellPid].price,$("sDate").value); toast(`Sold ${fmtKg(kg)} ${S.products[sellPid].name}`); $("sKg").value=""; sellInfo(); }catch(err){ toast("Could not save the sale."); } });
+
+// Till report: each line needs a mass in kg. Cut names are matched to your cut list.
+function parseTill(text){
+  const rows=[];
+  for(const raw of String(text).split(/\n+/)){ const line=raw.trim(); if(!line) continue;
+    const m=line.match(/(\d+(?:[.,]\d+)?)\s*kgs?\b/i); if(!m) continue;
+    const kg=+m[1].replace(",","."); const name=line.slice(0,m.index).replace(/[^a-zA-Z \-']+/g," ").trim();
+    const a=line.slice(m.index+m[0].length).match(/R?\s*(\d[\d\s]*[.,]\d{2})\b/); const amt=a? +a[1].replace(/\s/g,"").replace(",","."):null;
+    rows.push({line,name,kg,amountInclVat:amt}); }
+  return rows;
+}
+let tillRows=[];
+$("tillBtn").addEventListener("click", ()=>{
+  const text=$("tillText").value.trim(); if(!text){ $("tillOut").innerHTML=`<p class="hint">Paste the till report first.</p>`; return; }
+  const ps=products(); tillRows=parseTill(text).map(x=>({...x,pid:(matchCut(x.name,ps)||{}).id||null}));
+  $("tillOut").innerHTML = tillRows.length? `<div class="tablewrap"><table><thead><tr><th>Till line</th><th>Matched cut</th><th class="r">Mass</th></tr></thead><tbody>${tillRows.map((x,i)=>`<tr><td class="muted">${esc(x.line)}</td><td><select id="tm-${i}"><option value="">Skip</option>${ps.map(p=>`<option value="${p.id}" ${p.id===x.pid?"selected":""}>${esc(p.name)} (${esc(p.species)})</option>`).join("")}</select></td><td class="r num">${fmtKg(x.kg)}</td></tr>`).join("")}</tbody></table></div><div class="row" style="margin-top:10px"><button class="btn" id="tillPost">Record these sales</button></div>` : `<p class="hint">No lines with a mass in kg were found.</p>`;
+  if(tillRows.length) $("tillPost").onclick = async ()=>{ let n=0; try{ for(let i=0;i<tillRows.length;i++){ const pid=$("tm-"+i).value; if(!pid||!S.products[pid]) continue; const x=tillRows[i]; const price = x.amountInclVat? x.amountInclVat/x.kg : S.products[pid].price; await recordSale(pid,x.kg,price,$("sDate").value); n++; } toast(`${n} sale line${n===1?"":"s"} recorded`); $("tillOut").innerHTML=""; $("tillText").value=""; }catch(e){ toast("Could not save all lines."); } };
+});
+
+/* ---------- COUNT ---------- */
+const countDraft = {};
+function renderCount(){
+  const st=stock(); const ps=products();
+  $("countTbl").innerHTML = ps.length? `<thead><tr><th>Cut</th><th class="r">Books say</th><th class="r">Counted kg</th><th class="r">Difference</th><th class="r">Value</th></tr></thead><tbody>${ps.map(p=>{ const s=st[p.id]; const c=countDraft[p.id]; const d = c==null||c===""? null : +c - s.kg; return `<tr><td>${esc(p.name)} <span class="muted">· ${esc(p.species)}</span></td><td class="r num">${fmtKg(s.kg)}</td><td class="r"><input type="number" step="0.01" min="0" id="ct-${p.id}" data-pid="${p.id}" value="${c??""}"></td><td class="r num">${d==null?"":`<span style="color:var(${d<-0.05?"--bad":"--muted"})">${d>0?"+":""}${d.toFixed(2)}</span>`}</td><td class="r num">${d==null?"":fmtR(d*avgCost(p.id))}</td></tr>`}).join("")}</tbody>` : `<tbody><tr><td class="empty">Add cuts under Setup first.</td></tr></tbody>`;
+  $("countTbl").querySelectorAll("input").forEach(i=>i.addEventListener("change",()=>{ countDraft[i.dataset.pid]=i.value; renderCount(); }));
+  const tot = Object.entries(countDraft).filter(([,v])=>v!=="").reduce((a,[pid,v])=>a+(+v-(st[pid]?.kg||0))*avgCost(pid),0);
+  $("countSum").textContent = Object.values(countDraft).some(v=>v!=="")? `Net variance ${fmtR(tot)}` : "Enter only the cuts you have weighed. Blank rows are left as they are.";
+}
+$("countBtn").addEventListener("click", async ()=>{
+  const st=stock(); const now=Date.now(); let n=0;
+  try{ for(const [pid,v] of Object.entries(countDraft)){ if(v==="") continue; const d=+v-st[pid].kg; if(Math.abs(d)<0.005) continue;
+      await put("moves",uid("mv"),{date:today(),type:"adjust",pid,kg:+d.toFixed(3),cost:+(d*avgCost(pid)).toFixed(2),ts:now}); n++; }
+    for(const k in countDraft) delete countDraft[k]; toast(n? `${n} variance${n>1?"s":""} posted`:"Count matched the books"); renderCount();
+  }catch(e){ toast("Could not post the stock take."); }
+});
+
+/* ---------- BOOKS ---------- */
+const ACC = {carc:"1400 Inventory – carcasses",cuts:"1410 Inventory – cuts",vin:"1150 VAT input",ap:"2100 Trade payables",bank:"1000 Bank / cash",sales:"4000 Sales – meat",vout:"2150 VAT output",cogs:"5000 Cost of sales",loss:"5100 Stock losses"};
+function journals(per){
+  const J=[]; const add=(date,memo,lines)=>J.push({date,memo,lines});
+  for(const l of allLots().slice().reverse()){ if(per && periodOf(l.date)!==per) continue; const v=l.cost*VAT;
+    add(l.date,`${l.supplier} ${l.inv?"#"+l.inv:""} – ${l.species} ${l.kg}kg`,[[ACC.carc,l.cost,0],[ACC.vin,v,0],[ACC.ap,0,l.cost+v]]); }
+  const byDay={};
+  for(const m of movesSorted()){ if(per && periodOf(m.date)!==per) continue; const k=m.date+"|"+m.type+"|"+(m.lot||""); (byDay[k]=byDay[k]||[]).push(m); }
+  for(const [k,ms] of Object.entries(byDay)){ const [date,type,lot]=k.split("|");
+    if(type==="breakdown"){ const c=ms.reduce((a,m)=>a+m.cost,0); add(date,`Breakdown – ${S.lots[lot]?.species||""} ${S.lots[lot]?.supplier||""}`,[[ACC.cuts,c,0],[ACC.carc,0,c]]); }
+    if(type==="sale"){ const inc=ms.reduce((a,m)=>a+(m.rev||0),0), ex=inc/(1+VAT), cost=-ms.reduce((a,m)=>a+m.cost,0);
+      add(date,"Daily takings",[[ACC.bank,inc,0],[ACC.sales,0,ex],[ACC.vout,0,inc-ex]]); add(date,"Cost of meat sold",[[ACC.cogs,cost,0],[ACC.cuts,0,cost]]); }
+    if(type==="adjust"){ const c=ms.reduce((a,m)=>a+m.cost,0); add(date,"Stock take variance",c<0?[[ACC.loss,-c,0],[ACC.cuts,0,-c]]:[[ACC.cuts,c,0],[ACC.loss,0,c]]); }
+  }
+  return J.sort((a,b)=>a.date.localeCompare(b.date));
+}
+function renderBooks(){
+  const el=$("period"), v=el.value; const pers=[...new Set([today(),...Object.values(S.lots).map(l=>l.date),...Object.values(S.moves).map(m=>m.date)].map(periodOf))].filter(Boolean).sort().reverse();
+  el.innerHTML = pers.map(p=>`<option value="${p}">${new Date(p+"-01").toLocaleDateString("en-ZA",{month:"long",year:"numeric"})}</option>`).join("")+`<option value="">All time</option>`;
+  if([...pers,""].includes(v)) el.value=v;
+  const per=el.value; const J=journals(per);
+  const sales=salesIn(per); const rev=sales.reduce((a,m)=>a+exclVat(m.rev||0),0), cogs=-sales.reduce((a,m)=>a+m.cost,0);
+  const loss=-movesSorted().filter(m=>m.type==="adjust"&&(!per||periodOf(m.date)===per)).reduce((a,m)=>a+m.cost,0);
+  const buys=allLots().filter(l=>!per||periodOf(l.date)===per).reduce((a,l)=>a+l.cost,0);
+  $("pl").innerHTML=[["Sales ex VAT",fmtR(rev)],["Cost of sales",fmtR(cogs)],["Stock losses",fmtR(loss)],["Gross profit",fmtR(rev-cogs-loss)],["Purchases ex VAT",fmtR(buys)]].map(([l,v])=>`<div class="kpi"><div class="l">${l}</div><div class="v">${v}</div></div>`).join("");
+  $("jnlTbl").innerHTML = J.length? `<thead><tr><th>Date</th><th>Account</th><th class="r">Debit</th><th class="r">Credit</th></tr></thead><tbody>${J.map(j=>`<tr><td colspan="4" style="padding-top:14px"><b>${esc(j.date)}</b> <span class="muted">${esc(j.memo)}</span></td></tr>${j.lines.map(([a,d,c])=>`<tr><td></td><td>${esc(a)}</td><td class="r num">${d?fmtR(d):""}</td><td class="r num">${c?fmtR(c):""}</td></tr>`).join("")}`).join("")}</tbody>` : `<tbody><tr><td class="empty">No transactions in this period.</td></tr></tbody>`;
+}
+$("period").addEventListener("change",renderBooks);
+function csv(){ const J=journals($("period").value); const rows=[["Date","Account","Debit","Credit","Description"]]; for(const j of J) for(const [a,d,c] of j.lines) rows.push([j.date,a,d?d.toFixed(2):"",c?c.toFixed(2):"",j.memo]); return rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(",")).join("\n"); }
+$("csvCopy").addEventListener("click", async ()=>{ try{ await navigator.clipboard.writeText(csv()); toast("Journals copied"); }catch(e){ toast("Copy is blocked here. Use Download instead."); } });
+$("csvSave").addEventListener("click", ()=>download(`food-boys-journals-${$("period").value||"all"}.csv`,csv(),"text/csv"));
+
+/* ---------- SETUP ---------- */
+const setupDraft = {};
+function renderSetup(){
+  const sp=$("setSpecies").value; const ps=products().filter(p=>p.species===sp); const t=S.templates[slug(sp)]?.yields||S.templates[sp]?.yields||{};
+  const val=(pid,f,def)=> setupDraft[pid]?.[f] ?? def;
+  $("setupTbl").innerHTML = ps.length? `<thead><tr><th>Cut</th><th class="r">Sell R/kg incl VAT</th><th class="r">Yield %</th><th class="r">Reorder below kg</th></tr></thead><tbody>${ps.map(p=>`<tr><td>${esc(p.name)}</td><td class="r"><input type="number" step="0.01" id="su-${p.id}-price" data-pid="${p.id}" data-f="price" value="${val(p.id,"price",p.price)}"></td><td class="r"><input type="number" step="0.1" id="su-${p.id}-yield" data-pid="${p.id}" data-f="yield" value="${val(p.id,"yield",t[p.id]||0)}"></td><td class="r"><input type="number" step="0.5" id="su-${p.id}-min" data-pid="${p.id}" data-f="min" value="${val(p.id,"min",p.min||0)}"></td></tr>`).join("")}</tbody>` : `<tbody><tr><td class="empty">No cuts for this species yet. Add one below.</td></tr></tbody>`;
+  $("setupTbl").querySelectorAll("input").forEach(i=>i.addEventListener("input",()=>{ (setupDraft[i.dataset.pid]=setupDraft[i.dataset.pid]||{})[i.dataset.f]=i.value; yieldSum(); }));
+  yieldSum();
+}
+function yieldSum(){ const sp=$("setSpecies").value; const ps=products().filter(p=>p.species===sp); const t=S.templates[sp]?.yields||{};
+  const sum=ps.reduce((a,p)=>a+(+(setupDraft[p.id]?.yield ?? t[p.id] ?? 0)),0);
+  $("yieldSum").textContent = ps.length? `Cuts add up to ${sum.toFixed(1)}%. The other ${(100-sum).toFixed(1)}% is bone, fat and loss.` : ""; }
+$("setSpecies").addEventListener("change",renderSetup);
+$("setupSave").addEventListener("click", async ()=>{
+  const sp=$("setSpecies").value; const t={...(S.templates[sp]?.yields||{})}; let changed=false;
+  try{ for(const [pid,d] of Object.entries(setupDraft)){ if(S.products[pid]?.species!==sp) continue; const up={};
+      if(d.price!=null) up.price=+d.price; if(d.min!=null) up.min=+d.min; if(Object.keys(up).length){ await patch("products",pid,up); changed=true; }
+      if(d.yield!=null){ t[pid]=+d.yield; changed=true; } delete setupDraft[pid]; }
+    if(changed){ await put("templates",slug(sp),{species:sp,yields:t}); toast("Saved"); } else toast("Nothing changed");
+  }catch(e){ toast("Could not save."); }
+});
+$("addProd").addEventListener("submit", async e=>{ e.preventDefault();
+  const sp=$("apSpecies").value.trim(); const name=$("apName").value.trim(); const id=slug(sp+"-"+name);
+  try{ await put("products",id,{name,species:sp,price:+$("apPrice").value,min:+$("apMin").value||0});
+    const y=+$("apYield").value||0; const t={...(S.templates[sp]?.yields||{})}; t[id]=y; await put("templates",slug(sp),{species:sp,yields:t});
+    toast(`${name} added`); e.target.reset(); }catch(err){ toast("Could not add."); }
+});
+$("bkSave").addEventListener("click",()=>download(`food-boys-butchers-block-backup-${today()}.json`,db.exportJson(),"application/json"));
+$("bkLoad").addEventListener("change", async e=>{ const f=e.target.files[0]; if(!f) return;
+  if(!confirm("Restore this backup? It replaces everything currently in the app.")){ e.target.value=""; return; }
+  try{ db.importJson(await f.text()); toast("Backup restored"); }catch(err){ toast("That file is not a Butchers Block backup."); } e.target.value=""; });
+
+/* ---------- tabs & boot ---------- */
+let active="today";
+document.querySelectorAll("nav.tabs button").forEach(b=>b.addEventListener("click",()=>{ active=b.dataset.tab;
+  document.querySelectorAll("nav.tabs button").forEach(x=>x.setAttribute("aria-selected",x===b));
+  document.querySelectorAll("section.tab").forEach(s=>s.hidden = s.id!=="tab-"+active); try{localStorage.setItem("fb-tab",active)}catch(e){} renderAll(); }));
+function renderAll(){ fillSpeciesSelects(); renderToday(); renderLots(); renderBreakSelect(); renderSell(); renderCount(); renderBooks(); renderSetup(); sellInfo(); }
+$("rDate").value=today(); $("sDate").value=today(); recvTotal();
+
+db = makeDb();
+let rt; const queueRender=()=>{ clearTimeout(rt); rt=setTimeout(renderAll,30); };
+for(const col of ["products","templates","lots","moves"]){
+  db.collection(col).onSnapshot(snap=>{ const m={}; snap.docs.forEach(doc=>{ const d=doc.data(); m[col==="templates"?(d.species||doc.id):doc.id]=d; }); S[col]=m; queueRender(); });
+}
+try{ const t=localStorage.getItem("fb-tab"); if(t) document.querySelector(`nav.tabs button[data-tab="${t}"]`)?.click(); }catch(e){}
+</script>
+</body></html>
